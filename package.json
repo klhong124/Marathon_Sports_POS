@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/klhong124/Marathon_Sports_POS/issues"
   },
-  "homepage": "https://github.com/klhong124/Marathon_Sports_POS#readme"
+  "homepage": "https://github.com/klhong124/Marathon_Sports_POS#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
 }
