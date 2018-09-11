@@ -1,6 +1,7 @@
 // server.js
 // load the things we need
 var express = require('express');
+const MongoClient = require('mongodb').MongoClient;
 var app = express();
 
 
@@ -21,7 +22,18 @@ app.get('/about', function(req, res) {
 
 // signin page
 app.get('/signin', function(req, res) {
-    res.render('pages/sign-in');
+  //Datafetching
+//MongoClient.connect("mongodb://localhost:27017/",{ useNewUrlParser: true }, (err, db) => {
+  //Create Collection
+    //db.db("___").createCollection("___", function(err, res) {
+    //    db.close();
+  //});
+  //Collection Find
+  //db.db("____").collection("____").find().toArray((err, database) => {
+    //console.log(database);
+      res.render('pages/sign-in');
+    //});
+  //});
 });
 
 app.use('/static', express.static('public'))
