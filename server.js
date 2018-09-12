@@ -1,7 +1,7 @@
 // server.js
 // load the things we need
 var express = require('express');
-const MongoClient = require('mongodb').MongoClient;
+// const MongoClient = require('mongodb').MongoClient;
 var app = express();
 
 
