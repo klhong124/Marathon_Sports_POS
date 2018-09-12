@@ -21,7 +21,7 @@ app.get('/about', function(req, res) {
 });
 
 // signin page
-app.get('/signin', function(req, res) {
+app.get('/login', function(req, res) {
   //Datafetching
 //MongoClient.connect("mongodb://localhost:27017/",{ useNewUrlParser: true }, (err, db) => {
   //Create Collection
@@ -31,7 +31,23 @@ app.get('/signin', function(req, res) {
   //Collection Find
   //db.db("____").collection("____").find().toArray((err, database) => {
     //console.log(database);
-      res.render('pages/sign-in');
+      res.render('pages/signin');
+    //});
+  //});
+});
+
+// signup page
+app.get('/register', function(req, res) {
+  //Datafetching
+//MongoClient.connect("mongodb://localhost:27017/",{ useNewUrlParser: true }, (err, db) => {
+  //Create Collection
+    //db.db("___").createCollection("___", function(err, res) {
+    //    db.close();
+  //});
+  //Collection Find
+  //db.db("____").collection("____").find().toArray((err, database) => {
+    //console.log(database);
+      res.render('pages/signup');
     //});
   //});
 });
