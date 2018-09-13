@@ -50,6 +50,12 @@ app.get('/signout', function(req, res) {
     res.redirect('/');
 });
 
+// all categories page
+app.get('/products', function(req, res) {
+    res.render('pages/products');
+});
+
+
 app.use('/static', express.static('public'))
 app.listen(3000);
 console.log("The port is 3000");
