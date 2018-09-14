@@ -45,15 +45,30 @@ app.get('/dashboard', function(req, res) {
     res.render('pages/dashboard');
 });
 
-// signout
+// signout page
 app.get('/signout', function(req, res) {
     res.redirect('/');
 });
+
+// change password page
+app.get('/changepassword', function(req, res) {
+    res.render('pages/change-password')
+})
 
 // all categories page
 app.get('/products', function(req, res) {
     res.render('pages/products');
 });
+
+// checkout form page
+app.get('/checkout', function(req, res) {
+    res.render('pages/checkout')
+})
+
+// forget password page
+app.get('forgetpassword', function(req, res) {
+    res.render('pages/forget-password')
+})
 
 
 app.use('/static', express.static('public'))
