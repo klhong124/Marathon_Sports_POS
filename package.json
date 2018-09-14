@@ -5,11 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-<<<<<<< HEAD
     "start": "nodemon server.js"
-=======
-    "start": "nodemon server.js"// auto restart
->>>>>>> parent of e8c1115... Revert "why?"
   },
   "repository": {
     "type": "git",
