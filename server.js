@@ -45,35 +45,15 @@ app.get('/dashboard', function(req, res) {
     res.render('pages/dashboard');
 });
 
-<<<<<<< HEAD
 // signout
-app.get('/logout', function(req, res) {
-=======
-// signout page
 app.get('/signout', function(req, res) {
->>>>>>> 292b706c83162d1f5ab2733b8e9577b58a23d050
     res.redirect('/');
 });
-
-// change password page
-app.get('/changepassword', function(req, res) {
-    res.render('pages/change-password')
-})
 
 // all categories page
 app.get('/products', function(req, res) {
     res.render('pages/products');
 });
-
-// checkout form page
-app.get('/checkout', function(req, res) {
-    res.render('pages/checkout')
-})
-
-// forget password page
-app.get('forgetpassword', function(req, res) {
-    res.render('pages/forget-password')
-})
 
 
 app.use('/static', express.static('public'))
