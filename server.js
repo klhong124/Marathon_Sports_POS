@@ -9,7 +9,6 @@ var app = express();
 app.set('view engine', 'ejs');
 
 // use res.render to load up an ejs view file
-
 // index page
 app.get('/', function(req, res) {
     res.render('pages/index');
@@ -21,7 +20,7 @@ app.get('/about', function(req, res) {
 });
 
 // signin page
-app.get('/signin', function(req, res) {
+app.get('/login', function(req, res) {
   //Datafetching
 //MongoClient.connect("mongodb://localhost:27017/",{ useNewUrlParser: true }, (err, db) => {
   //Create Collection
@@ -31,10 +30,31 @@ app.get('/signin', function(req, res) {
   //Collection Find
   //db.db("____").collection("____").find().toArray((err, database) => {
     //console.log(database);
-      res.render('pages/sign-in');
+        res.render('pages/signin');
     //});
   //});
 });
+
+// signup page
+app.get('/register', function(req, res) {
+    res.render('pages/signup');
+});
+
+// dashboard page
+app.get('/dashboard', function(req, res) {
+    res.render('pages/dashboard');
+});
+
+// signout
+app.get('/signout', function(req, res) {
+    res.redirect('/');
+});
+
+// all categories page
+app.get('/products', function(req, res) {
+    res.render('pages/products');
+});
+
 
 app.use('/static', express.static('public'))
 app.listen(3000);
