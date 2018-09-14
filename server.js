@@ -46,7 +46,7 @@ app.get('/dashboard', function(req, res) {
 });
 
 // signout
-app.get('/signout', function(req, res) {
+app.get('/logout', function(req, res) {
     res.redirect('/');
 });
 
