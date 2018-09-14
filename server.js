@@ -45,13 +45,8 @@ app.get('/dashboard', function(req, res) {
     res.render('pages/dashboard');
 });
 
-<<<<<<< HEAD
 // signout
 app.get('/logout', function(req, res) {
-=======
-// signout page
-app.get('/signout', function(req, res) {
->>>>>>> 292b706c83162d1f5ab2733b8e9577b58a23d050
     res.redirect('/');
 });
 
