@@ -8,26 +8,46 @@
         <link href="/static/album.css" rel="stylesheet">
         <!-- Custom script for this template -->
         <script src="/static/holder.min.js"></script>
+        <style media="screen">
+        .why-Marathon{
+          padding: 0 10%;
+        }
+        #all-items{
+          margin-top: 40%;
+        }
+        #bgvideo{
+          z-index: -1;
+          position:absolute;
+          right: 0;
+          margin-top: 0;
+          height: 100%;
+        }
+        </style>
     </head>
     <body>
         <!-- header -->
-        <% include ../partials/header %>
+        <% include ../partials/nav %>
         <div class="container">
+          <video autoplay muted loop id="bgvideo">
+            <source src="static/Marathon_Trailer.mp4" type="video/mp4">
+          </video>
             <main role="main">
-                <section class="jumbotron text-center">
-                    <div class="container">
-                        <h1 class="jumbotron-heading">Why Marathon Sports</h1>
-                        <p class="lead text-muted">Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!<br><small>- Marathon Sports</small></p>
-                        <p>
-                            <a href="#all-items" class="btn btn-primary my-2">Shop Now</a>
-                            <a href="/register" class="btn btn-secondary my-2">Sign Up</a>
-                        </p>
-                    </div>
+                <section class="jumbotron" style="background:transparent">
+
+                    <aside>
+                      <% include ../partials/loginbox %>
+                    </aside>
                 </section>
 
                 <div class="album py-5 bg-light"  id="all-items">
+                  <div class="container why-Marathon">
+                      <h1 class="jumbotron-heading text-center">Why Marathon Sports</h1>
+                      <p class="lead text-muted text-center">Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!</p>
+                      <p><small style="float:left;width:100%;text-align:right">~ Marathon Sports</small></p>
+
+                  </div>
                     <div class="container">
-                        <div><center><h2>NEW ARRIVALS</h2></center></div>
+                        <div style="float:bottom;"><center><h2><br>NEW ARRIVALS</h2></center></div>
                         <div style="height:24px; width:100%;"></div>
                         <div class="row">
                             <div class="col-md-4">
