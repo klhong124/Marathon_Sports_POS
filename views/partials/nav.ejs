@@ -50,7 +50,7 @@
             </form> -->
             <script>
               var prevScrollpos = window.pageYOffset;
-              window.onscroll = function() {
+              window.onscroll = function hide_navbar() {
                 var currentScrollPos = window.pageYOffset;
                 if (prevScrollpos < currentScrollPos) {
                   document.getElementById("navbar").style.top = "0";
@@ -59,6 +59,11 @@
                   }
                 prevScrollpos = currentScrollPos;
                 }
+
+                // window.onscroll = function() {
+                //     console.log("scrolling");
+                //     window.scrollTo(0, 800);
+                // }
             </script>
             <ul class="navbar-nav">
                 <li style="padding:12px;"></li>
