@@ -9,29 +9,34 @@
         <!-- Custom script for this template -->
         <script src="/public/holder.min.js"></script>
         <style media="screen">
+        main{
+          width:100%;
+        }
         .why-Marathon{
           padding: 0 10%;
         }
         #all-items{
-          margin-top: 40%;
+          margin-top: 34%;
         }
         #bgvideo{
           z-index: -1;
-          position:absolute;
+          position:fixed;
           right: 0;
-          margin-top: 0;
           height: 100%;
+        }
+        .bgcolor{
+          background:#A62639;
         }
         </style>
     </head>
     <body>
         <!-- header -->
-        <% include ../partials/nav %>
-        <div class="container">
+        <div>
           <video autoplay muted loop id="bgvideo">
             <source src="public/Marathon_Trailer.mp4" type="video/mp4">
           </video>
             <main role="main">
+                <% include ../partials/nav %>
                 <section class="jumbotron" style="background:transparent">
 
                     <aside>
