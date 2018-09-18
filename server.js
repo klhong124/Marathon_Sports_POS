@@ -67,7 +67,7 @@ app.get('/checkout', function(req, res) {
 })
 
 // forget password page
-app.get('forgetpassword', function(req, res) {
+app.get('/forgetpassword', function(req, res) {
     res.render('pages/forget-password')
 })
 
