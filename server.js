@@ -72,6 +72,6 @@ app.get('forgetpassword', function(req, res) {
 })
 
 
-app.use('/static', express.static('public'))
+app.use('/public', express.static('public'))
 app.listen(3000);
 console.log("The port is 3000");
