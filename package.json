@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/klhong124/Marathon_Sports_POS#readme",
   "dependencies": {
+    "admin-lte": "^2.4.8",
     "ejs": "^2.6.1",
     "errors": "^0.3.0",
     "express": "^4.16.3",

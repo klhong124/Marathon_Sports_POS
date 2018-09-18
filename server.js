@@ -67,11 +67,11 @@ app.get('/checkout', function(req, res) {
 })
 
 // forget password page
-app.get('forgetpassword', function(req, res) {
+app.get('/forgetpassword', function(req, res) {
     res.render('pages/forget-password')
 })
 
 
-app.use('/static', express.static('public'))
+app.use('/public', express.static('public'))
 app.listen(3000);
 console.log("The port is 3000");
