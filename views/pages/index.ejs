@@ -15,13 +15,11 @@
         .why-Marathon{
           padding: 0 10%;
         }
-        #all-items{
-          margin-top: 34%;
-        }
         #bgvideo{
           z-index: -1;
           position:fixed;
-          right: 0;
+          width: 100%;
+          object-fit: cover;
           height: 100%;
         }
         .bgcolor{
@@ -37,20 +35,17 @@
           </video>
             <main role="main">
                 <% include ../partials/nav %>
-                <section class="jumbotron" style="background:transparent">
-
-                    <aside>
-                      <% include ../partials/loginbox %>
-                    </aside>
+                <section class="jumbotron" style="background:transparent;height:1080px">
                 </section>
 
-                <div class="album py-5 bg-light"  id="all-items">
+                <div class="album py-5 bgcolor"  id="all-items">
                   <div class="container why-Marathon">
-                      <h1 class="jumbotron-heading text-center">Why Marathon Sports</h1>
-                      <p class="lead text-muted text-center">Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!</p>
-                      <p><small style="float:left;width:100%;text-align:right">~ Marathon Sports</small></p>
-
+                      <h1 class="jumbotron-heading text-center text-white"><b>Why Marathon Sports</b></h1>
+                      <p class="lead text-white" style="text-align: justify;">Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!</p>
+                      <p class="text-white"><small style="float:left;width:100%;text-align:right">~ Marathon Sports</small></p>
                   </div>
+                </div>
+                <div class="album py-5 bg-light">
                     <div class="container">
                         <div style="float:bottom;"><center><h2><br>NEW ARRIVALS</h2></center></div>
                         <div style="height:24px; width:100%;"></div>
