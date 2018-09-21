@@ -30,6 +30,21 @@ passport.use(new LocalStrategy({
   }
 ));
 
+passport.use(new LocalStrategy(
+  function(email, password, done) {
+      User.findOne({ email: email }, function(err, user) {
+          if (err) { return done(err); }
+          if (!user) {
+              return done(null, false, { message: 'Incorrect email.' });
+          }
+          if (!user.validPassword(password)) {
+              return done(null, false, { message: 'Incorrect password.' });
+          }
+          return done(null, user);
+      });
+  }
+));
+
 
 // use res.render to load up an ejs view file
 // index page
@@ -51,25 +66,16 @@ app.get('/about',(req, res)=> {
 // POST /login gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
   oracledbconn(req.body.email,req.body.password)
-    async function oracledbconn(email,password)  {
-
+  async function oracledbconn(email,password){
     let conn;
-
     try {
       conn = await oracledb.getConnection(config);
-
       const result = await conn.execute(
         'select * from users where email = :email and username = :username',
         [email,password]// 'select * from users'
       );
-
       console.log(result.rows[0]);
-    } catch (err) {
-      console.log('Ouch!', err);
-    } finally {
-      if (conn) { // conn assignment worked, need to close
-         await conn.close();
-      }
+    } catch (err) {console.log('Ouch!', err);} finally {if (conn) {await conn.close();}// conn assignment worked, need to close
     }
     res.redirect('/dashboard');
   };
