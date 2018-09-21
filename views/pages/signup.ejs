@@ -3,26 +3,26 @@
     <!-- Bootstrap core CSS -->
     <% include ../partials/head %>
     <!-- Custom styles for this template -->
-    <link rel="stylesheet" type="text/css" href="/static/signin.css">
+    <link rel="stylesheet" type="text/css" href="/public/signin.css">
 </head>
 
+<body>
     <form action="#">
-        <div class="container">
-            <center>
-                <a href="/"><img class="mb-4" style="border-radius: 4px;" src="/public/marathon-logo_1.png" alt="" width="144" height="144"></a>
-            </center>
-            <h1>Register</h1>
-            <p>Please fill in this form to create an account.</p>
-            <hr>
+        <center>
+            <a href="/"><img class="mb-4" style="border-radius: 4px;" src="/public/marathon-logo_1.png" alt="" width="144" height="144"></a>
+        </center>
+        <h1>Register</h1>
+        <p>Please fill in this form to create an account.</p>
+        <hr>
 
         <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Enter Email" required="" autofocus="">
+        <input type="email" id="inputEmail" class="form-control" placeholder="Enter Email" required="" autofocus="" style="margin-bottom:-1px;">
 
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="" style="margin-bottom:-1px;">
 
         <label for="Password-confirm" class="sr-only">Confirm Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Confirm Password" required="" style="border-bottom-left-radius:4px; border-bottom-right-radius:4px;">
+        <input type="password" class="form-control" placeholder="Confirm Password" required="" style="border-bottom-left-radius:4px; border-bottom-right-radius:4px;">
         <hr>
 
         <label>

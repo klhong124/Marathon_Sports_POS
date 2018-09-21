@@ -6,6 +6,7 @@
         <% include ../partials/head %>
         <!-- Custom styles for this template -->
         <link href="/public/album.css" rel="stylesheet">
+        <link href="/public/slider.css" rel="stylesheet">
         <!-- Custom script for this template -->
         <script src="/public/holder.min.js"></script>
         <style media="screen">
@@ -14,41 +15,90 @@
         }
         .why-Marathon{
           padding: 0 10%;
+
         }
         #bgvideo{
           z-index: -1;
           position:fixed;
-          width: 100%;
           object-fit: cover;
           height: 100%;
         }
         .bgcolor{
           background:#A62639;
         }
+        .moveup{
+          animation-name: moveup;
+          animation-duration: 1s;
+        }
+        .movedw{
+          animation-name: movedw;
+          animation-duration: 1s;
+        }
+        .movelf{
+          animation-name: movelf;
+          animation-duration: 2s;
+        }
+        @keyframes moveup {
+          from {margin-bottom:400px;}
+          to {margin-bottom: 0px;}
+        }
+        @keyframes movelf {
+          0% {margin-left:-450px;}
+          50% {margin-left: -450px;}
+          100% {margin-left:0px;}
+        }
+        @keyframes movedw {
+          from {margin-top:-200px;}
+          to {margin-top: 0px;}
+        }
         </style>
     </head>
+<<<<<<< HEAD
     <body>
+        <% include ../partials/loginbox %>
+=======
+    <body style="scroll-behavior:smooth;">
+>>>>>>> a747f342eac82d56cde0ee033eb953d6e46ef563
         <!-- header -->
-        <div>
+        <div style="height:50px;">
           <video autoplay muted loop id="bgvideo">
             <source src="public/Marathon_Trailer.mp4" type="video/mp4">
           </video>
+          <script type="text/javascript">
+            window.onload = function() {
+              window.scroll(0, 320);
+            };
+          </script>
             <main role="main">
                 <% include ../partials/nav %>
-                <section class="jumbotron" style="background:transparent;height:1080px">
+                <section class="jumbotron moveup" style="background:transparent;height:1000px">
                 </section>
 
-                <div class="album py-5 bgcolor"  id="all-items">
+                <div class="album py-5 bgcolor">
                   <div class="container why-Marathon">
                       <h1 class="jumbotron-heading text-center text-white"><b>Why Marathon Sports</b></h1>
                       <p class="lead text-white" style="text-align: justify;">Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!</p>
                       <p class="text-white"><small style="float:left;width:100%;text-align:right">~ Marathon Sports</small></p>
                   </div>
                 </div>
-                <div class="album py-5 bg-light">
+                <div class="bg-light" style="padding:70px 0;">
                     <div class="container">
-                        <div style="float:bottom;"><center><h2><br>NEW ARRIVALS</h2></center></div>
-                        <div style="height:24px; width:100%;"></div>
+                      <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                          <div style="float:bottom;"><center><h2><br>BEST OF 2018</h2></center></div><br>
+                          <p>best best best best best best best best best best best best best best best</p>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                          <% include ../partials/slider %>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+
+                  <div class="album py-5 bg-light">
+                    <div class="container">
+                        <div style="float:bottom;"><center><h2><br>NEW ARRIVALS</h2></center></div><br>
                         <div class="row">
                             <% for(var i=0; i < 9; i++) { %>
                               <div class="col-md-4">
