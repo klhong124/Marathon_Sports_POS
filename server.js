@@ -1,33 +1,25 @@
-// this is server.js
-var express = require('express');
-var app = express();
-// set the view engine to ejs
-app.set('view engine', 'ejs');
-// oracle db config
+// requirement
+const express = require('express');
 const oracledb = require('oracledb');
- config = {
-  user: 'G1_team001',                // Update me
-  password: 'ceG1_team001',        // Update me
+const bodyParser = require('body-parser');
+const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
+//configuration
+config = {
+  user: 'G1_team001',                   // Update me
+  password: 'ceG1_team001',             // Update me
   connectString: '144.214.177.102/xe'   // Update me
 };
 const conn = oracledb.getConnection(config);
 
-var passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
-// var router = express.Router();
+const jsonParser = bodyParser.json(); // create application/json parser
 
-var bodyParser = require('body-parser');
-// create application/json parser
-var jsonParser = bodyParser.json();
-// create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+const urlencodedParser = bodyParser.urlencoded({ extended: false }); // create application/x-www-form-urlencoded parser
 
 passport.use(new LocalStrategy({
     emailField: 'email',
     passwordField: 'password'
   },
-  function(email, password, done) {
-
-  }
+  (email, password, done) => {}
 ));
 
 passport.use(new LocalStrategy(
@@ -45,38 +37,32 @@ passport.use(new LocalStrategy(
   }
 ));
 
+const app = express();
 
+app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
-app.get('/',(req, res)=> {
+app.get('/',(req, res) => {
     res.render('pages/index');
 });
 
 // about page
-app.get('/about',(req, res)=> {
+app.get('/about',(req, res) => {
     res.render('pages/about', {output: req.params.id});
 });
 
-// // signin page
-// app.post('/login',
-//   passport.authenticate('local', { failureRedirect: '/dashboard' }),
-//   function(req, res) {
-//     res.redirect('/');
-//   });
 // POST /login gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
-  oracledbconn(req.body.email,req.body.password)
+  oracledbconn(req.body.email,req.body.password);
   async function oracledbconn(email,password){
     let conn;
-    try {
-      conn = await oracledb.getConnection(config);
-      const result = await conn.execute(
-        'select * from users where email = :email and username = :username',
-        [email,password]// 'select * from users'
-      );
-      console.log(result.rows[0]);
-    } catch (err) {console.log('Ouch!', err);} finally {if (conn) {await conn.close();}// conn assignment worked, need to close
-    }
+    conn = await oracledb.getConnection(config);
+    const result = await conn.execute(
+      'select * from users where email = :email and username = :username',
+      [email,password]// 'select * from users'
+    );
+    console.log(result.rows[0]);
+    if (conn) {await conn.close();}
     res.redirect('/dashboard');
   };
 })
@@ -120,4 +106,5 @@ app.get('/forgetpassword',(req, res) => {
 
 app.use('/public', express.static('public'))
 app.listen(3000);
-console.log("The port is 3000");
+console.log("Server Running on port 3000");
+require("openurl").open("http://localhost:3000");
