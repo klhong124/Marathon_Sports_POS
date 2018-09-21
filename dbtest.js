@@ -1,22 +1,23 @@
 const oracledb = require('oracledb');
 const config = {
-  user: 'std022',                // Update me
-  password: 'cestd0702',        // Update me
+  user: 'G1_team001',                // Update me
+  password: 'ceG1_team001',        // Update me
   connectString: '144.214.177.102/xe'   // Update me
 };
 
-async function getEmployee(empId) {
+async function auth() {
   let conn;
 
   try {
     conn = await oracledb.getConnection(config);
 
     const result = await conn.execute(
-      'select * from staff'
-      // [empId]
+      // 'select * from users where email = :email and username = :username',
+      // [email, username]
+      'select * from users'
     );
 
-    console.log(result.rows[0]);
+    console.log(result.rows);
   } catch (err) {
     console.log('Ouch!', err);
   } finally {
@@ -25,8 +26,10 @@ async function getEmployee(empId) {
     }
   }
 }
+// call function run
+auth();
 
-getEmployee(101);
-
-
+exports.printDate = function(){
+    console.log(Date());
+}
 // https://github.com/oracle/node-oracledb/blob/master/examples/select1.js#L35
