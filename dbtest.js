@@ -12,11 +12,11 @@ async function getEmployee(empId) {
     conn = await oracledb.getConnection(config);
 
     const result = await conn.execute(
-      'select * from users'
+      'select * from staff'
       // [empId]
     );
 
-    console.log(result.rows);
+    console.log(result.rows[0]);
   } catch (err) {
     console.log('Ouch!', err);
   } finally {
