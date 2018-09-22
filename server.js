@@ -12,7 +12,7 @@ const config = {
 };
 
 
-async function auth(email, username,res) {
+async function auth(email, username) {
     let conn;
 
     conn = await oracledb.getConnection(config);
@@ -29,6 +29,7 @@ async function auth(email, username,res) {
     }
     // console.log(result.rows)
     // conn assignment worked, need to close
+
     await conn.close();
 }
 // call function run
@@ -93,7 +94,6 @@ app.post('/login', urlencodedParser, function (req, res) {
   auth(req.body.email, req.body.password);
   console.log("------");
   console.log(req.body);
-
   console.log("++++++");
 
 })
