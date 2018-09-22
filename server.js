@@ -1,50 +1,23 @@
-// this is server.js
-var express = require('express');
-var app = express();
-// set the view engine to ejs
-app.set('view engine', 'ejs');
-// oracle db config
+// requirement
+const express = require('express');
 const oracledb = require('oracledb');
-const config = {
-  user: 'G1_team001',                // Update me
-  password: 'ceG1_team001',        // Update me
-  connectString: '144.214.177.102/xe'   // Update me
-};
+const bodyParser = require('body-parser');
+const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
+// db configuration
+var dum = require('./dbconfig.js');
+// gobal vars
+let conn;
 
+const jsonParser = bodyParser.json(); // create application/json parser
 
-async function auth(email, username) {
-    let conn;
+const urlencodedParser = bodyParser.urlencoded({ extended: false }); // create application/x-www-form-urlencoded parser
 
-    conn = await oracledb.getConnection(config);
-
-    const result = await conn.execute(
-      'select * from users where email = :email and username = :username',
-      [email, username]
-      // 'select * from users'
-    );
-    if (result.rows.length > 0){
-        console.log("ok");
-    }else{
-        console.log("err");
-    }
-    // console.log(result.rows)
-    // conn assignment worked, need to close
-
-    await conn.close();
-}
-// call function run
-// auth();
-
-
-// auth
-var passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
-// var router = express.Router();
-
-var bodyParser = require('body-parser');
-// create application/json parser
-var jsonParser = bodyParser.json();
-// create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+passport.use(new LocalStrategy({
+    emailField: 'email',
+    passwordField: 'password'
+  },
+  (email, password, done) => {}
+));
 
 passport.use(new LocalStrategy(
   function(email, password, done) {
@@ -61,80 +34,73 @@ passport.use(new LocalStrategy(
   }
 ));
 
-passport.use(new LocalStrategy({
-    emailField: 'email',
-    passwordField: 'password'
-  },
-  function(email, password, done) {
+const app = express();
 
-  }
-));
-
-
+app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
-app.get('/', function(req, res) {
+app.get('/',(req, res) => {
     res.render('pages/index');
 });
 
 // about page
-app.get('/about', function(req, res) {
+app.get('/about',(req, res) => {
     res.render('pages/about', {output: req.params.id});
 });
 
-// // signin page
-// app.post('/login',
-//   passport.authenticate('local', { failureRedirect: '/dashboard' }),
-//   function(req, res) {
-//     res.redirect('/');
-//   });
 // POST /login gets urlencoded bodies
-app.post('/login', urlencodedParser, function (req, res) {
-  if (!req.body) return res.sendStatus(400)
-  auth(req.body.email, req.body.password);
-  console.log("------");
-  console.log(req.body);
-  console.log("++++++");
-
-})
+app.post('/login', urlencodedParser, (req, res) => {
+  oracledbconn(req.body.email,req.body.password);
+  async function oracledbconn(email,password){
+    conn = await oracledb.getConnection(dum);
+    const result = await conn.execute(
+      'select * from users where email = :email and username = :username',
+      [email,password]// 'select * from users'
+    );
+    console.log(result.rows[0]);
+    if (conn) {await conn.close();}
+    res.redirect('/dashboard');
+  };
+});
 
 
 // signup page
-app.get('/register', function(req, res) {
+app.get('/register',(req, res) => {
     res.render('pages/signup');
 });
 
 // dashboard page
-app.get('/dashboard', function(req, res) {
+app.get('/dashboard',(req, res) => {
     res.render('pages/dashboard');
 });
 
 // signout
-app.get('/logout', function(req, res) {
+app.get('/logout',(req, res) => {
     res.redirect('/');
 });
 
 // change password page
-app.get('/changepassword', function(req, res) {
+app.get('/changepassword',(req, res) => {
     res.render('pages/change-password');
 });
 
 // all categories page
-app.get('/products', function(req, res) {
+app.get('/products',(req, res) => {
     res.render('pages/products');
 });
 
 // checkout form page
-app.get('/checkout', function(req, res) {
+app.get('/checkout',(req, res) => {
     res.render('pages/checkout');
 });
 
 // forget password page
-app.get('/forgetpassword', function(req, res) {
+app.get('/forgetpassword',(req, res) => {
     res.render('pages/forget-password');
 });
 
 
-app.use('/public', express.static('public'))
+app.use('/public', express.static('public'));
 app.listen(3000);
-console.log("The port is 3000");
+console.log("Server Running on port 3000");
+require("openurl").open("http://localhost:3000");
