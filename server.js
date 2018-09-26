@@ -94,6 +94,11 @@ app.get('/logout',(req, res) => {
     res.redirect('/');
 });
 
+// shopping cart
+app.get('/cart',(req, res) => {
+    res.render('pages/shopping-cart');
+});
+
 // change password page
 app.get('/changepassword',(req, res) => {
     if (req.cookies['username']) {
