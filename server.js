@@ -9,6 +9,7 @@ var dum = require('./dbconfig.js');
 // gobal vars
 let conn;
 
+
 const jsonParser = bodyParser.json(); // create application/json parser
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false }); // create application/x-www-form-urlencoded parser
@@ -51,26 +52,31 @@ app.get('/about',(req, res) => {
     res.render('pages/about', {output: req.params.id});
 });
 
-// POST /login gets urlencoded bodies
+// POST login gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
-  oracledbconn(req.body.email,req.body.password);
-  async function oracledbconn(email,password){
-    conn = await oracledb.getConnection(dum);
-    const result = await conn.execute(
-      'select username from users where email = :email and username = :username',
-      [email,password]// 'select * from users'
-    );
+    oracledbconn(req.body.email,req.body.password);
+    async function oracledbconn(email,password){
+        conn = await oracledb.getConnection(dum);
+        const result = await conn.execute(
+            'select username from users where email = :email and username = :username',
+            [email,password] // 'select * from users'
+        );
 
-    res.cookie('username', result.rows[0], { maxAge: 900000, httpOnly: true }); // put username to cookie
-
-    if (conn) {await conn.close();}
-    res.redirect('/dashboard');
-  };
+        res.cookie('username', result.rows[0], { maxAge: 900000, httpOnly: true }); // put username to cookie and set expire time for cookie
+        console.log(req.cookies['username']); // get username from cookie
+        var username = req.cookies['username'];
+        if (conn) {await conn.close();};
+        res.render('pages/dashboard', {result: username});
+    };
 });
 
 // signup page
 app.get('/register',(req, res) => {
     res.render('pages/signup');
+});
+// product page
+app.get('/product',(req, res) => {
+    res.render('pages/product');
 });
 
 // dashboard page
@@ -120,4 +126,4 @@ app.get('/forgetpassword',(req, res) => {
 app.use('/public', express.static('public'));
 app.listen(3000);
 console.log("Server Running on port 3000");
-require("openurl").open("http://localhost:3000");
+// require("openurl").open("http://localhost:3000");
