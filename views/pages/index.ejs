@@ -53,12 +53,8 @@
         }
         </style>
     </head>
-<<<<<<< HEAD
-    <body>
-        <% include ../partials/loginbox %>
-=======
     <body style="scroll-behavior:smooth;">
->>>>>>> a747f342eac82d56cde0ee033eb953d6e46ef563
+        <% include ../partials/loginbox %>
         <!-- header -->
         <div style="height:50px;">
           <video autoplay muted loop id="bgvideo">
@@ -123,7 +119,25 @@
 
             </main>
         <div>
-        <!-- footer -->
-        <% include ../partials/footer %>
+            <!-- footer -->
+            <% include ../partials/footer %>
+        </div>
+        <script>
+             var x = document.getElementsByName('slides').value;
+             var y = parseInt(x);
+
+             setInterval(function () {
+                 document.getElementById("slide" + y).checked = false;
+                 change_slide = document.getElementById("slide" + y);
+
+                 if (y == 7) {
+                     y = 1;
+                     change_slide.checked = true;
+                 } else {
+                     y = (x+1);
+                     change_slide.checked = true;
+                 }
+             }, 3000);
+        </script>
     </body>
 </html>
