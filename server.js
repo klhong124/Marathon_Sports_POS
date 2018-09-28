@@ -38,7 +38,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false }); // create a
 
 const app = express();
 
-app.set('view engine', 'ejs'); 
+app.set('view engine', 'ejs');
 // set the view engine to ejs
 app.use(cookieParser());
 
@@ -48,6 +48,11 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // index page
 app.get('/',(req, res) => {
     res.render('pages/index');
+});
+
+// index page
+app.get('/help',(req, res) => {
+    res.render('pages/help');
 });
 
 // about page
