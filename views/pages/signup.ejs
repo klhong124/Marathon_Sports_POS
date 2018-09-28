@@ -5,6 +5,71 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" type="text/css" href="/public/signin.css">
 </head>
+<style>
+@charset "utf-8";
+/* CSS Document */
+
+/* The Modal */
+#modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	padding-top: 100px;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.85)
+}#modal-image{
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;	
+}
+#caption {
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+	text-align: center;
+	color: #ccc;
+	padding: 10px 0;
+	height: 150px;
+}
+
+/* Close Button */
+#close{
+	position: absolute;
+	top: 15px;
+	right: 35px;
+	color: #f1f1f1;
+	font-size: 40px;
+	font-weight: bold;
+	transition: 3s;
+}
+#close:hover,#close:focus{
+	color: #bbb;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* Add Animation */
+@keyframes zoom {
+	from {transform: scale(0)}
+	to {transform: scale(1)}
+}
+@keyframes closing {
+	from {transform: scale(1)}
+	to {transform: scale(0)}
+}
+
+@media only screen and (max-width: 640px) {
+	#modal-image {
+		width: 100%;
+	}
+}
+</style>
 
 <body>
     <form action="#">
@@ -26,7 +91,7 @@
         <hr>
 
         <label>
-            <input type="checkbox" value="accept"> By creating an account you agree to our <a href="#">Terms & Privacy</a>.
+            <input type="checkbox" value="accept"> By creating an account you agree to our <button id="Terms">Terms & Privacy</button>.
         </label>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
@@ -36,5 +101,34 @@
             <p>Already have an account? <a href="/login">Sign in</a> | <a href="/forgetpassword">Forget password</a>.</p>
         </div>
     </form>
+    <div id="modal">
+        <span id="close">&times;</span>
+        <img id="modal-image" />
+        <div id="caption"></div>
+    </div>
+    <script>
+            var modal = document.getElementById("modal");
+            var close = document.getElementById("close");
+            var modalImage = document.getElementById("modal-image");
+            var caption = document.getElementById("caption");
+            var Terms = document.getElementsById("Terms");
+
+            Terms.onclick = function() {
+                modal.style.display = "block";
+                modalImage.src = "../../public/images/1.jpg";
+                caption.innerHTML = this.title;
+                modalImage.style = "animation-name: zoom; animation-duration: .3s;"
+                caption.style = "animation-name: zoom; animation-duration: .3s;"
+            
+            close.onclick = function() {
+                modalImage.style = "animation-name: closing; animation-duration: .3s;"
+                caption.style = "animation-name: closing; animation-duration: .3s;"
+                setTimeout(display,1000)
+            }
+            function display()
+           {
+               modal.style.display = "none"}
+            
+        </script>
 </body>
 </html>

@@ -53,9 +53,8 @@
         }
         </style>
     </head>
-    <body>
-        <% include ../partials/loginbox %>
     <body style="scroll-behavior:smooth;">
+        <% include ../partials/loginbox %>
         <!-- header -->
         <div style="height:50px;">
           <video autoplay muted loop id="bgvideo">
@@ -63,16 +62,16 @@
           </video>
           <script type="text/javascript">
             window.onload = function() {
-              document.getElementById("why-Marathonid").scrollIntoView(true);
+              document.getElementById("why-Marathonid").scrollIntoView(false);
             };
           </script>
             <main role="main">
                 <% include ../partials/nav %>
-                <section class="jumbotron moveup" style="background:transparent;height:1000px">
+                <section class="jumbotron" style="background:transparent;height:1000px">
                 </section>
 
-                <div class="album py-5 bgcolor">
-                  <div class="container why-Marathon" id="why-Marathonid">
+                <div class="album py-5 bgcolor" id="why-Marathonid">
+                  <div class="container why-Marathon">
                       <h1 class="jumbotron-heading text-center text-white"><b>Why Marathon Sports</b></h1>
                       <p class="lead text-white" style="text-align: justify;">Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!</p>
                       <p class="text-white"><small style="float:left;width:100%;text-align:right">~ Marathon Sports</small></p>
