@@ -36,7 +36,8 @@ passport.use(new LocalStrategy(
 
 const app = express();
 
-app.set('view engine', 'ejs'); // set the view engine to ejs
+app.set('view engine', 'ejs'); 
+// set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res) => {
@@ -48,7 +49,7 @@ app.get('/about',(req, res) => {
     res.render('pages/about', {output: req.params.id});
 });
 
-// POST /login gets urlencoded bodies
+// POST '/login' gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
   oracledbconn(req.body.email,req.body.password);
   async function oracledbconn(email,password){

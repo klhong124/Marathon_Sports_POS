@@ -1,5 +1,9 @@
 <!-- views/partials/header -->
-
+<style>
+    #navbar{
+        transition: top .5s;
+    }
+</style>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light movedw" style="position:fixed;width:100%;z-index:2;" id="navbar">
         <a class="navbar-brand" href="/"><b>Marathon</b> Sports</a>
@@ -53,22 +57,17 @@
               window.onscroll = function hide_navbar() {
                 var currentScrollPos = window.pageYOffset;
                 if (prevScrollpos < currentScrollPos) {
-                  document.getElementById("navbar").style.top = "-500px";
+                  document.getElementById("navbar").style.top = "0px";
                 } else {
-                    document.getElementById("navbar").style.top = "0px";
+                    document.getElementById("navbar").style.top = "-200px";
                   }
                 prevScrollpos = currentScrollPos;
                 }
-
-                // window.onscroll = function() {
-                //     console.log("scrolling");
-                //     window.scrollTo(0, 800);
-                // }
             </script>
             <ul class="navbar-nav">
                 <li style="padding:12px;"></li>
                 <li class="nav-item">
-                    <a href="/login"><button type="button" class="btn btn-outline-success">Sign in</button></a>
+                    <a onclick="scrollToTop(1000);"><button type="button" class="btn btn-outline-success">Sign in</button></a>
                 </li>
                 <li style="padding:12px;"></li>
                 <li class="nav-item">
@@ -78,3 +77,20 @@
         </div>
     </nav>
 </header>
+<script>
+    function scrollToTop(scrollDuration) {
+    const   scrollHeight = window.scrollY,
+            scrollStep = Math.PI / ( scrollDuration / 15 ),
+            cosParameter = scrollHeight / 2;
+    var     scrollCount = 0,
+            scrollMargin,
+            scrollInterval = setInterval( function() {
+                if ( window.scrollY != 0 ) {
+                    scrollCount = scrollCount + 1;  
+                    scrollMargin = cosParameter - cosParameter * Math.cos( scrollCount * scrollStep );
+                    window.scrollTo( 0, ( scrollHeight - scrollMargin ) );
+                } 
+                else clearInterval(scrollInterval); 
+            }, 15 );
+    }
+</script>
