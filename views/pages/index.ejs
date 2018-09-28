@@ -53,14 +53,9 @@
         }
         </style>
     </head>
-<<<<<<< HEAD
+
     <body style="scroll-behavior:smooth;">
         <% include ../partials/loginbox %>
-=======
-    <body>
-        <% include ../partials/loginbox %>
-    <body style="scroll-behavior:smooth;">
->>>>>>> cec079ffc17b2de20daef41808395ab45ef9d749
         <!-- header -->
         <div style="height:50px;">
           <video autoplay muted loop id="bgvideo">
@@ -129,21 +124,38 @@
             <% include ../partials/footer %>
         </div>
         <script>
-             var x = document.getElementsByName('slides').value;
-             var y = parseInt(x);
+            var selectedSlide = document.getElementsByName('slides');
+            var checkedValue = 1;
+            var newCheckedValue = 1;
 
-             setInterval(function () {
-                 document.getElementById("slide" + y).checked = false;
-                 change_slide = document.getElementById("slide" + y);
+            // for (var i = 0, length = selectedSlide.length; i < length; i++) {
+            //     if (selectedSlide[i].checked != newCheckedValue) {
+            //         checkedValue = newCheckedValue.toString();
+            //         console.log("change: "+checkedValue);
+            //         break;
+            //     } else if (selectedSlide[i].checked) {
+            //         checkedValue = parseInt(selectedSlide[i].value) + 1;
+            //         console.log("loop: "+checkedValue);
+            //         break;
+            //     }
+            // }
 
-                 if (y == 7) {
-                     y = 1;
-                     change_slide.checked = true;
-                 } else {
-                     y = (x+1);
-                     change_slide.checked = true;
-                 }
-             }, 3000);
+            setInterval(function () {
+                document.getElementsByName("slides").false;
+                changeSlide = document.getElementById("slide" + checkedValue);
+
+                if (checkedValue == 7) {
+                    checkedValue = 1;
+                    newCheckedValue = checkedValue;
+                    changeSlide.checked = true;
+                    console.log("7: "+checkedValue);
+                } else {
+                    checkedValue = (checkedValue + 1);
+                    newCheckedValue = checkedValue;
+                    changeSlide.checked = true;
+                    console.log("selected: "+checkedValue);
+                }
+            }, 3000);
         </script>
     </body>
 </html>
