@@ -120,6 +120,11 @@ app.get('/products',(req, res) => {
     res.render('pages/products');
 });
 
+// contact page
+app.get('/contact',(req, res) => {
+    res.render('pages/contact');
+});
+
 // checkout form page
 app.get('/checkout',(req, res) => {
     res.render('pages/checkout');

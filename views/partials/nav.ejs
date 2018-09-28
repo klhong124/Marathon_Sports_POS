@@ -37,10 +37,10 @@
                         Advanced
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">What's New</a>
-                        <a class="dropdown-item" href="#">Our Brands</a>
+                        <a class="dropdown-item" href="/contact">Contact Us</a>
+                        <a class="dropdown-item" href="/help">Support</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">VIP Privilege</a>
+                        <!-- <a class="dropdown-item" href="/cart">Shoping Cart</a> -->
                         <a class="dropdown-item" href="#">Find a Store</a>
                     </div>
                 </li>
@@ -87,11 +87,11 @@
             scrollMargin,
             scrollInterval = setInterval( function() {
                 if ( window.scrollY != 0 ) {
-                    scrollCount = scrollCount + 1;  
+                    scrollCount = scrollCount + 1;
                     scrollMargin = cosParameter - cosParameter * Math.cos( scrollCount * scrollStep );
                     window.scrollTo( 0, ( scrollHeight - scrollMargin ) );
-                } 
-                else clearInterval(scrollInterval); 
+                }
+                else clearInterval(scrollInterval);
             }, 15 );
     }
 </script>

@@ -1,0 +1,33 @@
+<!-- js and css -->
+<% include ../partials/head %>
+<!-- navbar -->
+<% include ../partials/nav %>
+
+<style>
+.bgcolor{
+    background:#A62639;
+}
+</style>
+<body>
+    <div class="container">
+        <div style="height:120px; width:100%;"></div>  <!-- placeholder -->
+        <center>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdv_epIFDEILgZMyGvfH_VYTjbsHA5zJSNJvGoft6ApBO2eXQ/viewform?embedded=true" width="640" height="738" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+        </center>
+    </div>
+    <!-- footer -->
+    <% include ../partials/footer %>
+
+    <script>
+        var prevScrollpos = window.pageYOffset;
+        window.onscroll = function hide_navbar() {
+            var currentScrollPos = window.pageYOffset;
+            if (prevScrollpos < currentScrollPos) {
+                document.getElementById("navbar").style.top = "0";
+            } else {
+                document.getElementById("navbar").style.top = "0";
+              }
+            prevScrollpos = currentScrollPos;
+        }
+    </script>
+</body>
