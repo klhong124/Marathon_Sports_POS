@@ -1,0 +1,120 @@
+<head>
+    <% include ../partials/head %>
+    <!-- additonal cdn -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <style>
+        td>.text-warpper{
+            text-align: right;
+        }
+        table.display tfoot td {
+            border-color: #e0dede;
+        }
+    </style>
+<head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <table id="" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Totoal</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Magazine</td>
+                            <td><input value="3"></td>
+                            <td>$4</td>
+                            <td>$12</td>
+                            <td> <button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Delete</button> </td>
+                        </tr>
+                        <tr>
+                            <td>Mouse</td>
+                            <td><input value="1"></td>
+                            <td>$8</td>
+                            <td>$8</td>
+                            <td> <button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Delete</button> </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                    </tfoot>
+                    <tfoot>
+                        <td> </td>
+                        <td> </td>
+                        <td>Subtotal</td>
+                        <td class="text-warpper">$20</td>
+                        <td> </td>
+                    </tfoot>
+                    <tfoot>
+                        <td> </td>
+                        <td> </td>
+                        <td>Estimated shipping</td>
+                        <td class="text-warpper">$8</td>
+                        <td> </td>
+                    </tfoot>
+                    <tfoot>
+                        <td> </td>
+                        <td> </td>
+                        <td><h3>Total</h3></td>
+                        <td class="text-warpper"><h3>$28</h3></td>
+                        <td> </td>
+                    </tfoot>
+                    <tfoot>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                        <td><button type="button" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Contiue Shopping</button></td>
+                        <td><button type="button" class="btn btn-success">Checkout <i class="fas fa-caret-right"></i></button></td>
+                    </tfoot>
+                </table>
+            </div>
+        </card>
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+            // script relavant to datatable
+            $('table.display').DataTable({
+                "ordering": false,
+                'columnDefs': [
+                    {
+                        "targets": 0, // your case first column
+                        "className": "text-center",
+                        // "width": "4%"
+                    },
+                    {
+                        "targets": 1, // your case first column
+                        "width": "2%"
+                    },
+                    {
+                        "targets": 2,
+                        "className": "text-center",
+                    },
+                    {
+                        "targets": 3,
+                        "className": "text-center",
+                    }
+                ],
+                'searching': false,
+                'paging': false,
+                'info': false,
+                'responsive': true,
+                "scrollX": true,
+            });
+        } );
+    </script>
+</body>
