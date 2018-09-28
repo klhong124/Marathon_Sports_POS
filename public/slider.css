@@ -39,7 +39,7 @@
 	transform-origin: center right;
 	transform: rotateY(90deg) translateZ(100px) scale(1.5);
 	transition: transform .3s, opacity .3s, -webkit-filter 1s ease-out;
-	-webkit-filter: saturate(0) blur(10px) brightness(.6) contrast(4);
+	filter: saturate(0) blur(10px) brightness(.6) contrast(4);
 }
 .img .frag2  {
 	background-position: -100px 0;
@@ -73,7 +73,7 @@
 #slide6:checked ~ .slider .img6 .frag,
 #slide7:checked ~ .slider .img7 .frag {
 	transform: rotateY(0) translateZ(0) scale(1);
-	-webkit-filter: saturate(1) blur(0) brightness(1) contrast(1);
+	filter: saturate(1) blur(0) brightness(1) contrast(1);
 	opacity: 1;
 	z-index: 1;
 }
