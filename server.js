@@ -52,9 +52,14 @@ app.get('/',(req, res) => {
     });
 });
 
-// index page
+// support page
 app.get('/help',(req, res) => {
     res.render('pages/help');
+});
+
+// store page
+app.get('/store',(req, res) => {
+    res.render('pages/store');
 });
 
 // about page
@@ -76,7 +81,7 @@ app.post('/login', urlencodedParser, (req, res) => {
         console.log(req.cookies['username']); // get username from cookie
         if (conn) {await conn.close();};
 
-        
+
         // check if the user exists
         if (result.rows[0] !== undefined) {
           res.render('pages/dashboard');

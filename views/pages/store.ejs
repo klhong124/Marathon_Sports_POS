@@ -1,0 +1,96 @@
+<% include ../partials/head %>
+<style>
+.bgcolor {
+    background: #A62639;
+}
+</style>
+<body>
+    <% include ../partials/nav %>
+    <div class="container">
+        <div style="height: 100px; width:100%;"></div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" role="tab" data-toggle="tab" id="map-tab"><i class="fas fa-map-marked-alt"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" role="tab" data-toggle="tab" id="shop-list-tab"><i class="fas fa-list"></i></a>
+            </li>
+        </ul>
+
+        <div id="map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m12!1m8!1m3!1d118102.8482383031!2d114.17353098370907!3d22.3266533540117!3m2!1i1024!2i768!4f13.1!2m1!1smarathon+sports!5e0!3m2!1sen!2shk!4v1538130258053" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div>
+        <div id="shop-list">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse1">Hong Kong</a>
+                        </h4>
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse1">Kowloon</a>
+                        </h4>
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse1">New Territories</a>
+                        </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <h5>Causeway Bay Plaza 2<br>Shop G03 , G/F, Causeway Bay Plaza 2, 463-483 Lockhart Road</h5>
+                                <p>Tel : 2786-1533<br>Business Hour :<br>Mon - Sun & Holiday: 11:30am - 11:00pm</p>
+                            </li>
+                            <li class="list-group-item">
+                                <h5>Causeway Bay Plaza 2<br>Shop G03 , G/F, Causeway Bay Plaza 2, 463-483 Lockhart Road</h5>
+                                <p>Tel : 2786-1533<br>Business Hour :<br>Mon - Sun & Holiday: 11:30am - 11:00pm</p>
+                            </li>
+                            <li class="list-group-item">
+                                <h5>Causeway Bay Plaza 2<br>Shop G03 , G/F, Causeway Bay Plaza 2, 463-483 Lockhart Road</h5>
+                                <p>Tel : 2786-1533<br>Business Hour :<br>Mon - Sun & Holiday: 11:30am - 11:00pm</p>
+                            </li>
+
+                        </ul>
+                        <!-- <div class="panel-footer">Footer</div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 24px; width:100%;"></div>
+    <footer>
+        <!-- footer -->
+        <% include ../partials/footer %>
+    </footer>
+
+    <script>
+    $(document).ready(function() {
+        // fix navbar
+        var prevScrollpos = window.pageYOffset;
+        window.onscroll = function hide_navbar() {
+            var currentScrollPos = window.pageYOffset;
+            if (prevScrollpos < currentScrollPos) {
+                document.getElementById("navbar").style.top = "0px";
+            } else {
+                document.getElementById("navbar").style.top = "0x";
+            }
+            prevScrollpos = currentScrollPos;
+        }
+        // $("#map-tab").addClass('active');
+        // show or hide
+        $("#shop-list").hide();
+
+        $("#map-tab").click(function (){
+            $("#shop-list").hide();
+            $("#map").show();
+            $(this).addClass('active');
+            $('#shop-list-tab').removeClass('active');
+        });
+        $("#shop-list-tab").click(function(){
+            $("#map").hide();
+            $("#shop-list").show();
+            $(this).addClass('active');
+            $('#map-tab').removeClass('active');
+        });
+    });
+    </script>
+</body>

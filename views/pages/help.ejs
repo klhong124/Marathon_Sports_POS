@@ -108,6 +108,7 @@
             </div>
         </div>
     </div>
+    <div style="height: 24px; width:100%;"></div>
 
     <footer>
         <!-- footer -->
@@ -145,7 +146,7 @@
                 'info': false,
                 'responsive': true,
                 "scrollX": true,
-                'searchHighlight': true,
+                // 'searchHighlight': true,
                 mark: true,
             });
             $.extend(true, $.fn.dataTable.defaults, {
@@ -156,14 +157,14 @@
 
         var prevScrollpos = window.pageYOffset;
         window.onscroll = function hide_navbar() {
-          var currentScrollPos = window.pageYOffset;
-          if (prevScrollpos < currentScrollPos) {
-            document.getElementById("navbar").style.top = "0px";
-          } else {
-              document.getElementById("navbar").style.top = "0x";
+            var currentScrollPos = window.pageYOffset;
+            if (prevScrollpos < currentScrollPos) {
+                document.getElementById("navbar").style.top = "0px";
+            } else {
+                document.getElementById("navbar").style.top = "0x";
             }
-          prevScrollpos = currentScrollPos;
-          }
+            prevScrollpos = currentScrollPos;
+        }
 
     </script>
     <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js),datatables.mark.js"></script>
