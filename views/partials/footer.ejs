@@ -1,11 +1,22 @@
 <!-- views/partials/footer.ejs -->
+<div style="height: 120px; width:100%;"></div>
 
-<footer class="text-muted bgcolor">
-    <div class="container text-white">
-        <p class="float-right">
-          <a href="#">Back to top</a>
-        </p>
-        <p>&copy; Marathon Sports 2018</p>
-        <p>New to Marathon Sports? <a href="/" style="color:#53A8F7;">Visit the homepage</a> or <a href="/register"style=" color:#53A8F7;">sign up</a>.</p>
-    </div>
-<footer>
+<div class="f-color fixed-bottom">
+    <p class="float-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p>&copy; Marathon Sports 2018</p>
+    <p>New to Marathon Sports? <a href="/">Visit the homepage</a> or <a href="/register">sign up</a>.</p>
+</div>
+<style>
+
+    .f-color {
+        padding: 15px;
+        background:#A62639;
+        box-shadow: 0px -1px 0 2px rgba(0,0,0, 0.2);
+    }
+    .f-color a {
+        text-decoration: underline;
+        color: white;
+    }
+</style>
