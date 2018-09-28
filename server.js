@@ -38,14 +38,12 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false }); // create a
 
 const app = express();
 
-<<<<<<< HEAD
 app.set('view engine', 'ejs'); 
 // set the view engine to ejs
-=======
 app.use(cookieParser());
 
 app.set('view engine', 'ejs'); // set the view engine to ejs
->>>>>>> 7741a3171e7271c85f4699534e5e480ac693b4ab
+
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res) => {
@@ -57,11 +55,7 @@ app.get('/about',(req, res) => {
     res.render('pages/about', {output: req.params.id});
 });
 
-<<<<<<< HEAD
 // POST '/login' gets urlencoded bodies
-=======
-// POST login gets urlencoded bodies
->>>>>>> 7741a3171e7271c85f4699534e5e480ac693b4ab
 app.post('/login', urlencodedParser, (req, res) => {
     oracledbconn(req.body.email,req.body.password);
     async function oracledbconn(email,password){
@@ -139,4 +133,4 @@ app.get('/forgetpassword',(req, res) => {
 app.use('/public', express.static('public'));
 app.listen(4000);
 console.log("Server Running on port 4000");
-// require("openurl").open("http://localhost:3000");
+// require("openurl").open("http://localhost:4000");
