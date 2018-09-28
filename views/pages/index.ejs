@@ -55,6 +55,9 @@
     </head>
     <body style="scroll-behavior:smooth;">
         <% include ../partials/loginbox %>
+
+        <% include ../partials/errormessage %>
+        
         <!-- header -->
         <div style="height:50px;">
           <video autoplay muted loop id="bgvideo">
@@ -119,7 +122,26 @@
 
             </main>
         <div>
-        <!-- footer -->
-        <% include ../partials/footer %>
+            <!-- footer -->
+            <% include ../partials/footer %>
+        </div>
+        <script>
+            var selectedSlide = document.getElementsByName('slides');
+            var checkedValue = 1;
+
+            // autoplay slider
+            setInterval(function () {
+                document.getElementsByName("slides").false;
+                changeSlide = document.getElementById("slide" + checkedValue);
+
+                if (checkedValue == selectedSlide.length) {
+                    checkedValue = 1;
+                    changeSlide.checked = true;
+                } else {
+                    checkedValue = (checkedValue + 1);
+                    changeSlide.checked = true;
+                }
+            }, 3000);
+        </script>
     </body>
 </html>

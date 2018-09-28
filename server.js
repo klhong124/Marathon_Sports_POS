@@ -38,8 +38,6 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false }); // create a
 
 const app = express();
 
-app.set('view engine', 'ejs');
-// set the view engine to ejs
 app.use(cookieParser());
 
 app.set('view engine', 'ejs'); // set the view engine to ejs
@@ -47,7 +45,11 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res) => {
-    res.render('pages/index');
+    console.log(req.query.errormessage);
+    // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
+    res.render('pages/index', {
+        error_message: req.query.errormessage
+    });
 });
 
 // index page
@@ -73,7 +75,15 @@ app.post('/login', urlencodedParser, (req, res) => {
         res.cookie('username', result.rows[0], { maxAge: 900000, httpOnly: true }); // put username to cookie and set expire time for cookie
         console.log(req.cookies['username']); // get username from cookie
         if (conn) {await conn.close();};
-        res.render('pages/dashboard');
+
+        
+        // check if the user exists
+        if (result.rows[0] !== undefined) {
+          res.render('pages/dashboard');
+        } else {
+          res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
+        }
+        // res.render('pages/dashboard');
     };
 });
 

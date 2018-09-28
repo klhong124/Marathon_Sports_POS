@@ -3,6 +3,17 @@
     #navbar{
         transition: top .5s;
     }
+    .cart-num {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        background-color: royalblue;
+        width: 24px;
+        z-index: 1;
+        border-radius: 7px;
+        text-align: center;
+        color: white;
+    }
 </style>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light movedw" style="position:fixed;width:100%;z-index:2;" id="navbar">
@@ -65,7 +76,16 @@
                 }
             </script>
 
+            <!-- <i class="fas fa-shopping-cart fa-2x"></i> -->
+
             <ul class="navbar-nav">
+                <li style="padding:12px;"></li>
+                <li class="nav-item">
+                    <a style="position: relative;">
+                        <div class="cart-num">1</div>
+                        <i class="fas fa-shopping-cart fa-2x"></i>
+                    </a>
+                </li>
                 <li style="padding:12px;"></li>
                 <li class="nav-item">
                     <a onclick="scrollToTop(1000);"><button type="button" class="btn btn-outline-success">Sign in</button></a>
