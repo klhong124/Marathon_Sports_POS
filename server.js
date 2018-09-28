@@ -64,9 +64,8 @@ app.post('/login', urlencodedParser, (req, res) => {
 
         res.cookie('username', result.rows[0], { maxAge: 900000, httpOnly: true }); // put username to cookie and set expire time for cookie
         console.log(req.cookies['username']); // get username from cookie
-        var username = req.cookies['username'];
         if (conn) {await conn.close();};
-        res.render('pages/dashboard', {result: username});
+        res.render('pages/dashboard');
     };
 });
 
@@ -129,6 +128,6 @@ app.get('/forgetpassword',(req, res) => {
 
 
 app.use('/public', express.static('public'));
-app.listen(3000);
-console.log("Server Running on port 3000");
+app.listen(4000);
+console.log("Server Running on port 4000");
 // require("openurl").open("http://localhost:3000");
