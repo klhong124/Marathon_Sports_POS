@@ -47,6 +47,11 @@ app.get('/',(req, res) => {
     res.render('pages/index');
 });
 
+// index page
+app.get('/help',(req, res) => {
+    res.render('pages/help');
+});
+
 // about page
 app.get('/about',(req, res) => {
     res.render('pages/about', {output: req.params.id});
@@ -128,6 +133,6 @@ app.get('/forgetpassword',(req, res) => {
 
 
 app.use('/public', express.static('public'));
-app.listen(4000);
-console.log("Server Running on port 4000");
+app.listen(3000);
+console.log("Server Running on port 3000");
 // require("openurl").open("http://localhost:3000");

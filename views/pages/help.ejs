@@ -1,0 +1,99 @@
+<head>
+    <% include ../partials/head %>
+    <!-- additonal cdn -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <style>
+        .dataTables_length{
+            display: none;
+        }
+        mark {
+          background: orange;
+          color: black;
+        }
+    </style>
+<head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <table id="" class="display q-table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th> </th>
+                            <th> Questions</th>
+                            <th> Anwsers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td> Q1 </td>
+                            <td> <p>How could I know whether my desire product is still for sale? </p> </td>
+                            <td> <p>Click on the desire product for further product details, the product details page would show the total number of inventories among all of our branches.</p> </td>
+                        </tr>
+                        <tr>
+                            <td> Q2 </td>
+                            <td> <p>How could I make my payment? </p>  </td>
+                            <td> <p>Visa, Master Credit Card, Paypal, AliPay are accepted for online purchase. Cash is also welcomed if “payment on arrival” has been chosen.</p> </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                    </tfoot>
+                </table>
+            </div>
+        </card>
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+            // script relavant to datatable
+            $('table.display').DataTable({
+                "ordering": false,
+                'columnDefs': [
+                    {
+                        "targets": 0, // your case first column
+                        "className": "text-center",
+                        // "width": "4%"
+                    },
+                    {
+                        "targets": 1, // your case first column
+                        // "width": "2%",
+                        "className": "text-left",
+
+                    },
+                    {
+                        "targets": 2,
+                        "className": "text-left",
+                    },
+                    // {
+                    //     "targets": 3,
+                    //     "className": "text-center",
+                    // }
+                ],
+                // 'searching': false,
+                // 'paging': false,
+                'info': false,
+                'responsive': true,
+                "scrollX": true,
+                'searchHighlight': true,
+                mark: true,
+            });
+            $.extend(true, $.fn.dataTable.defaults, {
+                mark: true
+            });
+
+        } );
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js),datatables.mark.js"></script>
+    <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js)"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
+    <link href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css">
+    <link href="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.min.css">
+</body>
