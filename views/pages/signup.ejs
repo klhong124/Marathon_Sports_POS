@@ -25,7 +25,7 @@
 	margin: auto;
 	display: block;
 	width: 80%;
-	max-width: 700px;	
+	max-width: 700px;
 }
 #caption {
 	margin: auto;
@@ -69,6 +69,9 @@
 		width: 100%;
 	}
 }
+form div a {
+    text-decoration: underline;
+}
 </style>
 
 <body>
@@ -98,7 +101,7 @@
         <hr>
 
         <div class="container signin">
-            <p>Already have an account? <a href="/login">Sign in</a> | <a href="/forgetpassword">Forget password</a>.</p>
+            <p>Already have an account? <a href="/">Sign in</a> | <a href="/forgetpassword">Forget password</a>.</p>
         </div>
     </form>
     <div id="modal">
@@ -119,7 +122,7 @@
                 caption.innerHTML = this.title;
                 modalImage.style = "animation-name: zoom; animation-duration: .3s;"
                 caption.style = "animation-name: zoom; animation-duration: .3s;"
-            
+
             close.onclick = function() {
                 modalImage.style = "animation-name: closing; animation-duration: .3s;"
                 caption.style = "animation-name: closing; animation-duration: .3s;"
@@ -128,7 +131,7 @@
             function display()
            {
                modal.style.display = "none"}
-            
+
         </script>
 </body>
 </html>

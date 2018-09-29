@@ -44,17 +44,27 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 
 // use res.render to load up an ejs view file
 // index page
-app.get('/',(req, res) => {
-    console.log(req.query.errormessage);
+app.get('/',(req, res, next) => {
     // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
-    res.render('pages/index', {
-        error_message: req.query.errormessage
-    });
+    if ((req.query.errormessage) && (req.query.errormessage != 'undefined') ){
+        console.log(req.query.errormessage);
+        res.render('pages/index', {
+            error_message: req.query.errormessage
+        });
+    } else {
+        res.render('pages/index', {error_message: false});
+    };
+
 });
 
 // support page
 app.get('/help',(req, res) => {
     res.render('pages/help');
+});
+
+// stock page
+app.get('/stock',(req, res) => {
+    res.render('pages/stock');
 });
 
 // store page
@@ -130,7 +140,7 @@ app.get('/changepassword',(req, res) => {
     }
 });
 
-// all categories page
+// all products page
 app.get('/products',(req, res) => {
     res.render('pages/products');
 });
@@ -140,7 +150,7 @@ app.get('/contact',(req, res) => {
     res.render('pages/contact');
 });
 
-// checkout form page
+// checkout page
 app.get('/checkout',(req, res) => {
     res.render('pages/checkout');
 });
@@ -148,9 +158,9 @@ app.get('/checkout',(req, res) => {
 // forget password page
 app.get('/forgetpassword',(req, res) => {
     if (req.cookies['username']) {
-      res.render('pages/forget-password');
+        res.render('pages/forget-password');
     } else {
-      res.redirect('/');
+        res.redirect('/');
     }
 });
 

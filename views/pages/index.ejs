@@ -48,12 +48,14 @@
           from {margin-top:-200px;}
           to {margin-top: 0px;}
         }
+        .f-style {
+            height: 150px;
+        }
         </style>
     </head>
     <body style="scroll-behavior:smooth;">
         <% include ../partials/loginbox %>
 
-        <% include ../partials/errormessage %>
 
         <!-- header -->
         <div style="height:50px;">
@@ -67,6 +69,8 @@
           </script>
             <main role="main">
                 <% include ../partials/nav %>
+                <% include ../partials/alert %>
+
                 <section class="jumbotron" style="background:transparent;height:1000px">
                 </section>
 
