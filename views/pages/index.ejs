@@ -10,12 +10,14 @@
         <!-- Custom script for this template -->
         <script src="/public/holder.min.js"></script>
         <style media="screen">
+        .bgcolor{
+          background:#A62639;
+        }
         main{
           width:100%;
         }
         .why-Marathon{
           padding: 0 10%;
-
         }
         #bgvideo{
           z-index: -1;
@@ -31,18 +33,9 @@
           animation-name: movedw;
           animation-duration: 1s;
         }
-        .movelf{
-          animation-name: movelf;
-          animation-duration: 2s;
-        }
         @keyframes moveup {
           from {margin-bottom:400px;}
           to {margin-bottom: 0px;}
-        }
-        @keyframes movelf {
-          0% {margin-left:-450px;}
-          50% {margin-left: -450px;}
-          100% {margin-left:0px;}
         }
         @keyframes movedw {
           from {margin-top:-200px;}
@@ -73,7 +66,22 @@
 
                 <section class="jumbotron" style="background:transparent;height:1000px">
                 </section>
-
+                <script type="text/javascript">
+                var lastScrollTop = 0;
+                window.addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
+                   var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
+                   if (st > lastScrollTop){
+                     if (window.pageYOffset-document.getElementById("navbar").clientHeight<document.getElementById("why-Marathonid").clientHeight){
+                       document.getElementById("why-Marathonid").scrollIntoView(false);
+                     }
+                   } else {
+                     if (window.pageYOffset-document.getElementById("navbar").clientHeight<document.getElementById("why-Marathonid").clientHeight){
+                       window.scrollTo(500, 0);
+                     }
+                   }
+                   lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+                }, false);
+                </script>
                 <div class="album py-5 bgcolor" id="why-Marathonid">
                   <div class="container why-Marathon">
                       <h1 class="jumbotron-heading text-center text-white"><b>Why Marathon Sports</b></h1>
@@ -85,10 +93,11 @@
                     <div class="container">
                       <div class="row">
                         <div class="col-sm-12 col-md-6">
-                          <div style="float:bottom;"><center><h2><br>BEST OF 2018</h2></center></div><br>
-                          <p>best best best best best best best best best best best best best best best</p>
+                          <div data-aos="fade-right" style="float:bottom;"><center><h2><br>BEST OF 2018</h2></center></div><br>
+                          <p data-aos="fade-right">“The public is more familiar with bad design than good design. It is, in effect, conditioned to prefer bad design, because that is what it lives with. The new becomes threatening, the old reassuring.”</p>
                         </div>
-                        <div class="col-sm-12 col-md-6">
+                        <div data-aos="fade-left" class="col-sm-12 col-md-6">
+
                           <% include ../partials/slider %>
                         </div>
                       </div>
@@ -101,7 +110,7 @@
                         <div style="float:bottom;"><center><h2><br>NEW ARRIVALS</h2></center></div><br>
                         <div class="row">
                             <% for(var i=0; i < 9; i++) { %>
-                              <div class="col-md-4">
+                              <div data-aos="zoom-in" class="col-md-4">
                                   <div class="card mb-4 shadow-sm">
                                       <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
                                       <div class="card-body">
@@ -142,6 +151,9 @@
                     changeSlide.checked = true;
                 }
             }, 3000);
+        </script>
+        <script>
+          AOS.init();
         </script>
     </body>
 </html>
