@@ -6,12 +6,13 @@
     height: 1000px;
     z-index: 0;
     transition: margin-left .5s;
-    margin-left: -1000px;
+    margin-left: -450px;
 }
 </style>
-<form class="movelf" id="loginbox" action="/login" method="post">
+<form id="loginbox" action="/login" method="post">
     <a href="/"><img class="mb-4" style="border-radius: 4px;" src="/public/marathon-logo.png" alt="" width="244px"></a>
-    <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>or <a href="/register" style="text-decoration: underline;">create an account</a>
+    <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>or
+    <a href="javascript:show_signup()" style="text-decoration: underline;">create an account</a>
     <div style="height:24px; width:100%;"></div>
     <label for="inputEmail" class="sr-only">Email address</label>
     <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" name="email" autofocus="">
@@ -26,13 +27,18 @@
     <p class="mt-5 mb-3 text-muted">&copy; Marathon Sports 2018</p>
 </form>
 <script>
-
     window.addEventListener("scroll", loginboxfx);
     function loginboxfx() {
     if (window.pageYOffset == 0){
             document.getElementById("loginbox").style.marginLeft = "0px";
         } else {
             document.getElementById("loginbox").style.marginLeft = "-450px";
+            document.getElementById("signupbox").style.marginLeft = "-700px";
         }
+    }
+
+    function show_signup(){
+      document.getElementById("signupbox").style.marginLeft = "0px";
+      document.getElementById("loginbox").style.marginLeft = "-450px";
     }
 </script>

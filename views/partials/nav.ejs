@@ -93,7 +93,7 @@
                 </li>
                 <li style="padding:12px;"></li>
                 <li class="nav-item">
-                    <a href="/register"><button type="button" class="btn btn-outline-primary">Sign up</button></a>
+                    <a onclick="navsignup();"><button type="button" class="btn btn-outline-primary">Sign up</button></a>
                 </li>
             </ul>
         </div>
@@ -114,5 +114,9 @@
                 }
                 else clearInterval(scrollInterval);
             }, 15);
+    }
+
+    function navsignup(){
+      scrollToTop(500);
     }
 </script>
