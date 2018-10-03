@@ -45,6 +45,7 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res, next) => {
+
     // async function oracledbconn(){
     //     conn = await oracledb.getConnection(dum);
     //     const result = await conn.execute(
@@ -63,14 +64,23 @@ app.get('/',(req, res, next) => {
     // };
     // oracledbconn(); // call the function run
     // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
-    if ((req.query.errormessage) || (req.query.errormessage != 'undefined') ){
-        console.log(req.query.errormessage);
-        res.render('pages/index', {
-            error_message: req.query.errormessage
-        });
+
+    // if (req.query.errormessage){
+    //     res.render('pages/index', {
+    //         username: false,
+    //         error_message: req.query.errormessage
+    //     });
+    // } else if (req.cookies['username'] !== 'undefined'){
+    //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
+    // };
+    if (req.cookies['username'] != 'undefined') {
+        res.render('pages/index', {username: req.cookies['username'], error_message: false});
+    } else if (req.query.errormessage) {
+        res.render('pages/index', {username: false, error_message: req.query.errormessage});
     } else {
-        res.render('pages/index', {error_message: false});
-    };
+        res.render('pages/index', {username: false, error_message: false});
+
+    }
 
 });
 
@@ -81,7 +91,12 @@ app.get('/help',(req, res) => {
 
 // stock page
 app.get('/stock',(req, res) => {
-    res.render('pages/stock');
+    if (req.cookies['username']) {
+      res.render('pages/stock', {username: req.cookies['username']});
+    } else {
+      res.redirect('/');
+    }
+    // res.render('pages/stock');
 });
 
 // store page
@@ -114,6 +129,7 @@ app.post('/login', urlencodedParser, (req, res) => {
           res.render('pages/dashboard');
         } else {
           res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
+          // res.redirect('/');
         }
         // res.render('pages/dashboard');
     };

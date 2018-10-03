@@ -156,9 +156,11 @@
           AOS.init();
         </script>
         <script>
-          setTimeout(function() {
-            document.getElementById('errormessage').style.display = 'none';
-          }, 3000);
+          if (document.getElementById('errormessage')) {
+            setTimeout(function() {
+              document.getElementById('errormessage').style.display = 'none';
+            }, 3000);
+          }
         </script>
     </body>
 </html>
