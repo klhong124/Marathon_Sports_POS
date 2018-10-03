@@ -45,8 +45,25 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res, next) => {
+    // async function oracledbconn(){
+    //     conn = await oracledb.getConnection(dum);
+    //     const result = await conn.execute(
+    //         'select * from products'
+    //     );
+    //
+    //     if (conn) {await conn.close();};
+    //     var data = JSON.stringify(result);
+    //     console.log(data);
+    //
+    //     // check if the user exists
+    //     if (result.rows) {
+    //       res.render('pages/index', {data:data});
+    //     }
+    //     // res.render('pages/dashboard');
+    // };
+    // oracledbconn(); // call the function run
     // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
-    if ((req.query.errormessage) && (req.query.errormessage != 'undefined') ){
+    if ((req.query.errormessage) || (req.query.errormessage != 'undefined') ){
         console.log(req.query.errormessage);
         res.render('pages/index', {
             error_message: req.query.errormessage
@@ -107,7 +124,8 @@ app.get('/register',(req, res) => {
     res.render('pages/signup');
 });
 // product page
-app.get('/product',(req, res) => {
+app.get('/product/:p_id',(req, res) => {
+
     res.render('pages/product');
 });
 
@@ -142,7 +160,27 @@ app.get('/changepassword',(req, res) => {
 
 // all products page
 app.get('/products',(req, res) => {
-    res.render('pages/products');
+    async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        const result = await conn.execute(
+            'select * from products'
+        );
+
+        if (conn) {await conn.close();};
+
+        // var data = JSON.stringify(result.rows);
+        var data = result.rows;
+
+        console.log(data);
+
+        // check if the user exists
+        if (result.rows) {
+          res.render('pages/products', {data:data});
+        }
+        // res.render('pages/dashboard');
+    };
+    oracledbconn(); // call the function run
+    // res.render('pages/products');
 });
 
 // contact page
