@@ -67,15 +67,13 @@
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form> -->
             <script>
-              var prevScrollpos = window.pageYOffset;
-              window.onscroll = function hide_navbar() {
-                var currentScrollPos = window.pageYOffset;
-                if (prevScrollpos < currentScrollPos) {
-                  document.getElementById("navbar").style.top = "0px";
+            window.addEventListener("scroll", navfx);
+            function navfx() {
+                if (window.pageYOffset == 0){
+                  document.getElementById("navbar").style.top = "-200px";
                 } else {
-                    document.getElementById("navbar").style.top = "-200px";
+                    document.getElementById("navbar").style.top = "0px";
                   }
-                prevScrollpos = currentScrollPos;
                 }
             </script>
 
@@ -91,11 +89,11 @@
                 </li>
                 <li style="padding:12px;"></li>
                 <li class="nav-item">
-                    <a onclick="scrollToTop(1000);"><button type="button" class="btn btn-success">Sign in</button></a>
+                    <a onclick="scrollToTop(500);"><button type="button" class="btn btn-success">Sign in</button></a>
                 </li>
                 <li style="padding:12px;"></li>
                 <li class="nav-item">
-                    <a href="/register"><button type="button" class="btn btn-outline-primary">Sign up</button></a>
+                    <a onclick="navsignup();"><button type="button" class="btn btn-outline-primary">Sign up</button></a>
                 </li>
             </ul>
         </div>
@@ -115,6 +113,10 @@
                     window.scrollTo( 0, ( scrollHeight - scrollMargin ) );
                 }
                 else clearInterval(scrollInterval);
-            }, 15 );
+            }, 15);
+    }
+
+    function navsignup(){
+      scrollToTop(500);
     }
 </script>
