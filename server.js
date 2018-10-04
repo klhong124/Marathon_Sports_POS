@@ -71,27 +71,78 @@ app.get('/',(req, res, next) => {
 
     // if (req.cookies['username'] != 'undefined') {
     //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
+    // };
+
+    async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        const result = await conn.execute(
+            'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7'
+            // 'select * from images'
+        );
+
+        if (conn) {await conn.close();};
+
+        // var data = JSON.stringify(result.rows);
+        var data = result.rows;
+
+        console.log(data);
+
+        // check if the user exists
+        if (typeof req.cookies['username'] != 'undefined') {
+            res.render('pages/index', {username: req.cookies['username'], error_message: false, data: data});
+        } else if (req.query.errormessage) {
+            res.render('pages/index', {username: false, error_message: req.query.errormessage, data: data});
+        } else {
+            res.render('pages/index', {username: false, error_message: false, data: data});
+        }
+    };
+    oracledbconn(); // call the function run
+
+
+    // if (typeof req.cookies['username'] != 'undefined') {
+    //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
     // } else if (req.query.errormessage) {
     //     res.render('pages/index', {username: false, error_message: req.query.errormessage});
     // } else {
     //     res.render('pages/index', {username: false, error_message: false});
-    //
     // }
 
 });
 
 // support page
 app.get('/help',(req, res) => {
-    res.render('pages/help');
+    if (typeof req.cookies['username'] != 'undefined') {
+        console.log(req.cookies['username']);
+        res.render('pages/help', {username: req.cookies['username'], error_message: false});
+    } else {
+        res.render('pages/help', {username: false, error_message: false});
+    }
 });
 
 // stock page
 app.get('/stock',(req, res) => {
-    if (req.cookies['username']) {
-      res.render('pages/stock', {username: req.cookies['username']});
-    } else {
-      res.redirect('/');
-    }
+    async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        const result = await conn.execute(
+            'select products.p_name, sizes.p_size, stores.*, sps.qty from stores inner join stores_products_sizes sps on sps.store_id = stores.store_id inner join sizes on sizes.size_id = sps.size_id inner join products on products.p_id=sps.product_id'
+        );
+
+        if (conn) {await conn.close();};
+
+        // var data = JSON.stringify(result.rows);
+        var data = result.rows;
+
+        console.log(data);
+
+        if (req.cookies['username']) {
+          res.render('pages/stock', {username: req.cookies['username'], data: data});
+        } else {
+          res.redirect('/');
+        }
+        // res.render('pages/dashboard');
+    };
+    oracledbconn(); // call the function run
+
     // res.render('pages/stock');
 });
 
@@ -112,7 +163,7 @@ app.get('/store',(req, res) => {
 
         // check if the user exists
         if (result.rows) {
-          res.render('pages/store', {data:data});
+            res.render('pages/store', {username: req.cookies['username'], data:data});
         }
         // res.render('pages/dashboard');
     };
@@ -134,16 +185,16 @@ app.post('/login', urlencodedParser, (req, res) => {
             [email,password] // 'select * from users'
         );
 
-        res.cookie('username', result.rows[0], { maxAge: 900000, httpOnly: true }); // put username to cookie and set expire time for cookie
+        res.cookie('username', result.rows[0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
         console.log(req.cookies['username']); // get username from cookie
         if (conn) {await conn.close();};
 
 
         // check if the user exists
         if (result.rows[0] !== undefined) {
-          res.render('pages/dashboard');
+           res.render('pages/dashboard');
         } else {
-          res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
+           res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
           // res.redirect('/');
         }
         // res.render('pages/dashboard');
@@ -171,7 +222,7 @@ app.get('/product/:p_id',(req, res) => {
 
         // check if the user exists
         if (result.rows) {
-            res.render('pages/product', {data:data});
+            res.render('pages/product', {username: req.cookies['username'], data:data});
             // res.send('pages/product/'+req.params.p_id, {data:data});
         }
         // res.render('pages/dashboard');
@@ -182,7 +233,7 @@ app.get('/product/:p_id',(req, res) => {
 // dashboard page
 app.get('/dashboard',(req, res) => {
     if (req.cookies['username']) {
-      res.render('pages/dashboard');
+      res.render('pages/dashboard', {username: req.cookies['username']});
     } else {
       res.redirect('/');
     }
@@ -226,7 +277,7 @@ app.get('/products',(req, res) => {
 
         // check if the user exists
         if (result.rows) {
-          res.render('pages/products', {data:data});
+          res.render('pages/products', {username: req.cookies['username'], data:data});
         }
         // res.render('pages/dashboard');
     };
@@ -236,7 +287,7 @@ app.get('/products',(req, res) => {
 
 // contact page
 app.get('/contact',(req, res) => {
-    res.render('pages/contact');
+    res.render('pages/contact', {username: req.cookies['username']});
 });
 
 // checkout page

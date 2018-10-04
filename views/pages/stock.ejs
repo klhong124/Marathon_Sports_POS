@@ -12,6 +12,12 @@
           background: orange;
           color: black;
         }
+        .f-style {
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+            z-index: 100;
+        }
     </style>
 <head>
 
@@ -34,21 +40,36 @@
                     <thead>
                         <tr>
                             <th> Product Name </th>
-                            <th> Branches Location </th>
+                            <th> Branches Detials </th>
+                            <th> Size </th>
                             <th> Stock </th>
                         </tr>
                     </thead>
                     <tbody>
+                        <% for(var i=0; i<data.length; i++){ %>
                         <tr>
-                            <td> WOMEN NEW BALANCE WCRUZE BLACK </td>
-                            <td> <p> Causeway Bay Plaza 2 Shop G03 , G/F, Causeway Bay Plaza 2, 463-483 Lockhart Road</p> </td>
-                            <td> 10 </td>
+                            <td> <%= data[i][0] %></td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-info" data-toggle="collapse" data-target="#data<%= i %>"><i class="far fa-address-card"></i> <%= data[i][6] %></button>
+                                <!-- <div id="demo" class="collapse">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </div> -->
+                                <div id="data<%= i %>" class="panel-collapse collapse">
+                                    <ul class="list-group">
+                                            <li class="list-group-item">
+                                                <p><b>Address: </b><%= data[i][5] %><br><hr>
+                                                <b>Tel: </b><%= data[i][3] %><br><hr><b>Business Hour: </b><%= data[i][4] %></p>
+                                            </li>
+                                    </ul>
+                                    <!-- <div class="panel-footer">Footer</div> -->
+                                </div>
+                            </td>
+                            <td><%= data[i][1] %></td>
+                            <td> <%= data[i][7] %></td>
                         </tr>
-                        <tr>
-                            <td> Q2 </td>
-                            <td> <p>How could I make my payment? </p>  </td>
-                            <td> </td>
-                        </tr>
+                        <% } %>
                     </tbody>
                     <tfoot>
                         <td> </td>
@@ -94,7 +115,7 @@
                 ],
                 // 'searching': false,
                 // 'paging': false,
-                'info': false,
+                // 'info': true,
                 'responsive': true,
                 "scrollX": true,
                 // 'searchHighlight': true,
