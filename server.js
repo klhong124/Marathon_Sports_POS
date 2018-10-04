@@ -45,24 +45,10 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res, next) => {
-    // async function oracledbconn(){
-    //     conn = await oracledb.getConnection(dum);
-    //     const result = await conn.execute(
-    //         'select * from products'
-    //     );
-    //
-    //     if (conn) {await conn.close();};
-    //     var data = JSON.stringify(result);
-    //     console.log(data);
-    //
-    //     // check if the user exists
-    //     if (result.rows) {
-    //       res.render('pages/index', {data:data});
-    //     }
-    //     // res.render('pages/dashboard');
-    // };
-    // oracledbconn(); // call the function run
-    // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
+
+    // call the function run
+
+    req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
     if ((req.query.errormessage) || (req.query.errormessage != 'undefined') ){
         console.log(req.query.errormessage);
         res.render('pages/index', {
@@ -86,7 +72,26 @@ app.get('/stock',(req, res) => {
 
 // store page
 app.get('/store',(req, res) => {
-    res.render('pages/store');
+    async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        const result = await conn.execute(
+            'select * from stores'
+        );
+
+        if (conn) {await conn.close();};
+
+        // var data = JSON.stringify(result.rows);
+        var data = result.rows;
+
+        console.log(data);
+
+        // check if the user exists
+        if (result.rows) {
+          res.render('pages/store', {data:data});
+        }
+        // res.render('pages/dashboard');
+    };
+    oracledbconn(); // call the function run
 });
 
 // about page
@@ -125,8 +130,27 @@ app.get('/register',(req, res) => {
 });
 // product page
 app.get('/product/:p_id',(req, res) => {
+    async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        const result = await conn.execute(
+            'select * from products where p_id = :p_id', [req.params.p_id]
+        );
 
-    res.render('pages/product');
+        if (conn) {await conn.close();};
+
+        // var data = JSON.stringify(result.rows[0]);
+        var data = result.rows[0];
+
+        console.log( result.rows);
+
+        // check if the user exists
+        if (result.rows) {
+            res.render('pages/product', {data:data});
+            // res.send('pages/product/'+req.params.p_id, {data:data});
+        }
+        // res.render('pages/dashboard');
+    };
+    oracledbconn(); // call the function run
 });
 
 // dashboard page
@@ -163,7 +187,8 @@ app.get('/products',(req, res) => {
     async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
         const result = await conn.execute(
-            'select * from products'
+            'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products'
+            // 'select * from images'
         );
 
         if (conn) {await conn.close();};
@@ -171,7 +196,7 @@ app.get('/products',(req, res) => {
         // var data = JSON.stringify(result.rows);
         var data = result.rows;
 
-        console.log(data);
+        console.log(result);
 
         // check if the user exists
         if (result.rows) {
