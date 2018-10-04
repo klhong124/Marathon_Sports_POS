@@ -73,20 +73,50 @@ app.get('/',(req, res, next) => {
     // } else if (req.cookies['username'] !== 'undefined'){
     //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
     // };
-    if (req.cookies['username'] != 'undefined') {
+
+    // async function oracledbconn(){
+    //     conn = await oracledb.getConnection(dum);
+    //     const result = await conn.execute(
+    //         'select * from images'
+    //     );
+    //
+    //     if (conn) {await conn.close();};
+    //
+    //     // var data = JSON.stringify(result.rows);
+    //     var data = result.rows;
+    //
+    //     console.log(data);
+    //
+    //     // check if the user exists
+    //     if (typeof req.cookies['username'] != 'undefined') {
+    //         res.render('pages/index', {username: req.cookies['username'], error_message: false});
+    //     } else if (req.query.errormessage) {
+    //         res.render('pages/index', {username: false, error_message: req.query.errormessage});
+    //     } else {
+    //         res.render('pages/index', {username: false, error_message: false, data: data});
+    //     }
+    // };
+    // oracledbconn(); // call the function run
+
+
+    if (typeof req.cookies['username'] != 'undefined') {
         res.render('pages/index', {username: req.cookies['username'], error_message: false});
     } else if (req.query.errormessage) {
         res.render('pages/index', {username: false, error_message: req.query.errormessage});
     } else {
         res.render('pages/index', {username: false, error_message: false});
-
     }
 
 });
 
 // support page
 app.get('/help',(req, res) => {
-    res.render('pages/help');
+    if (typeof req.cookies['username'] != 'undefined') {
+        console.log(req.cookies['username']);
+        res.render('pages/help', {username: req.cookies['username'], error_message: false});
+    } else {
+        res.render('pages/help', {username: false, error_message: false});
+    }
 });
 
 // stock page
@@ -138,7 +168,7 @@ app.post('/login', urlencodedParser, (req, res) => {
             [email,password] // 'select * from users'
         );
 
-        res.cookie('username', result.rows[0], { maxAge: 900000, httpOnly: true }); // put username to cookie and set expire time for cookie
+        res.cookie('username', result.rows[0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
         console.log(req.cookies['username']); // get username from cookie
         if (conn) {await conn.close();};
 

@@ -24,8 +24,8 @@
                                 <div class="col-md-4">
                                     <div class="card mb-4 shadow-sm">
                                         <a href="/product/<%= data[i][3] %>">
-                                            <% if((typeof data[i][4] != null)) { %>
-                                            <img class="card-img-top" src="/public/images/<%= data[i][3] %>/<%= data[i][4].jpg %>" alt="Card image cap"></a>
+                                            <% if((typeof data[i][4] != null && data[i][4])) { %>
+                                            <img class="card-img-top" src="/public/images/<%= data[i][3] %>/<%= data[i][4]%>.jpg" alt="Card image cap"></a>
                                             <% } else { %>
                                             <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap"></a>
                                             <% } %>
