@@ -45,42 +45,38 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res, next) => {
+     async function oracledbconn(){
+         conn = await oracledb.getConnection(dum);
+         const result = await conn.execute(
+             `select username from users`
+         );
 
-    // async function oracledbconn(){
-    //     conn = await oracledb.getConnection(dum);
-    //     const result = await conn.execute(
-    //         'select * from products'
-    //     );
-    //
-    //     if (conn) {await conn.close();};
-    //     var data = JSON.stringify(result);
-    //     console.log(data);
-    //
-    //     // check if the user exists
-    //     if (result.rows) {
-    //       res.render('pages/index', {data:data});
-    //     }
-    //     // res.render('pages/dashboard');
-    // };
-    // oracledbconn(); // call the function run
-    // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
+         if (conn) {await conn.close();};
+         // check if the user exists
+         if (result.rows) {
+           res.render('pages/index', {username:undefined,error_message:false,userslist:result.rows});
+         }
+         // res.render('pages/dashboard');
+     };
+     oracledbconn(); // call the function run
+     // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
+     // if (req.query.errormessage){
+     //     res.render('pages/index', {
+     //         username: false,
+     //         error_message: req.query.errormessage
+     //     });
+     // } else if (req.cookies['username'] !== 'undefined'){
+     //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
+     // };
 
-    // if (req.query.errormessage){
-    //     res.render('pages/index', {
-    //         username: false,
-    //         error_message: req.query.errormessage
-    //     });
-    // } else if (req.cookies['username'] !== 'undefined'){
+    // if (req.cookies['username'] != 'undefined') {
     //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
-    // };
-    if (req.cookies['username'] != 'undefined') {
-        res.render('pages/index', {username: req.cookies['username'], error_message: false});
-    } else if (req.query.errormessage) {
-        res.render('pages/index', {username: false, error_message: req.query.errormessage});
-    } else {
-        res.render('pages/index', {username: false, error_message: false});
-
-    }
+    // } else if (req.query.errormessage) {
+    //     res.render('pages/index', {username: false, error_message: req.query.errormessage});
+    // } else {
+    //     res.render('pages/index', {username: false, error_message: false});
+    //
+    // }
 
 });
 
@@ -257,8 +253,8 @@ app.get('/forgetpassword',(req, res) => {
     }
 });
 
-
 app.use('/public', express.static('public'));
-app.listen(3000);
-console.log("Server Running on port 4000");
-//require("openurl").open("http://localhost:4000");
+var port = 4000; //change here bitch!!!
+app.listen(port);
+console.log(`Server Running on port ${port}`);
+// require("openurl").open(`http://localhost:${port}`);
