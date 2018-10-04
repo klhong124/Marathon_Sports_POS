@@ -26,53 +26,72 @@
   position: absolute;
   width: 330px;
 }
+
+#boxaside img{
+  padding-bottom:20px;
+}
+
+.form-control{
+  margin-top: 5px;
+}
+
+.rejected{
+  display: none;
+  transition: opacity 1.5s;
+}
+
 </style>
+
 <div id="boxdiv">
   <aside id="boxaside">
-  <form id="loginbox" action="/login" method="post">
-      <a href="/"><img class="mb-4" style="border-radius: 4px;" src="/public/marathon-logo.png" alt="" width="244px"></a>
-      <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>or
-      <a href="javascript:show_signup()" style="text-decoration: underline;">create an account</a>
-      <div style="height:24px; width:100%;"></div>
-      <label for="login-email" class="sr-only">Email address</label>
-      <input type="email" id="login-email" class="form-control" placeholder="Email address" required="" name="email" autofocus="">
-      <label for="login-password" class="sr-only">Password</label>
-      <input type="password" id="login-password" name="password" class="form-control" placeholder="Password" required="">
-      <div class="checkbox mb-3">
-          <label>
-              <input type="checkbox" value="remember-me"> Remember me
-          </label>
-      </div>
-      <button class="btn btn-lg btn-primary btn-block " onclick="go()"type="submit">Sign in</button>
-      <p class="mt-5 mb-3 text-muted">&copy; Marathon Sports 2018</p>
-  </form>
-  <form id="signupbox" action="/signup" method="post">
-      <a href="/"><img class="mb-4" style="border-radius: 4px;" src="/public/marathon-logo.png" alt="" width="244px"></a>
-      <h1 class="h3 mb-3 font-weight-normal">Register</h1>Already have account ? <a href="javascript:show_login()" style="text-decoration: underline;">log in</a>
-      <div style="height:24px; width:100%;"></div>
-      <label for="signup-email" class="sr-only">Email address</label>
-      <input type="email" id="signup-email" class="form-control" placeholder="Enter Email" required="" autofocus="" style="margin-bottom:-1px;">
 
-      <label for="signup-password" class="sr-only">Password</label>
-      <input type="password" id="signup-password" class="form-control" placeholder="Password" required="" style="margin-bottom:-1px;">
+    <form id="loginbox" action="/login" method="post">
 
-      <label for="Password-confirm" class="sr-only">Confirm Password</label>
-      <input type="password" class="form-control" placeholder="Confirm Password" required="" style="border-bottom-left-radius:4px; border-bottom-right-radius:4px;">
-      <hr>
-      <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" value="accept"> By creating an account you agree to our <a style="text-decoration: underline;">Terms & Privacy</a>.
-        </label>
-      </div>
-      <button class="btn btn-lg btn-primary btn-block" onclick="go()"type="submit">Sign up</button>
-      <p class="mt-5 mb-3 text-muted">&copy; Marathon Sports 2018</p>
-      <div class="container signin">
-          <a href="/forgetpassword">Forget password</a>.</p>
-      </div>
-  </form>
-</aside>
+        <img src="/public/marathon-logo.png" alt="" width="244px">
+
+        <h3 class="mb-3 font-weight-normal">Sign in</h3>
+
+        <input id="loginemail" type="email" class="form-control" placeholder="Email address" name="email" required>
+        <input type="password" class="form-control" placeholder="Password" name="password" required>
+
+        <p class="mt-3">Trouble in Login ? <a href="/forgetpassword">Forget Password</a></p>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <hr>
+
+        <p>Not Registered ? <a href="javascript:show_signup()">Create an Account</a></p>
+
+        <p class="mt-5 mb-3 text-muted">&copy; Marathon Sports 2018</p>
+    </form>
+
+<!-- ==================================================================================================================== -->
+
+    <form id="signupbox" action="/join" method="post">
+
+        <img class="mb-4" style="border-radius: 4px;" src="/public/marathon-logo.png" alt="" width="244px">
+
+        <h3 class="mb-3 font-weight-normal">Register</h3>
+
+        <input id="signupusername" type="text" class="form-control" placeholder="Username" name="username" required><span class="rejected"></span>
+        <input type="email" class="form-control" placeholder="Email Address" name="email" required>
+        <input type="password" class="form-control" placeholder="Password" name="password" required>
+        <input type="password" class="form-control" placeholder="Confirm Password" required>
+        <br>
+
+        <input type="checkbox" value="accept"> I agree to the <a href="/Terms&Privacy" target="_blank" required>Terms & Privacy</a> and privacy statement.
+
+        <button class="mt-3 btn btn-lg btn-primary btn-block" type="submit" disabled>Sign up</button>
+        <hr>
+
+        <p class="mt-3">Already have Account ? <a href="javascript:show_login()">log in</a></p>
+        <p class="mt-5 text-muted">&copy; Marathon Sports 2018</p>
+        <div class="container signin"></div>
+    </form>
+  </aside>
 </div>
-<script>
+<!-- ==================================================================================================================== -->
+<script type="text/javascript">
+
     window.addEventListener("scroll", loginboxfx);
     function loginboxfx() {
     if (window.pageYOffset == 0){
@@ -83,14 +102,24 @@
             document.getElementById("boxdiv").style.height = "75vh";
         }
     }
-
     function show_signup(){
       document.getElementById("signupbox").style.display = "block";
       document.getElementById("loginbox").style.display = "none";
-    }
-
+        }
     function show_login(){
       document.getElementById("signupbox").style.display = "none";
       document.getElementById("loginbox").style.display = "block";
     }
+// ============================================================================
+document.getElementById("signupusername").addEventListener("blur", function( event ) {
+  var userslist = `<%= userslist %>`.toUpperCase().split(`,`);
+  if (userslist.includes(event.target.value.toUpperCase())){
+    event.target.nextSibling.style.color="red";
+    event.target.nextSibling.style.display ="block";
+    event.target.nextSibling.innerHTML="&#10008; Sorry, username is already in used.";
+  }else{
+    event.target.nextSibling.style.display ="none";
+  }
+
+}, true);
 </script>
