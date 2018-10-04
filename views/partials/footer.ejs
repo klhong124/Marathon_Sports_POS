@@ -1,12 +1,17 @@
 <!-- views/partials/footer.ejs -->
 <div style="height: 120px; width:100%;"></div>
-
+<div></div>
 <div class="f-style">
-    <p class="float-right">
-      <a href="#">Back to top</a>
-    </p>
+    <span class="float-right">
+        <a href="#">Back to top</a>
+    </span>
     <p>&copy; Marathon Sports 2018</p>
-    <p>New to Marathon Sports? <a href="/">Visit the homepage</a> or <a href="/register">sign up</a>.</p>
+    <% if(typeof username != 'undefined' && username) { %>
+        <a href="/stock">Find Stock</a> |
+        <a href="/cart">My Order</a>
+    <% }else{ %>
+        <p>New to Marathon Sports? <a href="/">Visit the homepage</a> or <a href="/register">sign up</a>.</p>
+    <% } %>
 </div>
 <style>
 
