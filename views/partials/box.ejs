@@ -1,0 +1,96 @@
+<style media="screen">
+#boxdiv{
+    background-image:url("../../public/Marathon.jpg");
+    background-attachment: fixed;
+    width: 100%;
+    min-height: 500px;
+    height: 100vh;
+    transition: height .3s;
+}
+#boxaside{
+  background-color: white;
+  height: inherit;
+  width: 500px;
+  padding: 110px 85px;
+  z-index: 1;
+  transition: margin-left .5s;
+  margin-left: -500px;
+}
+#loginbox{
+  display: block;
+  position: absolute;
+  width: 330px;
+}
+#signupbox{
+  display: none;
+  position: absolute;
+  width: 330px;
+}
+</style>
+<div id="boxdiv">
+  <aside id="boxaside">
+  <form id="loginbox" action="/login" method="post">
+      <a href="/"><img class="mb-4" style="border-radius: 4px;" src="/public/marathon-logo.png" alt="" width="244px"></a>
+      <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>or
+      <a href="javascript:show_signup()" style="text-decoration: underline;">create an account</a>
+      <div style="height:24px; width:100%;"></div>
+      <label for="login-email" class="sr-only">Email address</label>
+      <input type="email" id="login-email" class="form-control" placeholder="Email address" required="" name="email" autofocus="">
+      <label for="login-password" class="sr-only">Password</label>
+      <input type="password" id="login-password" name="password" class="form-control" placeholder="Password" required="">
+      <div class="checkbox mb-3">
+          <label>
+              <input type="checkbox" value="remember-me"> Remember me
+          </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block " onclick="go()"type="submit">Sign in</button>
+      <p class="mt-5 mb-3 text-muted">&copy; Marathon Sports 2018</p>
+  </form>
+  <form id="signupbox" action="/signup" method="post">
+      <a href="/"><img class="mb-4" style="border-radius: 4px;" src="/public/marathon-logo.png" alt="" width="244px"></a>
+      <h1 class="h3 mb-3 font-weight-normal">Register</h1>Already have account ? <a href="javascript:show_login()" style="text-decoration: underline;">log in</a>
+      <div style="height:24px; width:100%;"></div>
+      <label for="signup-email" class="sr-only">Email address</label>
+      <input type="email" id="signup-email" class="form-control" placeholder="Enter Email" required="" autofocus="" style="margin-bottom:-1px;">
+
+      <label for="signup-password" class="sr-only">Password</label>
+      <input type="password" id="signup-password" class="form-control" placeholder="Password" required="" style="margin-bottom:-1px;">
+
+      <label for="Password-confirm" class="sr-only">Confirm Password</label>
+      <input type="password" class="form-control" placeholder="Confirm Password" required="" style="border-bottom-left-radius:4px; border-bottom-right-radius:4px;">
+      <hr>
+      <div class="checkbox mb-3">
+        <label>
+            <input type="checkbox" value="accept"> By creating an account you agree to our <a style="text-decoration: underline;">Terms & Privacy</a>.
+        </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" onclick="go()"type="submit">Sign up</button>
+      <p class="mt-5 mb-3 text-muted">&copy; Marathon Sports 2018</p>
+      <div class="container signin">
+          <a href="/forgetpassword">Forget password</a>.</p>
+      </div>
+  </form>
+</aside>
+</div>
+<script>
+    window.addEventListener("scroll", loginboxfx);
+    function loginboxfx() {
+    if (window.pageYOffset == 0){
+            document.getElementById("boxaside").style.marginLeft = "0px";
+            document.getElementById("boxdiv").style.height = "100vh";
+        } else {
+            document.getElementById("boxaside").style.marginLeft = "-500px";
+            document.getElementById("boxdiv").style.height = "75vh";
+        }
+    }
+
+    function show_signup(){
+      document.getElementById("signupbox").style.display = "block";
+      document.getElementById("loginbox").style.display = "none";
+    }
+
+    function show_login(){
+      document.getElementById("signupbox").style.display = "none";
+      document.getElementById("loginbox").style.display = "block";
+    }
+</script>

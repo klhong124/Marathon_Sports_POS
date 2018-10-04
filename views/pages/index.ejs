@@ -10,6 +10,14 @@
         <!-- Custom script for this template -->
         <script src="/public/holder.min.js"></script>
         <style media="screen">
+        *{
+          animation-name:show;
+          animation-duration: 1.5s;
+        }
+        @keyframes show {
+          from {opacity:0;}
+          to {opacity: 1;}
+        }
         .bgcolor{
           background:#A62639;
         }
@@ -18,12 +26,6 @@
         }
         .why-Marathon{
           padding: 0 10%;
-        }
-        #bgvideo{
-          z-index: -1;
-          position:fixed;
-          object-fit: cover;
-          height: 100%;
         }
         .moveup{
           animation-name: moveup;
@@ -47,40 +49,33 @@
         </style>
     </head>
     <body style="scroll-behavior:smooth;">
-        <% include ../partials/loginbox %>
-        <% include ../partials/signupbox %>
-
+        <% include ../partials/box %>
         <!-- header -->
         <div style="height:50px;">
-          <video autoplay muted loop id="bgvideo">
-            <source src="public/Marathon_Trailer.mp4" type="video/mp4">
-          </video>
           <script type="text/javascript">
             window.onload = function() {
               document.getElementById("why-Marathonid").scrollIntoView(false);
+              window.scrollBy(0, -25 * window.innerHeight/100);
             };
           </script>
             <main role="main">
                 <% include ../partials/nav %>
                 <% include ../partials/alert %>
-
-                <section class="jumbotron" style="background:transparent;height:1000px">
-                </section>
                 <script type="text/javascript">
-                var lastScrollTop = 0;
-                window.addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
-                   var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-                   if (st > lastScrollTop){
-                     if (window.pageYOffset-document.getElementById("navbar").clientHeight<document.getElementById("why-Marathonid").clientHeight){
-                       document.getElementById("why-Marathonid").scrollIntoView(false);
-                     }
-                   } else {
-                     if (window.pageYOffset-document.getElementById("navbar").clientHeight<document.getElementById("why-Marathonid").clientHeight){
-                       window.scrollTo(500, 0);
-                     }
-                   }
-                   lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-                }, false);
+                // var lastScrollTop = 0;
+                // window.addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
+                //    var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
+                //    if (st > lastScrollTop){
+                //      if (window.pageYOffset-document.getElementById("navbar").clientHeight<document.getElementById("why-Marathonid").clientHeight){
+                //        document.getElementById("why-Marathonid").scrollIntoView(false);
+                //      }
+                //    } else {
+                //      if (window.pageYOffset-document.getElementById("navbar").clientHeight<document.getElementById("why-Marathonid").clientHeight){
+                //        window.scrollTo(500, 0);
+                //      }
+                //    }
+                //    lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+                // }, false);
                 </script>
                 <div class="album py-5 bgcolor" id="why-Marathonid">
                   <div class="container why-Marathon">
