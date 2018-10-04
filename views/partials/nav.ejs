@@ -95,7 +95,7 @@
                 <% } else { %>
                     <li style="padding:12px;"></li>
                     <li class="nav-item">
-                        <a onclick="scrollToTop(500);"><button type="button" class="btn btn-success">Sign in</button></a>
+                        <a onclick="navsignin();"><button type="button" class="btn btn-success">Sign in</button></a>
                     </li>
                     <li style="padding:12px;"></li>
                     <li class="nav-item">
@@ -123,8 +123,16 @@
             }, 15);
     }
 
+    function navsignin(){
+      scrollToTop(500);
+      document.getElementById("signupbox").style.display = "none";
+      document.getElementById("loginbox").style.display = "block";
+    }
+
     function navsignup(){
       scrollToTop(500);
+      document.getElementById("signupbox").style.display = "block";
+      document.getElementById("loginbox").style.display = "none";
     }
 
 </script>
