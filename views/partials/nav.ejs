@@ -16,10 +16,13 @@
     }
     .navbar {
         box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
+        position:fixed;
+        width: 100%;
+        z-index: 1000;
     }
 </style>
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light movedw" style="position:fixed;width:100%;z-index:2;" id="navbar">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light movedw" id="navbar">
         <a class="navbar-brand" href="/"><b>Marathon</b> Sports</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -52,7 +55,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/contact">Contact Us</a>
-                        <a class="dropdown-item" href="/help">Support</a>
+                        <a class="dropdown-item" href="/help">FAQs</a>
                         <div class="dropdown-divider"></div>
                         <!-- <a class="dropdown-item" href="/cart">Shoping Cart</a> -->
                         <a class="dropdown-item" href="/store">Find a Store</a>
