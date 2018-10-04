@@ -47,14 +47,17 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 app.get('/',(req, res, next) => {
      async function oracledbconn(){
          conn = await oracledb.getConnection(dum);
-         const result = await conn.execute(
+         const userslist = await conn.execute(
              `select username from users`
          );
-
+         const products = await conn.execute(
+             'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7'
+             // 'select * from images'
+         );
          if (conn) {await conn.close();};
          // check if the user exists
-         if (result.rows) {
-           res.render('pages/index', {username:undefined,error_message:false,userslist:result.rows});
+         if (userslist.rows) {
+           res.render('pages/index', {username:undefined,error_message:false,userslist:userslist.rows,data:products.rows});
          }
          // res.render('pages/dashboard');
      };
@@ -72,33 +75,6 @@ app.get('/',(req, res, next) => {
     // if (req.cookies['username'] != 'undefined') {
     //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
     // };
-
-    async function oracledbconn(){
-        conn = await oracledb.getConnection(dum);
-        const result = await conn.execute(
-            'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7'
-            // 'select * from images'
-        );
-
-        if (conn) {await conn.close();};
-
-        // var data = JSON.stringify(result.rows);
-        var data = result.rows;
-
-        console.log(data);
-
-        // check if the user exists
-        if (typeof req.cookies['username'] != 'undefined') {
-            res.render('pages/index', {username: req.cookies['username'], error_message: false, data: data});
-        } else if (req.query.errormessage) {
-            res.render('pages/index', {username: false, error_message: req.query.errormessage, data: data});
-        } else {
-            res.render('pages/index', {username: false, error_message: false, data: data});
-        }
-    };
-    oracledbconn(); // call the function run
-
-
     // if (typeof req.cookies['username'] != 'undefined') {
     //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
     // } else if (req.query.errormessage) {
