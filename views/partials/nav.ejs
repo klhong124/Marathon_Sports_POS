@@ -6,7 +6,7 @@
     .cart-num {
         position: absolute;
         left: 20px;
-        top: 20px;
+        top: 6px;
         background-color: royalblue;
         width: 24px;
         z-index: 1;
@@ -90,14 +90,21 @@
                         <i class="fas fa-shopping-cart fa-2x"></i>
                     </a>
                 </li>
-                <li style="padding:12px;"></li>
-                <li class="nav-item">
-                    <a onclick="scrollToTop(500);"><button type="button" class="btn btn-success">Sign in</button></a>
-                </li>
-                <li style="padding:12px;"></li>
-                <li class="nav-item">
-                    <a onclick="navsignup();"><button type="button" class="btn btn-outline-primary">Sign up</button></a>
-                </li>
+                <% if(username) { %>
+                    <li style="padding:12px;"></li>
+                    <li class="nav-item">
+                        <a href="logout"><button type="button" class="btn btn-outline-primary"><%= username %></button></a>
+                    </li>
+                <% } else { %>
+                    <li style="padding:12px;"></li>
+                    <li class="nav-item">
+                        <a onclick="scrollToTop(500);"><button type="button" class="btn btn-success">Sign in</button></a>
+                    </li>
+                    <li style="padding:12px;"></li>
+                    <li class="nav-item">
+                        <a onclick="navsignup();"><button type="button" class="btn btn-outline-primary">Sign up</button></a>
+                    </li>
+                <% } %>
             </ul>
         </div>
     </nav>
@@ -122,4 +129,5 @@
     function navsignup(){
       scrollToTop(500);
     }
+
 </script>
