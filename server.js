@@ -47,35 +47,36 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 app.get('/',(req, res, next) => {
      async function oracledbconn(){
          conn = await oracledb.getConnection(dum);
-         const userslist = await conn.execute(
+         var userslist = await conn.execute(
              `select username from users`
          );
-         const products = await conn.execute(
-             'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7'
+         var emailslist = await conn.execute(
+             `select email from users`
+         );
+         var products = await conn.execute(
+             `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
              // 'select * from images'
          );
          if (conn) {await conn.close();};
          // check if the user exists
          if (userslist.rows) {
-           res.render('pages/index', {username:undefined,error_message:false,userslist:userslist.rows,data:products.rows});
+           res.render('pages/index', {username:undefined,
+                                      error_message:false,
+                                      userslist:userslist.rows,
+                                      emailslist:emailslist.rows,
+                                      data:products.rows
+                                    });
          }
-         // res.render('pages/dashboard');
-     };
+    };
      oracledbconn(); // call the function run
+
      // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
      // if (req.query.errormessage){
      //     res.render('pages/index', {
      //         username: false,
      //         error_message: req.query.errormessage
      //     });
-     // } else if (req.cookies['username'] !== 'undefined'){
-     //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
-     // };
-
-    // if (req.cookies['username'] != 'undefined') {
-    //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
-    // };
-    // if (typeof req.cookies['username'] != 'undefined') {
+     // } else if (typeof req.cookies['username'] != 'undefined') {
     //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
     // } else if (req.query.errormessage) {
     //     res.render('pages/index', {username: false, error_message: req.query.errormessage});
@@ -83,6 +84,24 @@ app.get('/',(req, res, next) => {
     //     res.render('pages/index', {username: false, error_message: false});
     // }
 
+});
+
+// signup page
+app.post('/join',urlencodedParser,(req, res) => {
+  console.log(req.body.email);
+    res.render('pages/signup',{username:req.body.username,
+                               email:req.body.email,
+                               password:req.body.password
+                             });
+});
+app.post('/register',urlencodedParser,(req, res) => {
+  console.log(req.body.firstname);
+  console.log(req.body.lastname);
+  console.log(req.body.email);
+  console.log(req.body.phone);
+  console.log(req.body.username);
+  console.log(req.body.password);
+  res.redirect('/');
 });
 
 // support page
@@ -177,10 +196,6 @@ app.post('/login', urlencodedParser, (req, res) => {
     };
 });
 
-// signup page
-app.get('/register',(req, res) => {
-    res.render('pages/signup');
-});
 // product page
 app.get('/product/:p_id',(req, res) => {
     async function oracledbconn(){
@@ -284,4 +299,4 @@ app.use('/public', express.static('public'));
 var port = 4000; //change here bitch!!!
 app.listen(port);
 console.log(`Server Running on port ${port}`);
-// require("openurl").open(`http://localhost:${port}`);
+require("openurl").open(`http://localhost:${port}`);
