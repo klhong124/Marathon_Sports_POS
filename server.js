@@ -196,6 +196,12 @@ app.post('/login', urlencodedParser, (req, res) => {
     };
 });
 
+// get product if from ajax
+app.post('/add-to-cart', urlencodedParser, (req, res) => {
+    console.log(req.body.p_id);
+    res.end('{"success" : "Updated Successfully", "status" : 200}');
+});
+
 // product page
 app.get('/product/:p_id',(req, res) => {
     async function oracledbconn(){
@@ -299,4 +305,4 @@ app.use('/public', express.static('public'));
 var port = 4000; //change here bitch!!!
 app.listen(port);
 console.log(`Server Running on port ${port}`);
-require("openurl").open(`http://localhost:${port}`);
+// require("openurl").open(`http://localhost:${port}`);

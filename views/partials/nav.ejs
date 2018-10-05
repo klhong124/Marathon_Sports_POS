@@ -84,7 +84,7 @@
                 <li style="padding:12px;"></li>
                 <li class="nav-item">
                     <a style="position: relative;">
-                        <div class="cart-num">1</div>
+                        <div class="cart-num"></div>
                         <i class="fas fa-shopping-cart fa-2x"></i>
                     </a>
                 </li>
@@ -138,6 +138,20 @@
       scrollToTop(500);
       document.getElementById("signupbox").style.display = "block";
       document.getElementById("loginbox").style.display = "none";
+    }
+
+    var count = 1;
+    function addToCart(id){
+        console.log(id);
+        $('.cart-num').html(count);
+        $.ajax({
+            url:'/add-to-cart',
+            type:'post',
+            data: {p_id: id},
+            success:function(result){
+            }
+        });
+        count++;
     }
 
 </script>
