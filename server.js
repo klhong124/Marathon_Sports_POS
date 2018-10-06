@@ -193,19 +193,18 @@ app.post('/login', urlencodedParser, (req, res) => {
             [email,password] // 'select * from users'
         );
 
-        res.cookie('username', result.rows[0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
-        console.log(req.cookies['username']); // get username from cookie
-        if (conn) {await conn.close();};
 
+        if (conn) {await conn.close();};
+        console.log(req.cookies['username']); // get username from cookie
 
         // check if the user exists
         if (result.rows[0] !== undefined) {
-           res.render('pages/dashboard', {username: req.cookies['username']});
+            res.cookie('username', result.rows[0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
+
+            res.render('pages/dashboard', {username: req.cookies['username']});
         } else {
-           res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
-          // res.redirect('/');
+            res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
         }
-        // res.render('pages/dashboard');
     };
 });
 

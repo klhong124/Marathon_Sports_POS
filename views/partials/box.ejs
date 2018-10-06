@@ -145,7 +145,7 @@ document.getElementById("signupemail").addEventListener("input", function( event
   if (emailslist.includes(event.target.value)){
     event.target.nextSibling.style.color="red";
     event.target.nextSibling.style.display ="block";
-    event.target.nextSibling.innerHTML="&#10008; Sorry, email is invail or already in used.";
+    event.target.nextSibling.innerHTML="&#10008; Sorry, email is invalid or already in used.";
     document.getElementById("signupbth").disabled=true;
   }else{
     event.target.nextSibling.style.display ="none";
