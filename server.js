@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 var dum = require('./dbconfig.js');
 // gobal vars
 let conn;
+// oracledb.autoCommit = true;
 
 
 const jsonParser = bodyParser.json(); // create application/json parser
@@ -211,16 +212,22 @@ app.post('/login', urlencodedParser, (req, res) => {
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_id); // print params
-
+    var insertSQL = "insert into orders(order_id, p_id, user_id) values(2,2,3)";
     if (req.cookies['username']) {
         oracledbconn(req.body.p_id, req.cookies['username']); // call the function run
         async function oracledbconn(){
             conn = await oracledb.getConnection(dum);
+            // const result = await conn.execute(
+            //     'select * from products where p_id = :p_id', [req.body.p_id]
+            // );
             const result = await conn.execute(
-                'select * from products where p_id = :p_id', [req.body.p_id]
-            );
+                'insert into orders(order_id, p_id, user_id) values(:a,:b,:c)',[6,3,4] ,{autoCommit: true});
 
-            if (conn) {await conn.close();};
+            console.log('Rows inserted: ' + result.rowsAffected);
+            if (conn) {
+                await conn.close();
+                // .catch((error) => {})
+            };
 
             // var data = JSON.stringify(result.rows[0]);
             var data = result.rows[0];
@@ -288,7 +295,7 @@ app.get('/cart',(req, res) => {
 // change password page
 app.get('/changepassword',(req, res) => {
     if (req.cookies['username']) {
-      res.render('pages/change-password');
+      res.render('pages/change-password', {username: req.cookies['username']});
     } else {
       res.redirect('/');
     }
