@@ -23,12 +23,17 @@
   overflow: hidden;
   background-color: white;
 }
+.disabled-input {
+    background-color: #e9ecef;
+    opacity: 1;
+    pointer-events: none;
+}
 </style>
 </head>
 <body>
 <div class="container" style="margin-top: 1em;">
     <!-- Sign up form -->
-    <form>
+    <form action="/register" method="post">
         <!-- Sign up card -->
         <div class="card person-card">
             <div class="card-body">
@@ -67,7 +72,7 @@
                         <h2 class="card-title">How to contact you ?</h2>
                         <div class="form-group">
                             <label for="email" class="col-form-label">Email</label>
-                            <input type="email" class="form-control" id="email" value="<%= email %>" name="email" disabled>
+                            <input type="email" class="form-control disabled-input" id="email" value="<%= email %>" name="email" tabindex="-1">
                             <div class="email-feedback">
 
                             </div>
@@ -89,14 +94,14 @@
                         <h2 class="card-title">Create your account !</h2>
                         <div class="form-group">
                             <label for="username" class="col-form-label">Username</label>
-                            <input type="text" class="form-control" id="username" value="<%= username %>" name="username" disabled>
+                            <input type="text" class="form-control disabled-input" id="username" value="<%= username %>" name="username" tabindex="-1">
                             <div class="password-feedback">
 
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="password_conf" class="col-form-label">Password</label>
-                            <input type="password" class="form-control" id="password" value="<%= password %>" name="password" disabled>
+                            <input type="password" class="form-control disabled-input" id="password" value="<%= password %>" name="password" tabindex="-1">
                             <div class="password_conf-feedback">
 
                             </div>
@@ -106,7 +111,7 @@
             </div>
         </div>
         <div style="margin-top: 1em;">
-            <button type="button" class="btn btn-primary btn-lg btn-block">Sign up !</button>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Sign up !</button>
         </div>
         </form>
 </div>
