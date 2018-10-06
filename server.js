@@ -109,24 +109,12 @@ app.post('/join',urlencodedParser,(req, res) => {
                              });
 });
 app.post('/register',urlencodedParser,(req, res) => {
-  async function oracledbconn(){
-      conn = await oracledb.getConnection(dum);
-      conn.execute(
-      `INSERT INTO users VALUES (user_id.nextval, :username, :email, :password, :password_token, :lastname, :firstname)`,
-      [req.body.username, req.body.email, req.body.password, req.body.password, req.body.lastname, req.body.firstname],  // Bind values
-      { autoCommit: true},  // Override the default non-autocommit behavior
-      function(err, result) {
-        if (err) {
-          // return cb(err, conn);
-          console.log(err);
-        } else {
-          console.log("Rows inserted: " + result.rowsAffected);  // 1
-          // return cb(null, conn);
-        }
-      });
-      // if (conn) {await conn.close();};
-  };
-  oracledbconn();
+  console.log(req.body.firstname);
+  console.log(req.body.lastname);
+  console.log(req.body.email);
+  console.log(req.body.phone);
+  console.log(req.body.username);
+  console.log(req.body.password);
   res.redirect('/');
 });
 
@@ -225,7 +213,7 @@ app.post('/login', urlencodedParser, (req, res) => {
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_id); // print params
     var product_id = req.body.p_id;
-    var insertSQL = "insert into orders(order_id, p_id, user_id) values(2,2,3)";
+
     if (req.cookies['username']) {
         oracledbconn(); // call the function run
         async function oracledbconn(){
@@ -238,16 +226,18 @@ app.post('/add-to-cart', urlencodedParser, (req, res) => {
             var user_id = result.rows[0][0];
             console.log(user_id);
 
+            const check = await conn.execute(
+                'select order_id from orders where p_id = :p_id and user_id = :user_id and status = 0', [product_id, user_id]
+            );
+            // if (check.rows && check.rows != "undefined"){
+            //     console.log(check.rows[0][0]);
+            // } else{
+            //     console.log('check');
+            // }
+
             await conn.execute(
-                'insert into orders(order_id, p_id, user_id) values (order_id.nextval, :p_id, :user_id)',[product_id, user_id], {autoCommit: true}
-                // function(err, result) {
-                //     if (err) {
-                //       console.log(err);
-                //     } else {
-                //       console.log("Rows inserted: " + result.rowsAffected);  // 1
-                //     }
-                //   }
-                );
+                'insert into orders(order_id, p_id, user_id) values (orders_seq.nextval, :p_id, :user_id)',[product_id, user_id], {autoCommit: true}
+            );
 
             if (conn) {
                 await conn.close();
