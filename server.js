@@ -212,31 +212,37 @@ app.post('/login', urlencodedParser, (req, res) => {
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_id); // print params
+    var product_id = req.body.p_id;
     var insertSQL = "insert into orders(order_id, p_id, user_id) values(2,2,3)";
     if (req.cookies['username']) {
-        oracledbconn(req.body.p_id, req.cookies['username']); // call the function run
+        oracledbconn(); // call the function run
         async function oracledbconn(){
             conn = await oracledb.getConnection(dum);
-            // const result = await conn.execute(
-            //     'select * from products where p_id = :p_id', [req.body.p_id]
-            // );
-            const result = await conn.execute(
-                'insert into orders(order_id, p_id, user_id) values(:a,:b,:c)',[6,3,4] ,{autoCommit: true});
 
-            console.log('Rows inserted: ' + result.rowsAffected);
+            const result = await conn.execute(
+                'select user_id from users where username = :username',
+                [req.cookies['username'][0]]);
+
+            var user_id = result.rows[0][0];
+            console.log(user_id);
+
+            await conn.execute(
+                'insert into orders(order_id, p_id, user_id) values (order_id.nextval, :p_id, :user_id)',[product_id, user_id], {autoCommit: true}
+                // function(err, result) {
+                //     if (err) {
+                //       console.log(err);
+                //     } else {
+                //       console.log("Rows inserted: " + result.rowsAffected);  // 1
+                //     }
+                //   }
+                );
+
             if (conn) {
                 await conn.close();
                 // .catch((error) => {})
             };
-
-            // var data = JSON.stringify(result.rows[0]);
-            var data = result.rows[0];
-
-            console.log( result.rows);
-            console.log('okkkk');
+            res.send({"success" : "Updated Successfully", "status" : 200});
         };
-
-        res.send({"success" : "Updated Successfully", "status" : 200});
     } else {
         res.send({"error" : "Update error"});
     }
