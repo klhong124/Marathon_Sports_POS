@@ -83,7 +83,7 @@
             <ul class="navbar-nav">
                 <li style="padding:12px;"></li>
                 <li class="nav-item">
-                    <a style="position: relative;">
+                    <a href="/cart" style="position: relative;">
                         <div class="cart-num"></div>
                         <i class="fas fa-shopping-cart fa-2x"></i>
                     </a>
@@ -143,15 +143,19 @@
     var count = 1;
     function addToCart(id){
         console.log(id);
-        $('.cart-num').html(count);
+
         $.ajax({
             url:'/add-to-cart',
             type:'post',
             data: {p_id: id},
             success:function(result){
+                console.log(result['success']);
+                $('.cart-num').html(count);
+                count++;
+            },error:function(err){
+                console.log(err);
             }
         });
-        count++;
     }
 
 </script>

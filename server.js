@@ -46,27 +46,40 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // index page
 app.get('/',(req, res, next) => {
      async function oracledbconn(){
-         conn = await oracledb.getConnection(dum);
-         var userslist = await conn.execute(
+            conn = await oracledb.getConnection(dum);
+            var userslist = await conn.execute(
              `select username from users`
-         );
-         var emailslist = await conn.execute(
+            );
+            var emailslist = await conn.execute(
              `select email from users`
-         );
-         var products = await conn.execute(
+            );
+            var products = await conn.execute(
              `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
              // 'select * from images'
-         );
-         if (conn) {await conn.close();};
-         // check if the user exists
-         if (userslist.rows) {
-           res.render('pages/index', {username:undefined,
-                                      error_message:false,
-                                      userslist:userslist.rows,
-                                      emailslist:emailslist.rows,
-                                      data:products.rows
-                                    });
-         }
+            );
+            if (conn) {await conn.close();};
+            // check if the user exists
+            if (userslist.rows) {
+
+                if(req.cookies['username']) {
+                    res.render('pages/index', {
+                        username: req.cookies['username'],
+                        error_message:false,
+                        userslist:userslist.rows,
+                        emailslist:emailslist.rows,
+                        data:products.rows
+                    });
+                }else {
+                    res.render('pages/index', {
+                       username:undefined,
+                       error_message:false,
+                       userslist:userslist.rows,
+                       emailslist:emailslist.rows,
+                       data:products.rows
+                    });
+                }
+            }
+
     };
      oracledbconn(); // call the function run
 
@@ -187,7 +200,7 @@ app.post('/login', urlencodedParser, (req, res) => {
 
         // check if the user exists
         if (result.rows[0] !== undefined) {
-           res.render('pages/dashboard');
+           res.render('pages/dashboard', {username: req.cookies['username']});
         } else {
            res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
           // res.redirect('/');
@@ -198,8 +211,30 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
-    console.log(req.body.p_id);
-    res.end('{"success" : "Updated Successfully", "status" : 200}');
+    console.log(req.body.p_id); // print params
+
+    if (req.cookies['username']) {
+        oracledbconn(req.body.p_id, req.cookies['username']); // call the function run
+        async function oracledbconn(){
+            conn = await oracledb.getConnection(dum);
+            const result = await conn.execute(
+                'select * from products where p_id = :p_id', [req.body.p_id]
+            );
+
+            if (conn) {await conn.close();};
+
+            // var data = JSON.stringify(result.rows[0]);
+            var data = result.rows[0];
+
+            console.log( result.rows);
+            console.log('okkkk');
+        };
+
+        res.send({"success" : "Updated Successfully", "status" : 200});
+    } else {
+        res.send({"error" : "Update error"});
+    }
+
 });
 
 // product page
@@ -244,7 +279,11 @@ app.get('/logout',(req, res) => {
 
 // shopping cart
 app.get('/cart',(req, res) => {
-    res.render('pages/shopping-cart');
+    if (req.cookies['username']) {
+      res.render('pages/shopping-cart', {username: req.cookies['username']});
+    } else {
+      res.redirect('/');
+    }
 });
 
 // change password page
