@@ -367,7 +367,7 @@ app.get('/forgetpassword',(req, res) => {
 });
 
 app.use('/public', express.static('public'));
-var port = 5000; //change here
+var port = 3000; //change here
 app.listen(port);
 console.log(`Server Running on port ${port}`);
 // require("openurl").open(`http://localhost:${port}`);
