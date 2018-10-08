@@ -109,12 +109,24 @@ app.post('/join',urlencodedParser,(req, res) => {
                              });
 });
 app.post('/register',urlencodedParser,(req, res) => {
-  console.log(req.body.firstname);
-  console.log(req.body.lastname);
-  console.log(req.body.email);
-  console.log(req.body.phone);
-  console.log(req.body.username);
-  console.log(req.body.password);
+  async function oracledbconn(){
+      conn = await oracledb.getConnection(dum);
+      conn.execute(
+      `INSERT INTO users VALUES (user_id.nextval, :username, :email, :password, :lastname, :firstname)`,
+      [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname],  // Bind values
+      { autoCommit: true},  // Override the default non-autocommit behavior
+      function(err, result) {
+        if (err) {
+          // return cb(err, conn);
+          console.log(err);
+        } else {
+          console.log("Rows inserted: " + result.rowsAffected);  // 1
+          // return cb(null, conn);
+        }
+      });
+      // if (conn) {await conn.close();};
+  };
+  oracledbconn();
   res.redirect('/');
 });
 
