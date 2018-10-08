@@ -3,7 +3,7 @@
 <div></div>
 <div class="f-style">
     <span class="float-right">
-        <a href="#">Back to top</a>
+        <a href="javascript:BTT()">Back to top</a>
     </span>
     <p>&copy; Marathon Sports 2018</p>
     <% if(typeof username != 'undefined' && username) { %>
@@ -14,7 +14,6 @@
     <% } %>
 </div>
 <style>
-
     .f-style {
         padding: 15px;
         background:#A62639;
@@ -25,3 +24,8 @@
         color: white;
     }
 </style>
+<script type="text/javascript">
+  function BTT(){
+    document.getElementById("why-Marathonid").scrollIntoView(false);
+  }
+</script>
