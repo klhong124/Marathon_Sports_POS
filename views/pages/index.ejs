@@ -138,23 +138,51 @@
             <% include ../partials/footer %>
         </div>
         <script>
-            var selectedSlide = document.getElementsByName('slides');
+            var selectSlide = document.getElementsByName('slides');
             var checkedValue = 1;
 
-            // autoplay slider
-            setInterval(function () {
-                document.getElementsByName("slides").false;
-                changeSlide = document.getElementById("slide" + checkedValue);
+            function changeSlide() {
+                document.getElementById("slide" + checkedValue).checked = true;
+            }
 
-                if (checkedValue == selectedSlide.length) {
-                    checkedValue = 1;
-                    changeSlide.checked = true;
-                } else {
-                    checkedValue = (checkedValue + 1);
-                    changeSlide.checked = true;
+            console.log('before');
+            for (var i = 0, length = selectSlide.length; i < length; i++) {
+                if (selectSlide[i].checked = true) {
+                    console.log(i);
+                    console.log('clicked');
+                    var kenny = setInterval(function () {
+                        console.log('before if');
+                        if (checkedValue == selectSlide.length) {
+                            checkedValue = 1;
+                            changeSlide();
+                            console.log('is 7');
+                        } else {
+                            checkedValue = checkedValue + 1;
+                            changeSlide();
+                            console.log('not 7');
+                        }
+                    }, 3000);
+                    break;
                 }
-            }, 3000);
+            }
+            console.log('after if');
 
+            // var selectedSlide = document.getElementsByName('slides');
+            // var checkedValue = 1;
+            //
+            // // autoplay slider
+            // setInterval(function () {
+            //     document.getElementsByName("slides").false;
+            //     changeSlide = document.getElementById("slide" + checkedValue);
+            //
+            //     if (checkedValue == selectedSlide.length) {
+            //         checkedValue = 1;
+            //         changeSlide.checked = true;
+            //     } else {
+            //         checkedValue = (checkedValue + 1);
+            //         changeSlide.checked = true;
+            //     }
+            // }, 3000);
 
           AOS.init();
 
