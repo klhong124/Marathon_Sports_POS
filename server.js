@@ -198,18 +198,13 @@ app.get('/about',(req, res) => {
 
 // POST '/login' gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
-    oracledbconn(req.body.email,req.body.password);
-    async function oracledbconn(email,password){
+    async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
         const result = await conn.execute(
-            'select username from users where email = :email and username = :username',
-            [email,password] // 'select * from users'
+            `select username from users where email = '${req.body.email}' and password = '${req.body.password}'`,
         );
-
-
         if (conn) {await conn.close();};
-        console.log(req.cookies['username']); // get username from cookie
-
+        console.log(`${result.rows[0]}`);
         // check if the user exists
         if (result.rows[0] !== undefined) {
             res.cookie('username', result.rows[0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
@@ -219,6 +214,7 @@ app.post('/login', urlencodedParser, (req, res) => {
             res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
         }
     };
+    oracledbconn();
 });
 
 // get product if from ajax
