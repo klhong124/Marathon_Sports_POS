@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 var dum = require('./dbconfig.js');
 // gobal vars
 let conn;
+// oracledb.autoCommit = true;
 
 
 const jsonParser = bodyParser.json(); // create application/json parser
@@ -211,25 +212,39 @@ app.post('/login', urlencodedParser, (req, res) => {
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_id); // print params
+    var product_id = req.body.p_id;
 
     if (req.cookies['username']) {
-        oracledbconn(req.body.p_id, req.cookies['username']); // call the function run
+        oracledbconn(); // call the function run
         async function oracledbconn(){
             conn = await oracledb.getConnection(dum);
+
             const result = await conn.execute(
-                'select * from products where p_id = :p_id', [req.body.p_id]
+                'select user_id from users where username = :username',
+                [req.cookies['username'][0]]);
+
+            var user_id = result.rows[0][0];
+            console.log(user_id);
+
+            const check = await conn.execute(
+                'select order_id from orders where p_id = :p_id and user_id = :user_id and status = 0', [product_id, user_id]
+            );
+            // if (check.rows && check.rows != "undefined"){
+            //     console.log(check.rows[0][0]);
+            // } else{
+            //     console.log('check');
+            // }
+
+            await conn.execute(
+                'insert into orders(order_id, p_id, user_id) values (orders_seq.nextval, :p_id, :user_id)',[product_id, user_id], {autoCommit: true}
             );
 
-            if (conn) {await conn.close();};
-
-            // var data = JSON.stringify(result.rows[0]);
-            var data = result.rows[0];
-
-            console.log( result.rows);
-            console.log('okkkk');
+            if (conn) {
+                await conn.close();
+                // .catch((error) => {})
+            };
+            res.send({"success" : "Updated Successfully", "status" : 200});
         };
-
-        res.send({"success" : "Updated Successfully", "status" : 200});
     } else {
         res.send({"error" : "Update error"});
     }
@@ -288,7 +303,7 @@ app.get('/cart',(req, res) => {
 // change password page
 app.get('/changepassword',(req, res) => {
     if (req.cookies['username']) {
-      res.render('pages/change-password');
+      res.render('pages/change-password', {username: req.cookies['username']});
     } else {
       res.redirect('/');
     }
