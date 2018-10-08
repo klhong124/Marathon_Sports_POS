@@ -26,6 +26,7 @@
     "express": "^4.16.3",
     "nodemon": "^1.18.4",
     "openurl": "^1.1.1",
+    "oracle": "^0.4.1",
     "oracledb": "^2.3.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"
