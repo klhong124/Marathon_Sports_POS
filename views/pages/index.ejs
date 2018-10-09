@@ -117,7 +117,7 @@
                                           <p class="card-text"><%= data[i][0] %><br><span style="color:#ff6e00;">$ <b><%= data[i][1] %></b></span></p>
                                           <div class="d-flex justify-content-between align-items-center">
                                               <div class="btn-group">
-                                                  <a href="/product"><button type="button" class="btn btn-sm btn-outline-primary">View</button></a>
+                                                  <a href="/product/<%= data[i][3] %>"><button type="button" class="btn btn-sm btn-outline-primary">View</button></a>
                                                   <!-- <form action="/add-to-cart" method="post"> -->
 
                                                   <button type="submit" class="btn btn-sm btn-success"  onclick="addToCart('<%= data[i][3] %>')" data-id="a<%= data[i][3] %>">Add to chart</button>

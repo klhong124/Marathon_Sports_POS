@@ -10,7 +10,6 @@ var dum = require('./dbconfig.js');
 let conn;
 // oracledb.autoCommit = true;
 
-
 const jsonParser = bodyParser.json(); // create application/json parser
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false }); // create application/x-www-form-urlencoded parser
@@ -51,6 +50,10 @@ app.get('/',(req, res, next) => {
             var userslist = await conn.execute(
              `select username from users`
             );
+            var testing = await conn.execute(
+             `select * from users`
+            );
+            console.log(testing);
             var emailslist = await conn.execute(
              `select email from users`
             );
@@ -263,20 +266,28 @@ app.post('/add-to-cart', urlencodedParser, (req, res) => {
 app.get('/product/:p_id',(req, res) => {
     async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
+        // should group by this sql 
         const result = await conn.execute(
-            'select * from products where p_id = :p_id', [req.params.p_id]
+            'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
+        );
+
+        var item = await conn.execute(
+         `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
+         // 'select * from products'
         );
 
         if (conn) {await conn.close();};
 
         // var data = JSON.stringify(result.rows[0]);
         var data = result.rows[0];
+        item = item.rows;
 
-        console.log( result.rows);
+
+        console.log(result);
 
         // check if the user exists
         if (result.rows) {
-            res.render('pages/product', {username: req.cookies['username'], data:data});
+            res.render('pages/product', {username: req.cookies['username'], data:data, item: item});
             // res.send('pages/product/'+req.params.p_id, {data:data});
         }
         // res.render('pages/dashboard');
