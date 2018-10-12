@@ -266,7 +266,7 @@ app.post('/add-to-cart', urlencodedParser, (req, res) => {
 app.get('/product/:p_id',(req, res) => {
     async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
-        // should group by this sql 
+        // should group by this sql
         const result = await conn.execute(
             'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
         );
@@ -283,14 +283,12 @@ app.get('/product/:p_id',(req, res) => {
         item = item.rows;
 
 
-        console.log(result);
+        console.log(data);
 
         // check if the user exists
         if (result.rows) {
             res.render('pages/product', {username: req.cookies['username'], data:data, item: item});
-            // res.send('pages/product/'+req.params.p_id, {data:data});
         }
-        // res.render('pages/dashboard');
     };
     oracledbconn(); // call the function run
 });

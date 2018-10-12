@@ -18,9 +18,10 @@
         z-index: -100;
     }
 
-    #product>.carousel-inner>img{
+    #product>.carousel-inner>.carousel-item>img{
         height: 420px;
         weight: 100%;
+        /* object-fit: contain; */
     }
 </style>
 
@@ -32,30 +33,29 @@
     <div class="card">
         <div class="row">
             <div class="col-sm-5">
-                <article class="card-body p-5">
+                <article class="card-body p-1">
                     <div id="product" class="carousel slide" data-ride="carousel">
-                        <% for(var i=0; i<data.length; i++){ %>
                         <!-- Indicators -->
                         <ul class="carousel-indicators small-img">
                             <!-- <<img style="width:40px; height:40px;"  data-target="#product" data-slide-to="0" class="active" src="./public/images/2.jpg">
                             <img style="width:40px; height:40px;" data-target="#product" data-slide-to="1" src="./public/images/2.jpg">
                             <img style="width:40px; height:40px;" data-target="#product" data-slide-to="2" src="./public/images/2.jpg"> -->
-                            <div data-target="#product" data-slide-to="0" class="active"><img src="/public/images/<%= data[i][7]%>/<%= data[i][6]%>.jpg"></div>
-                            <div data-target="#product" data-slide-to="1"><img src="./public/images/2.jpg"></div>
-                            <div data-target="#product" data-slide-to="2"><img src="./public/images/3.jpg"></div>
+                            <div data-target="#product" data-slide-to="0" class="active"><img src="/public/images/<%= data[7] %>/<%= data[6] %>.jpg"></div>
+                            <!-- <div data-target="#product" data-slide-to="1"><img src="/public/images/2.jpg"></div>
+                            <div data-target="#product" data-slide-to="2"><img src="/public/images/3.jpg"></div> -->
                         </ul>
 
                         <!-- The slideshow -->
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <img src="/public/images/<%= data[i][7] %>/<%= data[i][6]%>.jpg">
+                                <img src="/public/images/<%= data[7] %>/<%= data[6] %>.jpg">
+                            </div>
+                            <!-- <div class="carousel-item">
+                                <img src="/public/images/2.jpg">
                             </div>
                             <div class="carousel-item">
-                                <img src="/public/images/<%= data[i][7] %>/<%= data[i][6]%>.jpg">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="/public/images/<%= data[i][7] %>/<%= data[i][6]%>.jpg">
-                            </div>
+                                <img src="/public/images/3.jpg">
+                            </div> -->
                         </div>
 
                         <!-- Left and right controls -->
@@ -65,36 +65,36 @@
                         <a class="carousel-control-next" href="#product" data-slide="next">
                             <span class="carousel-control-next-icon"></span>
                         </a>
-                        <% } %>
                     </div>
                 </article>
             </div>
 
             <aside class="col-sm-7">
                 <article class="card-body p-5">
-                    <h3 class="title mb-3"> <%= data[1] %></h3>
+                    <form  action="" method="post" >
+                        <h3 class="title mb-3"> <%= data[1] %></h3>
 
-                    <p class="price-detail-wrap">
-                        <span class="price h3 text-warning">
-                            <span class="currency">HK $</span><span class="num"><%= data[3] %></span>
-                        </span>
-                    </p> <!-- price-detail-wrap .// -->
-                    <dl class="item-property">
-                        <dt>Description</dt>
-                        <dd><p><%= data[2] %></p></dd>
+                        <p class="price-detail-wrap">
+                            <span class="price h3 text-warning">
+                                <span class="currency">HK $</span><span class="num"><%= data[3] %></span>
+                            </span>
+                        </p> <!-- price-detail-wrap .// -->
+                        <dl class="item-property">
+                            <dt>Description</dt>
+                            <dd><p><%= data[2] %></p></dd>
                         </dl>
-                        <dl class="param param-feature">
-                            <dt>Model#</dt>
-                            <dd>12345611</dd>
-                        </dl>  <!-- item-property-hor .// -->
+                        <!-- <dl class="param param-feature">
+                        <dt>Model#</dt>
+                        <dd>12345611</dd>
+                        </dl>
                         <dl class="param param-feature">
                             <dt>Color</dt>
                             <dd>Black and white</dd>
-                        </dl>  <!-- item-property-hor .// -->
+                        </dl> -->
                         <dl class="param param-feature">
-                            <dt>Delivery</dt>
-                            <dd>Russia, USA, and Europe</dd>
-                        </dl>  <!-- item-property-hor .// -->
+                            <dt>Shipping & Delivery</dt>
+                            <dd>Shipping is free on <b>$300+</b> orders. Marathon Sports uses the best carriers in the business to make sure your order gets to you on time. From the Secure Checkout page you'll see your item description, price and delivery timing.</dd>
+                        </dl>
 
                         <hr>
                         <div class="row">
@@ -112,32 +112,32 @@
                             </div> <!-- col.// -->
                             <div class="col-sm-7">
                                 <dl class="param param-inline">
-                                    <dt>Size: </dt>
+                                    <dt>Size Available: </dt>
                                     <dd>
                                         <label class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                            <span class="form-check-label">SM</span>
+                                            <span class="form-check-label"><%= data[3] %></span>
                                         </label>
-                                        <label class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                            <span class="form-check-label">MD</span>
-                                        </label>
-                                        <label class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                            <span class="form-check-label">XXL</span>
-                                        </label>
+                                        <!-- <label class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                        <span class="form-check-label">MD</span>
+                                    </label>
+                                    <label class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                    <span class="form-check-label">XXL</span>
+                                </label> -->
                                     </dd>
-                                </dl>  <!-- item-property .// -->
-                            </div> <!-- col.// -->
-                        </div> <!-- row.// -->
+                                </dl>
+                            </div>
+                        </div>
                         <hr>
                         <a href="#" class="btn btn-lg btn-primary text-uppercase"> Buy now </a>
-                        <button class="btn btn-lg btn-outline-success text-uppercase" onclick="addToCart('<%= data[1] %>')" data-id="a<%= data[1] %>"> <i class="fas fa-shopping-cart"></i> Add to cart </button>
-                    </article> <!-- card-body.// -->
-                </aside> <!-- col.// -->
-            </div> <!-- row.// -->
-        </div> <!-- card.// -->
-    </div>
+                <!-- <button class="btn btn-lg btn-outline-success text-uppercase" onclick="addToCart('<%= data[1] %>')" data-id="a<%= data[1] %>"> <i class="fas fa-shopping-cart"></i> Add to cart </button> -->
+                    </form>
+                </article>
+            </aside>
+        </div> <!-- row.// -->
+    </div> <!-- card.// -->
 </div> <!--container.//-->
 <div style="height:120px; width:100%;"></div>
 <div class="container">
