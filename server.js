@@ -50,17 +50,16 @@ app.get('/',(req, res, next) => {
             var userslist = await conn.execute(
              `select username from users`
             );
-            var testing = await conn.execute(
-             `select * from users`
-            );
-            console.log(testing);
             var emailslist = await conn.execute(
              `select email from users`
             );
             var products = await conn.execute(
-             `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
-             // 'select * from images'
+             `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 9`
             );
+            var products_code = await conn.execute(
+             `SELECT product_id, size_id, product_code FROM stores_products_sizes WHERE product_id <= 9`
+            );
+            console.log(products_code.rows);
             if (conn) {await conn.close();};
             // check if the user exists
             if (userslist.rows) {
