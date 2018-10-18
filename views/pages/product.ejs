@@ -23,6 +23,9 @@
         weight: 100%;
         /* object-fit: contain; */
     }
+    #stock-tooltip {
+        text-decoration: none;
+    }
 </style>
 
 
@@ -71,12 +74,13 @@
 
             <aside class="col-sm-7">
                 <article class="card-body p-5">
-                    <form  action="" method="post" >
+                    <form  action="/to-cart" method="post" >
                         <h3 class="title mb-3"> <%= data[1] %></h3>
 
                         <p class="price-detail-wrap">
                             <span class="price h3 text-warning">
-                                <span class="currency">HK $</span><span class="num"><%= data[3] %></span>
+                                <span class="currency">HK $</span><span class="num" name="p_price"><%= data[3] %></span>
+                                <input hidden name="p_price" value="<%= data[3] %>">
                             </span>
                         </p> <!-- price-detail-wrap .// -->
                         <dl class="item-property">
@@ -100,13 +104,9 @@
                         <div class="row">
                             <div class="col-sm-5">
                                 <dl class="param param-inline">
-                                    <dt>Quantity: </dt>
+                                    <dt>Quantity:</dt>
                                     <dd>
-                                        <select class="form-control form-control-sm" style="width:70px;">
-                                            <option> 1 </option>
-                                            <option> 2 </option>
-                                            <option> 3 </option>
-                                        </select>
+                                        <input class="form-control" style="width: 50px;" type="number" min="1" name="p_qty" value="1">
                                     </dd>
                                 </dl>  <!-- item-property .// -->
                             </div> <!-- col.// -->
@@ -114,10 +114,14 @@
                                 <dl class="param param-inline">
                                     <dt>Size Available: </dt>
                                     <dd>
-                                        <label class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                            <span class="form-check-label"><%= data[3] %></span>
-                                        </label>
+                                        <% for(var i=1; i<product.length; i++ ){ %>
+                                            <a href="#" id="stock-tooltip" data-toggle="tooltip" title="<%= product[i][1] %> Stocks Left">
+                                            <label class="form-check form-check-inline">
+                                                  <input class="form-check-input" type="radio" name="p_size" value="<%= product[i][2] %>">
+                                                <span class="form-check-label" ><%= product[i][2] %></span>
+                                            </label></a>
+                                        <% } %>
+
                                         <!-- <label class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
                                         <span class="form-check-label">MD</span>
@@ -131,7 +135,8 @@
                             </div>
                         </div>
                         <hr>
-                        <a href="#" class="btn btn-lg btn-primary text-uppercase"> Buy now </a>
+                        <button class="btn btn-primary" type="submit">Buy now</button>
+                        <!-- <a href="#" class="btn btn-lg btn-primary text-uppercase"> Buy now </a> -->
                 <!-- <button class="btn btn-lg btn-outline-success text-uppercase" onclick="addToCart('<%= data[1] %>')" data-id="a<%= data[1] %>"> <i class="fas fa-shopping-cart"></i> Add to cart </button> -->
                     </form>
                 </article>
@@ -230,4 +235,8 @@
           }
         prevScrollpos = currentScrollPos;
     }
+
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 </script>

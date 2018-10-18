@@ -262,6 +262,13 @@ app.post('/add-to-cart', urlencodedParser, (req, res) => {
 
 });
 
+app.post('/to-cart', urlencodedParser, (req, res) => {
+    console.log(req.body.p_price);
+    console.log(req.body.p_qty);
+    console.log(req.body.p_size);
+});
+
+
 // product page
 app.get('/product/:p_id',(req, res) => {
     async function oracledbconn(){
@@ -269,6 +276,10 @@ app.get('/product/:p_id',(req, res) => {
         // should group by this sql
         const result = await conn.execute(
             'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
+        );
+
+        var product = await conn.execute(
+            'SELECT store_id, sps.qty, (select p_size from sizes where sps.size_id = sizes.size_id ) AS p_size FROM products p LEFT JOIN stores_products_sizes sps ON sps.product_id = p.p_id WHERE p.p_id = :p_id', [req.params.p_id]
         );
 
         var item = await conn.execute(
@@ -281,13 +292,13 @@ app.get('/product/:p_id',(req, res) => {
         // var data = JSON.stringify(result.rows[0]);
         var data = result.rows[0];
         item = item.rows;
-
+        product = product.rows;
 
         console.log(data);
 
         // check if the user exists
         if (result.rows) {
-            res.render('pages/product', {username: req.cookies['username'], data:data, item: item});
+            res.render('pages/product', {username: req.cookies['username'], data:data, item: item, product: product});
         }
     };
     oracledbconn(); // call the function run
