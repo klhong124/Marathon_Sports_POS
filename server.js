@@ -219,6 +219,7 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
+  console.log(`INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`);
     if (req.cookies['username']) {
         async function oracledbconn(){
             conn = await oracledb.getConnection(dum);
@@ -315,8 +316,11 @@ app.get('/cart',(req, res) => {
           cartlist[i].push(p_name.rows[0][1]);
           cartlist[i].push(p_name.rows[0][2]);
         }
+        var size = await conn.execute(
+         `SELECT * FROM sizes WHERE size_id>1009 and size_id <1015`
+        );
       if (conn) {await conn.close();};
-      res.render('pages/cart',{username: req.cookies['username'],cartlist:cartlist})
+      res.render('pages/cart',{username: req.cookies['username'],cartlist:cartlist,size:size.rows})
       };
       oracledbconn();
     } else {
