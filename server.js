@@ -62,15 +62,14 @@ app.get('/',(req, res, next) => {
             if (conn) {await conn.close();};
             // check if the user exists
             if (userslist.rows) {
-
                 if(req.cookies['username']) {
-                    res.render('pages/index', {
-                        username: req.cookies['username'],
-                        error_message:false,
-                        userslist:userslist.rows,
-                        emailslist:emailslist.rows,
-                        data:products.rows,
-                        size:size.rows
+                  res.render('pages/index', {
+                      username: req.cookies['username'],
+                      error_message:false,
+                      userslist:userslist.rows,
+                      emailslist:emailslist.rows,
+                      data:products.rows,
+                      size:size.rows
                     });
                 }else {
                     res.render('pages/index', {
@@ -117,17 +116,16 @@ app.post('/register',urlencodedParser,(req, res) => {
       conn.execute(
       `INSERT INTO users VALUES (user_id.nextval, :username, :email, :password, :lastname, :firstname)`,
       [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname],  // Bind values
-      { autoCommit: true},  // Override the default non-autocommit behavior
+      {autoCommit: true},
       function(err, result) {
         if (err) {
-          // return cb(err, conn);
           console.log(err);
         } else {
           console.log("Rows inserted: " + result.rowsAffected);  // 1
-          // return cb(null, conn);
         }
-      });
-      // if (conn) {await conn.close();};
+      }
+    );
+    if (conn) {await conn.close();};
   };
   oracledbconn();
   res.redirect('/');
@@ -204,14 +202,13 @@ app.post('/login', urlencodedParser, (req, res) => {
     async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
         const result = await conn.execute(
-            `select username from users where email = '${req.body.email}' and password = '${req.body.password}'`,
+            `select username,user_id from users where email = '${req.body.email}' and password = '${req.body.password}'`,
         );
         if (conn) {await conn.close();};
-        console.log(`${result.rows[0]}`);
         // check if the user exists
         if (result.rows[0] !== undefined) {
-            res.cookie('username', result.rows[0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
-
+            res.cookie('username', result.rows[0][0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
+            res.cookie('user_id', result.rows[0][1], { maxAge: 900000});
             res.render('pages/dashboard', {username: req.cookies['username']});
         } else {
             res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
@@ -222,45 +219,26 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
-    console.log(req.body.p_id); // print params
-    console.log(req.body.p_size); // print params
-    var product_id = req.body.p_id;
-
     if (req.cookies['username']) {
-        oracledbconn(); // call the function run
         async function oracledbconn(){
             conn = await oracledb.getConnection(dum);
-
-            const result = await conn.execute(
-                'select user_id from users where username = :username',
-                [req.cookies['username'][0]]);
-
-            var user_id = result.rows[0][0];
-            console.log(user_id);
-
-            const check = await conn.execute(
-                'select order_id from orders where p_id = :p_id and user_id = :user_id and status = 0', [product_id, user_id]
-            );
-            // if (check.rows && check.rows != "undefined"){
-            //     console.log(check.rows[0][0]);
-            // } else{
-            //     console.log('check');
-            // }
-
-            await conn.execute(
-                'insert into orders(order_id, p_id, user_id) values (orders_seq.nextval, :p_id, :user_id)',[product_id, user_id], {autoCommit: true}
-            );
-
-            if (conn) {
-                await conn.close();
-                // .catch((error) => {})
-            };
-            res.send({"success" : "Updated Successfully", "status" : 200});
+            conn.execute(
+            `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,
+            {autoCommit: true},
+                function(err, result) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Rows inserted: " + result.rowsAffected);  // 1
+                  }
+                }
+              );
+            if (conn) {await conn.close();};
         };
+          oracledbconn();
     } else {
         res.send({"error" : "Update error"});
     }
-
 });
 
 app.post('/to-cart', urlencodedParser, (req, res) => {
@@ -323,7 +301,15 @@ app.get('/logout',(req, res) => {
 // shopping cart
 app.get('/cart',(req, res) => {
     if (req.cookies['username']) {
-      res.render('pages/shopping-cart', {username: req.cookies['username']});
+      async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        var data = await conn.execute(
+         `select p_id,size_id,qty from cart where user_id = ${req.cookies['user_id']}`
+        );
+        var cartlist = data.rows[0];
+      res.render('pages/cart',{username: req.cookies['username'],})
+      };
+      oracledbconn();
     } else {
       res.redirect('/');
     }
