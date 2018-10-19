@@ -5,12 +5,6 @@
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <style>
-        td>.text-warpper{
-            text-align: right;
-        }
-        table.display tfoot td {
-            border-color: #e0dede;
-        }
         .bgcolor{
           background:#A62639;
         }
@@ -25,77 +19,77 @@
   <div class="album py-5 bgcolor">
         <center><img src="/public/marathon-logobgred.png" alt="" class="Marathon-logo" width="300px"></center>
   </div>
-  <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  -->
+  <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   -->
     <div class="container">
-        <div class="card">
-            <div class="card-body">
+        <div class="col-md-8" style="float:left">
+
                 <table id="" class="display" style="width:100%">
                     <thead>
                         <tr>
                             <th>Product</th>
                             <th>Quantity</th>
                             <th>Price</th>
-                            <th>Totoal</th>
+                            <th>Discount</th>
+                            <th>Total</th>
                             <th> </th>
                         </tr>
                     </thead>
+<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+                                                EJS cartlist[i]
+                                                [0] = product_id
+                                                [1] = product_size
+                                                [2] = Qty
+                                                [3] = product_name
+                                                [4] = Price
+                                                [5] = discount ( n% off )
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  -->
                     <tbody>
+                        <% for(var i=0; i<cartlist.length; i++) { %>
+
                         <tr>
-                            <td>Magazine</td>
-                            <td><input value="3"></td>
-                            <td>$4</td>
-                            <td>$12</td>
+                            <td class="product_name"><%= cartlist[i][3]%></td>
+                            <td><input type="number" value="<%= cartlist[i][2]%>" style="width:50px"></td>
+                            <td>$<%= cartlist[i][4]%></td>
+                            <% if(cartlist[i][5] != 0) { %>
+                              <td><%= cartlist[i][5]%>%</td>
+                            <% } else { %>
+                              <td>No</td>
+                            <% } %>
+                            <td>$<%= Math.round(cartlist[i][2]*cartlist[i][4]*(1-cartlist[i][5]/100))%></td>
                             <td> <button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i></button> </td>
                         </tr>
-                        <tr>
-                            <td>Mouse</td>
-                            <td><input value="1"></td>
-                            <td>$8</td>
-                            <td>$8</td>
-                            <td> <button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i></button> </td>
-                        </tr>
+
+                        <% } %>
                     </tbody>
-                    <tfoot>
-                        <td> </td>
-                        <td> </td>
-                        <td> </td>
-                        <td> </td>
-                        <td> </td>
-                    </tfoot>
-                    <tfoot>
-                        <td> </td>
-                        <td> </td>
-                        <td>Subtotal</td>
-                        <td class="text-warpper">$20</td>
-                        <td> </td>
-                    </tfoot>
-                    <tfoot>
-                        <td> </td>
-                        <td> </td>
-                        <td>Estimated shipping</td>
-                        <td class="text-warpper">$8</td>
-                        <td> </td>
-                    </tfoot>
-                    <tfoot>
-                        <td> </td>
-                        <td> </td>
-                        <td><h3>Total</h3></td>
-                        <td class="text-warpper"><h3>$28</h3></td>
-                        <td> </td>
-                    </tfoot>
-                    <tfoot>
-                        <td> </td>
-                        <td> </td>
-                        <td> </td>
-                        <td><button type="button" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Contiue Shopping</button></td>
-                        <td><button type="button" class="btn btn-success">Checkout <i class="fas fa-caret-right"></i></button></td>
-                    </tfoot>
                 </table>
-            </div>
-        </card>
+        </div>
+<!-- ==================================================================================================================== -->
+    <div class="card col-md-4" >
+      <br><h4><b>Order Total</b></h4><hr>
+      <div class="card-body">
+        <table style="width:100%">
+          <tr>
+              <td>Net Purchase Amount</td>
+              <td>$1000</td>
+          </tr>
+          <tr>
+              <td>Delivery fee</td>
+              <td>$100</td>
+          </tr>
+        </table><hr>
+        <div style="width:100%;float:left;">
+          <h5 style="display:inline">HKD</h5>
+          <h3 style="float:right">$1100</h3>
+        </div><br>
+    <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   -->
+        <center>
+          <button type="button" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Contiue Shopping</button>
+          <button type="button" class="btn btn-success">Checkout <i class="fas fa-caret-right"></i></button>
+        </center>
+      </div>
     </div>
-
-
+  </div>
+  <!-- ==================================================================================================================== -->
     <script>
         $(document).ready(function() {
             // script relavant to datatable
@@ -104,12 +98,11 @@
                 'columnDefs': [
                     {
                         "targets": 0, // your case first column
-                        "className": "text-center",
-                        // "width": "4%"
+                        //
                     },
                     {
-                        "targets": 1, // your case first column
-                        "width": "2%"
+                        "targets": 1,
+                        "className": "text-center",
                     },
                     {
                         "targets": 2,
@@ -117,6 +110,16 @@
                     },
                     {
                         "targets": 3,
+                        "className": "text-center",
+                    }
+                    ,
+                    {
+                        "targets": 4,
+                        "className": "text-center",
+                    }
+                    ,
+                    {
+                        "targets": 5,
                         "className": "text-center",
                     }
                 ],

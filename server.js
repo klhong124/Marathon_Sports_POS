@@ -306,8 +306,17 @@ app.get('/cart',(req, res) => {
         var data = await conn.execute(
          `select p_id,size_id,qty from cart where user_id = ${req.cookies['user_id']}`
         );
-        var cartlist = data.rows[0];
-      res.render('pages/cart',{username: req.cookies['username'],})
+        var cartlist = data.rows;
+        for(var i=0;i<cartlist.length;i++){
+          var p_name = await conn.execute(
+           `select p_name,price,discount from products where p_id = ${cartlist[i][0]}`
+          );
+          cartlist[i].push(p_name.rows[0][0]);
+          cartlist[i].push(p_name.rows[0][1]);
+          cartlist[i].push(p_name.rows[0][2]);
+        }
+      if (conn) {await conn.close();};
+      res.render('pages/cart',{username: req.cookies['username'],cartlist:cartlist})
       };
       oracledbconn();
     } else {
