@@ -56,10 +56,9 @@ app.get('/',(req, res, next) => {
             var products = await conn.execute(
              `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 9`
             );
-            var products_code = await conn.execute(
-             `SELECT product_id, size_id, product_code FROM stores_products_sizes WHERE product_id <= 9`
+            var size = await conn.execute(
+             `SELECT * FROM sizes WHERE size_id>1009 and size_id <1015`
             );
-            console.log(products_code.rows);
             if (conn) {await conn.close();};
             // check if the user exists
             if (userslist.rows) {
@@ -70,7 +69,8 @@ app.get('/',(req, res, next) => {
                         error_message:false,
                         userslist:userslist.rows,
                         emailslist:emailslist.rows,
-                        data:products.rows
+                        data:products.rows,
+                        size:size.rows
                     });
                 }else {
                     res.render('pages/index', {
@@ -78,7 +78,8 @@ app.get('/',(req, res, next) => {
                        error_message:false,
                        userslist:userslist.rows,
                        emailslist:emailslist.rows,
-                       data:products.rows
+                       data:products.rows,
+                       size:size.rows
                     });
                 }
             }
@@ -222,6 +223,7 @@ app.post('/login', urlencodedParser, (req, res) => {
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_id); // print params
+    console.log(req.body.p_size); // print params
     var product_id = req.body.p_id;
 
     if (req.cookies['username']) {
