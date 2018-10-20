@@ -45,43 +45,43 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res, next) => {
-     async function oracledbconn(){
-            conn = await oracledb.getConnection(dum);
-            var userslist = await conn.execute(
-             `select username from users`
-            );
-            var emailslist = await conn.execute(
-             `select email from users`
-            );
-            var products = await conn.execute(
-             `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 9`
-            );
-            var size = await conn.execute(
-             `SELECT * FROM sizes WHERE size_id>1009 and size_id <1015`
-            );
-            if (conn) {await conn.close();};
-            // check if the user exists
-            if (userslist.rows) {
-                if(req.cookies['username']) {
-                  res.render('pages/index', {
-                      username: req.cookies['username'],
-                      error_message:false,
-                      userslist:userslist.rows,
-                      emailslist:emailslist.rows,
-                      data:products.rows,
-                      size:size.rows
-                    });
-                }else {
-                    res.render('pages/index', {
-                       username:undefined,
-                       error_message:false,
-                       userslist:userslist.rows,
-                       emailslist:emailslist.rows,
-                       data:products.rows,
-                       size:size.rows
-                    });
-                }
+    async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        var userslist = await conn.execute(
+         `select username from users`
+        );
+        var emailslist = await conn.execute(
+         `select email from users`
+        );
+        var products = await conn.execute(
+         `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 9`
+        );
+        var size = await conn.execute(
+         `SELECT * FROM sizes WHERE size_id>1009 and size_id <1015`
+        );
+        if (conn) {await conn.close();};
+        // check if the user exists
+        if (userslist.rows) {
+            if(req.cookies['username']) {
+              res.render('pages/index', {
+                  username: req.cookies['username'],
+                  error_message:false,
+                  userslist:userslist.rows,
+                  emailslist:emailslist.rows,
+                  data:products.rows,
+                  size:size.rows
+                });
+            }else {
+                res.render('pages/index', {
+                   username:undefined,
+                   error_message:false,
+                   userslist:userslist.rows,
+                   emailslist:emailslist.rows,
+                   data:products.rows,
+                   size:size.rows
+                });
             }
+        }
 
     };
      oracledbconn(); // call the function run
@@ -111,24 +111,24 @@ app.post('/join',urlencodedParser,(req, res) => {
                              });
 });
 app.post('/register',urlencodedParser,(req, res) => {
-  async function oracledbconn(){
-      conn = await oracledb.getConnection(dum);
-      conn.execute(
-      `INSERT INTO users VALUES (user_id.nextval, :username, :email, :password, :lastname, :firstname)`,
-      [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname],  // Bind values
-      {autoCommit: true},
-      function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Rows inserted: " + result.rowsAffected);  // 1
+    async function oracledbconn(){
+        try {
+          conn = await oracledb.getConnection(dum);
+
+          const result = await conn.execute(
+            'INSERT INTO users VALUES(users_seq.nextval, :name, :email, :pw, :lname, :fname)', [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname], {autoCommit: true}
+          );
+          console.log(result.rows);
+        } catch (err) {
+          console.log('Ouch!', err);
+        } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
         }
-      }
-    );
-    if (conn) {await conn.close();};
-  };
-  oracledbconn();
-  res.redirect('/');
+    }
+    oracledbconn();
+    res.redirect('/');
 });
 
 // support page
@@ -162,7 +162,7 @@ app.get('/stock',(req, res) => {
           res.redirect('/');
         }
         // res.render('pages/dashboard');
-    };
+    }
     oracledbconn(); // call the function run
 
     // res.render('pages/stock');
@@ -246,6 +246,24 @@ app.post('/to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_price);
     console.log(req.body.p_qty);
     console.log(req.body.p_size);
+
+    async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        const result = await conn.execute(
+            'INSERT INTO cart VALUES(:user_id, :p_id, :size_id, :qty, :id)', [1, 2, 1, 1, 1],{autoCommit: true},
+            function(err, result) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Rows inserted: " + result.rowsAffected);  // 1
+              }
+            }
+        );
+
+        if (conn) {await conn.close();};
+    };
+    oracledbconn(); // call the function run
+
 });
 
 
@@ -257,10 +275,18 @@ app.get('/product/:p_id',(req, res) => {
         const result = await conn.execute(
             'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
         );
+        //
+        // var product = await conn.execute(
+        //     'SELECT store_id, sps.store_qty, (select p_size from sizes where sps.size_id = sizes.size_id ) AS p_size FROM products p LEFT JOIN stores_products_sizes sps ON sps.product_id = p.p_id WHERE p.p_id = :p_id', [req.params.p_id]
+        // );
 
         var product = await conn.execute(
-            'SELECT store_id, sps.qty, (select p_size from sizes where sps.size_id = sizes.size_id ) AS p_size FROM products p LEFT JOIN stores_products_sizes sps ON sps.product_id = p.p_id WHERE p.p_id = :p_id', [req.params.p_id]
+            'SELECT sps.product_id, sps.store_id, sps.store_qty, s.us, s.eu, s.asia FROM stores_products_sizes sps LEFT JOIN sizes s ON sps.size_id_1010 =s.join_id LEFT JOIN sizes s ON sps.size_id_1011 =s.join_id LEFT JOIN sizes s ON sps.size_id_1012 =s.join_id LEFT JOIN sizes s ON sps.size_id_1013 =s.join_id LEFT JOIN sizes s ON sps.size_id_1014 =s.join_id WHERE product_id = :p_id', [
+                req.params.p_id
+            ]
         );
+        console.log(product);
+2
 
         var item = await conn.execute(
          `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
@@ -269,12 +295,10 @@ app.get('/product/:p_id',(req, res) => {
 
         if (conn) {await conn.close();};
 
-        // var data = JSON.stringify(result.rows[0]);
         var data = result.rows[0];
         item = item.rows;
         product = product.rows;
 
-        console.log(data);
 
         // check if the user exists
         if (result.rows) {
@@ -342,7 +366,7 @@ app.get('/products',(req, res) => {
     async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
         const result = await conn.execute(
-            'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products'
+            'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images LEFT JOIN products on products.p_id = images.p_id WHERE rownum <= 1) FROM products'
             // 'select * from images'
         );
 
