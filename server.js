@@ -120,13 +120,12 @@ app.post('/register',urlencodedParser,(req, res) => {
           const result = await conn.execute(
             'INSERT INTO users VALUES(users_seq.nextval, :name, :email, :pw, :lname, :fname)', [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname], {autoCommit: true}
           );
-          console.log(result.rows);
         } catch (err) {
-          console.log('Ouch!', err);
+            console.log('Ouch!', err);
         } finally {
-          if (conn) { // conn assignment worked, need to close
-             await conn.close();
-          }
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
+            }
         }
     }
     oracledbconn();
@@ -146,14 +145,19 @@ app.get('/help',(req, res) => {
 // stock page
 app.get('/stock',(req, res) => {
     async function oracledbconn(){
-        conn = await oracledb.getConnection(dum);
-        const result = await conn.execute(
-            'select products.p_name, sizes.p_size, stores.*, sps.qty from stores inner join stores_products_sizes sps on sps.store_id = stores.store_id inner join sizes on sizes.size_id = sps.size_id inner join products on products.p_id=sps.product_id'
-        );
+        try {
+          conn = await oracledb.getConnection(dum);
 
-        if (conn) {await conn.close();};
-
-        // var data = JSON.stringify(result.rows);
+          var result = await conn.execute(
+            'SELECT * FROM stores'
+          );
+        } catch (err) {
+            console.log('Ouch!', err);
+        } finally {
+            if (conn) { // conn assignment worked, need to close
+                await conn.close();
+            }
+        }
         var data = result.rows;
 
         console.log(data);
@@ -163,11 +167,9 @@ app.get('/stock',(req, res) => {
         } else {
           res.redirect('/');
         }
-        // res.render('pages/dashboard');
     }
-    oracledbconn(); // call the function run
+    oracledbconn();
 
-    // res.render('pages/stock');
 });
 
 // store page
