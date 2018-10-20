@@ -1,6 +1,7 @@
 // requirement
 const express = require('express');
 const oracledb = require('oracledb');
+oracledb.autoCommit = true;
 const bodyParser = require('body-parser');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 const cookieParser = require('cookie-parser');
@@ -221,20 +222,19 @@ app.post('/login', urlencodedParser, (req, res) => {
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
     if (req.cookies['username']) {
         async function oracledbconn(){
+          let conn;
+          try{
             conn = await oracledb.getConnection(dum);
-            conn.execute(
-            `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[],
-            {autoCommit: true},
-                function(err, result) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Rows inserted: " + result.rowsAffected);  // 1
-                  }
-                }
-              );
-            if (conn) {await conn.close();};
-        };
+            await conn.execute(
+                `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[]);
+              } catch (err) {
+            console.log('Ouch!', err);
+          } finally {
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
+            }
+          }
+}
           oracledbconn();
     } else {
         res.send({"error" : "Update error"});
