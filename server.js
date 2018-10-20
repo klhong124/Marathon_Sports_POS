@@ -219,12 +219,11 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
-  console.log(`INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`);
     if (req.cookies['username']) {
         async function oracledbconn(){
             conn = await oracledb.getConnection(dum);
             conn.execute(
-            `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,
+            `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[],
             {autoCommit: true},
                 function(err, result) {
                   if (err) {
