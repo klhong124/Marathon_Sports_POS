@@ -243,6 +243,27 @@ app.post('/add-to-cart', urlencodedParser, (req, res) => {
         res.send({"error" : "Update error"});
     }
 });
+app.post('/del-from-cart', urlencodedParser, (req, res) => {
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+          let conn;
+          try{
+            conn = await oracledb.getConnection(dum);
+            await conn.execute(
+                `DELETE FROM "G1_TEAM001"."CART" WHERE user_id = ${req.cookies['username']} and p_id  = ${req.body.p_id} and p_size = ${req.body.p_size};`,[]);
+              } catch (err) {
+            console.log('Ouch!', err);
+          } finally {
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
+            }
+          }
+}
+          oracledbconn();
+    } else {
+        res.send({"error" : "Update error"});
+    }
+});
 
 app.post('/to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_price);
