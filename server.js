@@ -46,61 +46,56 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res, next) => {
+
     async function oracledbconn(){
-        conn = await oracledb.getConnection(dum);
-        var userslist = await conn.execute(
-         `select username from users`
-        );
-        var emailslist = await conn.execute(
-         `select email from users`
-        );
-        var products = await conn.execute(
-         `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 9`
-        );
-        var size = await conn.execute(
-         `SELECT * FROM sizes WHERE size_id>1009 and size_id <1015`
-        );
-        if (conn) {await conn.close();};
-        // check if the user exists
-        if (userslist.rows) {
-            if(req.cookies['username']) {
-              res.render('pages/index', {
-                  username: req.cookies['username'],
-                  error_message:false,
-                  userslist:userslist.rows,
-                  emailslist:emailslist.rows,
-                  data:products.rows,
-                  size:size.rows
-                });
-            }else {
-                res.render('pages/index', {
-                   username:undefined,
-                   error_message:false,
-                   userslist:userslist.rows,
-                   emailslist:emailslist.rows,
-                   data:products.rows,
-                   size:size.rows
-                });
+        try {
+          conn = await oracledb.getConnection(dum);
+
+          var userslist = await conn.execute(
+           `select username from users`
+          );
+          var emailslist = await conn.execute(
+           `select email from users`
+          );
+          var products = await conn.execute(
+           `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 9`
+          );
+          var size = await conn.execute(
+           `SELECT * FROM sizes WHERE size_id>1009 and size_id <1015`
+          );
+        } catch (err) {
+            console.log('Ouch!', err);
+        } finally {
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
+               // check if the user exists
+               if (userslist.rows) {
+                   if(req.cookies['username']) {
+                     res.render('pages/index', {
+                         username: req.cookies['username'],
+                         error_message:false,
+                         userslist:userslist.rows,
+                         emailslist:emailslist.rows,
+                         data:products.rows,
+                         size:size.rows
+                       });
+                   }else {
+                       res.render('pages/index', {
+                          username:undefined,
+                          error_message:false,
+                          userslist:userslist.rows,
+                          emailslist:emailslist.rows,
+                          data:products.rows,
+                          size:size.rows
+                       });
+                   }
+               }
             }
         }
 
-    };
-     oracledbconn(); // call the function run
 
-     // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
-     // if (req.query.errormessage){
-     //     res.render('pages/index', {
-     //         username: false,
-     //         error_message: req.query.errormessage
-     //     });
-     // } else if (typeof req.cookies['username'] != 'undefined') {
-    //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
-    // } else if (req.query.errormessage) {
-    //     res.render('pages/index', {username: false, error_message: req.query.errormessage});
-    // } else {
-    //     res.render('pages/index', {username: false, error_message: false});
-    // }
-
+    }
+    oracledbconn();
 });
 
 // signup page
@@ -288,7 +283,6 @@ app.get('/product/:p_id',(req, res) => {
             ]
         );
         console.log(product);
-2
 
         var item = await conn.execute(
          `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
