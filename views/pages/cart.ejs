@@ -47,7 +47,7 @@
                     <tbody>
                         <% for(var i=0; i<cartlist.length; i++) { %>
 
-                        <tr>
+                        <tr id="tr<%= cartlist[i][0]%>">
                             <td class="product_name"><%= cartlist[i][3]%></td>
                             <td>
                               <select id="size<%= cartlist[i][0]%>" onload="sizeSelect(<%= cartlist[i][0]%>,<%= cartlist[i][1]%>)">
@@ -74,12 +74,25 @@
                               <td>No</td>
                             <% } %>
                             <td><span id="total<%= cartlist[i][0]%>" class="subTotal">$<%= Math.round(cartlist[i][2]*cartlist[i][4]*(1-cartlist[i][5]/100)*10)/10%></span></td>
-                            <td> <button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i></button> </td>
+                            <td> <button type="button" class="btn btn-danger" onclick="delFromCart(<%= cartlist[i][0]%>,<%= cartlist[i][1]%>)"><i class="far fa-trash-alt"></i></button> </td>
                         </tr>
                         <% } %>
                     </tbody>
                     <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   -->
                     <script type="text/javascript">
+                    function delFromCart(id,size){
+                      document.getElementById(`tr{id}`).style.display = "none";
+                        $.ajax({
+                            url:'/del-from-cart',
+                            type:'post',
+                            data: {p_id: id,p_size:size},
+                            success:function(result){
+                                console.log(result['success']);
+                            },error:function(err){
+                                console.log(err);
+                            }
+                        });
+                    }
                       function checkzero(id,input){
                         if (input<0){
                           document.getElementById(`input${id}`).value  = "0";
@@ -141,11 +154,11 @@
           <button type="button" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Contiue Shopping</button>
           <button type="button" class="btn btn-success">Checkout <i class="fas fa-caret-right"></i></button>
         </center>
-
       </div>
       <small>
            <ul>
              <li>Unconditional Returns/ Exchange Service has been updated to 10 days.</li><br>
+             <li>Purchase with more than $500, the Delivery fee will be free in charge.</li><br>
              <li>Net Purchase Amount reflects the total price of your order after discounts but It does not include delivery cost.</li><br>
              <li>Shipping costs vary depending on the type of delivery. Please check the final amount in the order summary.</li>
           </ul>
