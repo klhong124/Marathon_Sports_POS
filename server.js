@@ -200,7 +200,7 @@ app.get('/about',(req, res) => {
 app.post('/login', urlencodedParser, (req, res) => {
     async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
-        const result = await conn.execute(
+        var result = await conn.execute(
             `select username,user_id from users where email = '${req.body.email}' and password = '${req.body.password}'`,
         );
         if (conn) {await conn.close();};
@@ -242,19 +242,19 @@ app.post('/del-from-cart', urlencodedParser, (req, res) => {
     if (req.cookies['username']) {
         async function oracledbconn(){
           let conn;
-          try{
-            conn = await oracledb.getConnection(dum);
-            await conn.execute(
-                `DELETE FROM "G1_TEAM001"."CART" WHERE user_id = ${req.cookies['username']} and p_id  = ${req.body.p_id} and p_size = ${req.body.p_size};`,[]);
-              } catch (err) {
+            try{
+                conn = await oracledb.getConnection(dum);
+                await conn.execute(
+                    `DELETE FROM "G1_TEAM001"."CART" WHERE user_id = ${req.cookies['username']} and p_id  = ${req.body.p_id} and p_size = ${req.body.p_size};`,[]);
+            } catch (err) {
             console.log('Ouch!', err);
           } finally {
             if (conn) { // conn assignment worked, need to close
                await conn.close();
             }
           }
-}
-          oracledbconn();
+        }
+        oracledbconn();
     } else {
         res.send({"error" : "Update error"});
     }
@@ -266,19 +266,25 @@ app.post('/to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_size);
 
     async function oracledbconn(){
-        conn = await oracledb.getConnection(dum);
-        const result = await conn.execute(
-            'INSERT INTO cart VALUES(:user_id, :p_id, :size_id, :qty, :id)', [1, 2, 1, 1, 1],{autoCommit: true},
-            function(err, result) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Rows inserted: " + result.rowsAffected);  // 1
-              }
+        try{
+            conn = await oracledb.getConnection(dum);
+            var result = await conn.execute(
+                'INSERT INTO cart VALUES(:user_id, :p_id, :size_id, :qty, :id)', [1, 2, 1, 1, 1],{autoCommit: true},
+                function(err, result) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Rows inserted: " + result.rowsAffected);  // 1
+                  }
+                }
+            );
+        } catch (err) {
+            console.log('Ouch!', err);
+        } finally {
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
             }
-        );
-
-        if (conn) {await conn.close();};
+        }
     };
     oracledbconn(); // call the function run
 
@@ -288,29 +294,35 @@ app.post('/to-cart', urlencodedParser, (req, res) => {
 // product page
 app.get('/product/:p_id',(req, res) => {
     async function oracledbconn(){
-        conn = await oracledb.getConnection(dum);
-        // should group by this sql
-        const result = await conn.execute(
-            'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
-        );
-        //
-        // var product = await conn.execute(
-        //     'SELECT store_id, sps.store_qty, (select p_size from sizes where sps.size_id = sizes.size_id ) AS p_size FROM products p LEFT JOIN stores_products_sizes sps ON sps.product_id = p.p_id WHERE p.p_id = :p_id', [req.params.p_id]
-        // );
+        try {
+            conn = await oracledb.getConnection(dum);
+            // should group by this sql
+            var result = await conn.execute(
+                'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
+            );
+            //
+            // var product = await conn.execute(
+            //     'SELECT store_id, sps.store_qty, (select p_size from sizes where sps.size_id = sizes.size_id ) AS p_size FROM products p LEFT JOIN stores_products_sizes sps ON sps.product_id = p.p_id WHERE p.p_id = :p_id', [req.params.p_id]
+            // );
 
-        var product = await conn.execute(
-            'SELECT sps.product_id, sps.store_id, sps.store_qty, s.us, s.eu, s.asia FROM stores_products_sizes sps LEFT JOIN sizes s ON sps.size_id_1010 =s.join_id LEFT JOIN sizes s ON sps.size_id_1011 =s.join_id LEFT JOIN sizes s ON sps.size_id_1012 =s.join_id LEFT JOIN sizes s ON sps.size_id_1013 =s.join_id LEFT JOIN sizes s ON sps.size_id_1014 =s.join_id WHERE product_id = :p_id', [
-                req.params.p_id
-            ]
-        );
-        console.log(product);
+            var product = await conn.execute(
+                'SELECT * FROM stores_products_sizes WHERE product_id = :p_id', [
+                    req.params.p_id
+                ]
+            );
+            console.log(product);
 
-        var item = await conn.execute(
-         `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
-         // 'select * from products'
-        );
-
-        if (conn) {await conn.close();};
+            var item = await conn.execute(
+             `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
+             // 'select * from products'
+            );
+        } catch (err) {
+            console.log('Ouch!', err);
+        } finally {
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
+            }
+        }
 
         var data = result.rows[0];
         item = item.rows;
