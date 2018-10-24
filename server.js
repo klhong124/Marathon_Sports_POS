@@ -113,10 +113,10 @@ app.post('/register',urlencodedParser,(req, res) => {
           conn = await oracledb.getConnection(dum);
 
           const result = await conn.execute(
-            'INSERT INTO users VALUES(users_seq.nextval, :name, :email, :pw, :lname, :fname)', [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname], {autoCommit: true}
+            'INSERT INTO users VALUES(users_seq.nextval, :name, :email, :pw, :lname, :fname, :phone)', [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname, req.body.phone], {autoCommit: true}
           );
         } catch (err) {
-            console.log('Ouch!', err);
+            console.log('Ouch! ', err);
         } finally {
             if (conn) { // conn assignment worked, need to close
                await conn.close();
