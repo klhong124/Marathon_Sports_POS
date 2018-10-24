@@ -144,7 +144,8 @@ app.get('/stock',(req, res) => {
           conn = await oracledb.getConnection(dum);
 
           var result = await conn.execute(
-            'SELECT * FROM stores'
+            'SELECT stores.*, sizes.*, products.p_name FROM stores LEFT JOIN stores_products_sizes sps ON sps.store_id = stores.store_id LEFT JOIN sizes ON sizes.size_id = sps.size_id LEFT JOIN products ON products.p_id = sps.product_id'
+            // 'SELECT * FROM products'
           );
         } catch (err) {
             console.log('Ouch!', err);
@@ -153,9 +154,10 @@ app.get('/stock',(req, res) => {
                 await conn.close();
             }
         }
+        console.log(result);
+
         var data = result.rows;
 
-        console.log(data);
 
         if (req.cookies['username']) {
           res.render('pages/stock', {username: req.cookies['username'], data: data});
@@ -220,20 +222,20 @@ app.post('/login', urlencodedParser, (req, res) => {
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
     if (req.cookies['username']) {
         async function oracledbconn(){
-          let conn;
-          try{
-            conn = await oracledb.getConnection(dum);
-            await conn.execute(
-                `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[]);
+            let conn;
+            try{
+                conn = await oracledb.getConnection(dum);
+                await conn.execute(
+                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[]);
               } catch (err) {
             console.log('Ouch!', err);
-          } finally {
-            if (conn) { // conn assignment worked, need to close
-               await conn.close();
+            } finally {
+                if (conn) { // conn assignment worked, need to close
+                    await conn.close();
+                }
             }
-          }
-}
-          oracledbconn();
+        }
+        oracledbconn();
     } else {
         res.send({"error" : "Update error"});
     }
@@ -261,22 +263,18 @@ app.post('/del-from-cart', urlencodedParser, (req, res) => {
 });
 
 app.post('/to-cart', urlencodedParser, (req, res) => {
+    console.log(req.body.p_id);
     console.log(req.body.p_price);
     console.log(req.body.p_qty);
     console.log(req.body.p_size);
+
+// not yet finished
 
     async function oracledbconn(){
         try{
             conn = await oracledb.getConnection(dum);
             var result = await conn.execute(
-                'INSERT INTO cart VALUES(:user_id, :p_id, :size_id, :qty, :id)', [1, 2, 1, 1, 1],{autoCommit: true},
-                function(err, result) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Rows inserted: " + result.rowsAffected);  // 1
-                  }
-                }
+                'INSERT INTO orders(ORDER_ID, P_ID, QTY) VALUES(order_id.nextval, :p_id, :qty)', [req.body.p_id,req.body.p_qty]
             );
         } catch (err) {
             console.log('Ouch!', err);
@@ -285,9 +283,10 @@ app.post('/to-cart', urlencodedParser, (req, res) => {
                await conn.close();
             }
         }
+        console.log(lala);
     };
     oracledbconn(); // call the function run
-
+    // res.redirect('/products');
 });
 
 
@@ -306,11 +305,14 @@ app.get('/product/:p_id',(req, res) => {
             // );
 
             var product = await conn.execute(
-                'SELECT * FROM stores_products_sizes WHERE product_id = :p_id', [
+                'SELECT count(S_30) AS S30, count(S_31) AS S31, count(S_32) AS S32, count(S_33) AS S33 FROM stores_products_sizes sps LEFT JOIN sizes ON sizes.size_id = sps.size_id WHERE product_id = :p_id', [
                     req.params.p_id
                 ]
             );
-            console.log(product);
+
+            var test = await conn.execute(
+                'SELECT * FROM orders'
+            );
 
             var item = await conn.execute(
              `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
@@ -326,7 +328,9 @@ app.get('/product/:p_id',(req, res) => {
 
         var data = result.rows[0];
         item = item.rows;
-        product = product.rows;
+        product = product.rows[0];
+        console.log(test);
+
 
 
         // check if the user exists

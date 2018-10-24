@@ -75,6 +75,7 @@
             <aside class="col-sm-7">
                 <article class="card-body p-5">
                     <form  action="/to-cart" method="post" >
+                        <input hidden name="p_id" value="<%= data[0] %>">
                         <h3 class="title mb-3"> <%= data[1] %></h3>
 
                         <p class="price-detail-wrap">
@@ -114,11 +115,32 @@
                                 <dl class="param param-inline">
                                     <dt>Size Available: </dt>
                                     <dd>
-                                        <% for(var i=1; i<product.length; i++ ){ %>
-                                            <a href="#" id="stock-tooltip" data-toggle="tooltip" title="<%= product[i][1] %> Stocks Left">
+                                        <% if((typeof product[0] != null && product[0])) { %>
+                                            <a href="#" id="stock-tooltip" data-toggle="tooltip" title="<%= product[0] %> in stocks">
                                             <label class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="radio" name="p_size" value="<%= product[i][2] %>">
-                                                <span class="form-check-label" ><%= product[i][2] %></span>
+                                                  <input class="form-check-input" type="radio" name="p_size" value="30">
+                                                <span class="form-check-label" >30</span>
+                                            </label></a>
+                                        <% } %>
+                                        <% if((typeof product[1] != null && product[1])) { %>
+                                            <a href="#" id="stock-tooltip" data-toggle="tooltip" title="<%= product[1] %> in stocks">
+                                            <label class="form-check form-check-inline">
+                                                  <input class="form-check-input" type="radio" name="p_size" value="31">
+                                                <span class="form-check-label" >31</span>
+                                            </label></a>
+                                        <% } %>
+                                        <% if((typeof product[2] != null && product[2])) { %>
+                                            <a href="#" id="stock-tooltip" data-toggle="tooltip" title="<%= product[2] %> in stocks">
+                                            <label class="form-check form-check-inline">
+                                                  <input class="form-check-input" type="radio" name="p_size" value="33">
+                                                <span class="form-check-label" >33</span>
+                                            </label></a>
+                                        <% } %>
+                                        <% if((typeof product[3] != null && product[3])) { %>
+                                            <a href="#" id="stock-tooltip" data-toggle="tooltip" title="<%= product[3] %> in stocks">
+                                            <label class="form-check form-check-inline">
+                                                  <input class="form-check-input" type="radio" name="p_size" value="33">
+                                                <span class="form-check-label" >33</span>
                                             </label></a>
                                         <% } %>
 
