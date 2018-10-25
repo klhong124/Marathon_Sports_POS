@@ -267,26 +267,32 @@ app.post('/to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_price);
     console.log(req.body.p_qty);
     console.log(req.body.p_size);
-
-// not yet finished
-
-    async function oracledbconn(){
-        try{
-            conn = await oracledb.getConnection(dum);
-            var result = await conn.execute(
-                'INSERT INTO orders(ORDER_ID, P_ID, QTY) VALUES(order_id.nextval, :p_id, :qty)', [req.body.p_id,req.body.p_qty]
-            );
-        } catch (err) {
-            console.log('Ouch!', err);
-        } finally {
-            if (conn) { // conn assignment worked, need to close
-               await conn.close();
+    if (req.cookies['user_id']){
+        async function oracledbconn(){
+            try{
+                var user_id = req.cookies['user_id'];
+                conn = await oracledb.getConnection(dum);
+                var result = await conn.execute(
+                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (:user_id, :p_id, :p_size, :p_qty, id.nextval)`,[
+                        user_id,
+                        req.body.p_id,
+                        req.body.p_size,
+                        req.body.p_qty
+                    ]
+                );
+            } catch (err) {
+                console.log('Ouch!', err);
+            } finally {
+                if (conn) { // conn assignment worked, need to close
+                   await conn.close();
+                   res.redirect('/cart');
+                }
             }
-        }
-        console.log(lala);
-    };
-    oracledbconn(); // call the function run
-    // res.redirect('/products');
+        };
+        oracledbconn(); // call the function run
+    } else {
+        res.send({"error" : "Please login your account first"});
+    }
 });
 
 

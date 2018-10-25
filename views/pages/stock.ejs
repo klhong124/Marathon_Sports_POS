@@ -41,8 +41,8 @@
                         <tr>
                             <th> Product Name </th>
                             <th> Branches Detials </th>
-                            <th> Size </th>
-                            <th> Stock </th>
+                            <th> Size-(Quantity) </th>
+                            <!-- <th> Stock </th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -66,8 +66,21 @@
                                     <!-- <div class="panel-footer">Footer</div> -->
                                 </div>
                             </td>
-                            <td><%= data[i][1] %></td>
-                            <td> <%= data[i][7] %></td>
+                            <td>
+                                <% if((typeof data[i][6] != null && data[i][6] != 0)) { %>
+                                    <span>30-(<%= data[i][6] %>)</span><br>
+                                <% } %>
+                                <% if((typeof data[i][7] != null && data[i][7] != 0)) { %>
+                                    <span>31-(<%= data[i][7] %>)</span><br>
+                                <% } %>
+                                <% if((typeof data[i][8] != null && data[i][8] != 0)) { %>
+                                    <span>32-(<%= data[i][8] %>)</span><br> 
+                                <% } %>
+                                <% if((typeof data[i][9] != null && data[i][9] != 0)) { %>
+                                    <span>33-(<%= data[i][9] %>)</span>
+                                <% } %>
+                            </td>
+                            <!-- <td> <%= data[i][7] %></td> -->
                         </tr>
                         <% } %>
                     </tbody>
