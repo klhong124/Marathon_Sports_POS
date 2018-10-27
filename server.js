@@ -60,8 +60,8 @@ app.get('/',(req, res, next) => {
           var products = await conn.execute(
            `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 9`
           );
-          var size = await conn.execute(
-           `SELECT * FROM sizes WHERE size_id>1009 and size_id <1015`
+          var sizes = await conn.execute(
+            `SELECT * from sizes order by EU ASC`
           );
         } catch (err) {
             console.log('Ouch!', err);
@@ -77,7 +77,7 @@ app.get('/',(req, res, next) => {
                          userslist:userslist.rows,
                          emailslist:emailslist.rows,
                          data:products.rows,
-                         size:size.rows
+                         size:sizes.rows
                        });
                    }else {
                        res.render('pages/index', {
@@ -86,7 +86,7 @@ app.get('/',(req, res, next) => {
                           userslist:userslist.rows,
                           emailslist:emailslist.rows,
                           data:products.rows,
-                          size:size.rows
+                          size:sizes.rows
                        });
                    }
                }
@@ -220,6 +220,7 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
+  console.log(`${req.body.p_size}`);
     if (req.cookies['username']) {
         async function oracledbconn(){
             let conn;
@@ -240,6 +241,48 @@ app.post('/add-to-cart', urlencodedParser, (req, res) => {
         res.send({"error" : "Update error"});
     }
 });
+app.post('/edit-qty-cart', urlencodedParser, (req, res) => {
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+          let conn;
+            try{
+              console.log(`data was passed here: qty${req.body.qty}, id${req.body.id}`);
+                conn = await oracledb.getConnection(dum);
+                await conn.execute(
+                  `UPDATE "G1_TEAM001"."CART" SET qty = :size WHERE id = :id`,[req.body.qty,req.body.id]);
+                  console.log("nothing run here");
+            } catch (err) {
+            console.log('Ouch!', err);
+          } finally {
+            if (conn) {await conn.close();}
+          }
+        }
+        oracledbconn();
+    } else {
+        res.send({"error" : "Update error"});
+    }
+});
+app.post('/edit-size-cart', urlencodedParser, (req, res) => {
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+          let conn;
+            try{
+              console.log(`data was passed here: size${req.body.size}, id${req.body.id}`);
+                conn = await oracledb.getConnection(dum);
+                await conn.execute(
+                  `UPDATE "G1_TEAM001"."CART" SET SIZE_ID = :size WHERE id = :id`,[req.body.size,req.body.id]);
+                  console.log("nothing run here");
+            } catch (err) {
+            console.log('Ouch!', err);
+          } finally {
+            if (conn) {await conn.close();}
+          }
+        }
+        oracledbconn();
+    } else {
+        res.send({"error" : "Update error"});
+    }
+});
 app.post('/del-from-cart', urlencodedParser, (req, res) => {
     if (req.cookies['username']) {
         async function oracledbconn(){
@@ -247,7 +290,7 @@ app.post('/del-from-cart', urlencodedParser, (req, res) => {
             try{
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
-                    `DELETE FROM "G1_TEAM001"."CART" WHERE user_id = ${req.cookies['username']} and p_id  = ${req.body.p_id} and p_size = ${req.body.p_size};`,[]);
+                    `DELETE FROM "G1_TEAM001"."CART" WHERE id = ${req.body.id}`,[]);
             } catch (err) {
             console.log('Ouch!', err);
           } finally {
@@ -368,22 +411,20 @@ app.get('/cart',(req, res) => {
       async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
         var data = await conn.execute(
-         `select p_id,size_id,qty from cart where user_id = ${req.cookies['user_id']}`
+         `select p_id,size_id,qty,id from cart where user_id = ${req.cookies['user_id']}`
         );
         var cartlist = data.rows;
         for(var i=0;i<cartlist.length;i++){
           var p_name = await conn.execute(
            `select p_name,price,discount from products where p_id = ${cartlist[i][0]}`
           );
-          cartlist[i].push(p_name.rows[0][0]);
-          cartlist[i].push(p_name.rows[0][1]);
-          cartlist[i].push(p_name.rows[0][2]);
+          cartlist[i] = [...cartlist[i],p_name.rows[0][0],p_name.rows[0][1],p_name.rows[0][2]]
         }
-        var size = await conn.execute(
-         `SELECT * FROM sizes WHERE size_id>1009 and size_id <1015`
+        var sizes = await conn.execute(
+          `SELECT * from sizes order by EU ASC`
         );
       if (conn) {await conn.close();};
-      res.render('pages/cart',{username: req.cookies['username'],cartlist:cartlist,size:size.rows})
+      res.render('pages/cart',{username: req.cookies['username'],cartlist:cartlist,size:sizes.rows})
       };
       oracledbconn();
     } else {

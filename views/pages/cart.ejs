@@ -39,53 +39,68 @@
                                                 [0] = product_id
                                                 [1] = product_size
                                                 [2] = Qty
-                                                [3] = product_name
-                                                [4] = Price
-                                                [5] = discount ( n% off )
+                                                [3] = ID
+                                                [4] = product_name
+                                                [5] = Price
+                                                [6] = discount ( n% off )
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  -->
 
                     <tbody>
                         <% for(var i=0; i<cartlist.length; i++) { %>
 
-                        <tr id="tr<%= cartlist[i][0]%>">
-                            <td class="product_name"><%= cartlist[i][3]%></td>
+                        <tr id="tr<%= cartlist[i][3]%>">
+                            <td class="product_name"><%= cartlist[i][4]%></td>
                             <td>
-                              <select id="size<%= cartlist[i][0]%>" onload="sizeSelect(<%= cartlist[i][0]%>,<%= cartlist[i][1]%>)">
+                              <select onchange="editSizeCart(<%=cartlist[i][3]%>,this.value)">
                                 <% for(var s=0; s<size.length; s++) { %>
                                   <% if(cartlist[i][1] == size[s][0]) { %>
-                                        <option value="<%= size[s][0]%>" selected><%= size[s][2]%></option>
+                                        <option value="<%= size[s][0]%>" selected><%= size[s][3]%></option>
                                   <% } else { %>
-                                        <option value="<%= size[s][0]%>"><%= size[s][2]%></option>
+                                        <option value="<%= size[s][0]%>"><%= size[s][3]%></option>
                                   <% } %>
                                 <% } %>
                                       </select>
                                       <script type="text/javascript">
                                         function sizeSelect(id,size){
-                                          console.log(size);
                                           document.getElementById(`size${id}`).value = size;
                                         }
                                       </script>
                             </td>
-                            <td><input min="0" onblur="checkzero(<%= cartlist[i][0]%>,this.value,)" oninput="datareflash(<%= cartlist[i][0]%>,<%= cartlist[i][4]%>,this.value,<%= cartlist[i][5]%>)" type="number" value="<%= cartlist[i][2]%>" style="width:50px" id="input<%= cartlist[i][0]%>"></td>
-                            <td>$<%= cartlist[i][4]%></td>
-                            <% if(cartlist[i][5] != 0) { %>
-                              <td><%= cartlist[i][5]%>%</td>
+                            <td><input min="0" onblur="editQtyCart(<%= cartlist[i][3]%>,this.value,)" oninput="datareflash(<%= cartlist[i][3]%>,<%= cartlist[i][5]%>,this.value,<%= cartlist[i][6]%>)" type="number" value="<%= cartlist[i][2]%>" style="width:50px" id="input<%= cartlist[i][3]%>"></td>
+                            <td>$<%= cartlist[i][5]%></td>
+                            <% if(cartlist[i][6] != 0) { %>
+                              <td><%= cartlist[i][6]%>%</td>
                             <% } else { %>
                               <td>No</td>
                             <% } %>
-                            <td><span id="total<%= cartlist[i][0]%>" class="subTotal">$<%= Math.round(cartlist[i][2]*cartlist[i][4]*(1-cartlist[i][5]/100)*10)/10%></span></td>
-                            <td> <button type="button" class="btn btn-danger" onclick="delFromCart(<%= cartlist[i][0]%>,<%= cartlist[i][1]%>)"><i class="far fa-trash-alt"></i></button> </td>
+                            <td><span id="total<%= cartlist[i][3]%>" class="subTotal">$<%= Math.round(cartlist[i][2]*cartlist[i][5]*(1-cartlist[i][6]/100)*10)/10%></span></td>
+                            <td> <button type="button" class="btn btn-danger" onclick="delFromCart(<%= cartlist[i][3]%>,<%= cartlist[i][3]%>)"><i class="far fa-trash-alt"></i></button> </td>
                         </tr>
                         <% } %>
                     </tbody>
                     <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   -->
                     <script type="text/javascript">
-                    function delFromCart(id,size){
-                      document.getElementById(`tr{id}`).style.display = "none";
+                    function editSizeCart(id,size){
+                      $.ajax({
+                          url:'/edit-size-cart',
+                          type:'post',
+                          data: {id:id,size:size},
+                          success:function(result){
+                              console.log(result['success']);
+                          },error:function(err){
+                              console.log(err);
+                          }
+                      });
+                    }
+                    function delFromCart(id){
+                      document.getElementById(`tr${id}`).style.display = "none";
+                      document.getElementById(`input${id}`).value  = "0";
+                      document.getElementById(`total${id}`).innerHTML = "$0";
+                      calTotal();
                         $.ajax({
                             url:'/del-from-cart',
                             type:'post',
-                            data: {p_id: id,p_size:size},
+                            data: {id:id},
                             success:function(result){
                                 console.log(result['success']);
                             },error:function(err){
@@ -93,10 +108,23 @@
                             }
                         });
                     }
-                      function checkzero(id,input){
+                      function editQtyCart(id,input){
                         if (input<0){
                           document.getElementById(`input${id}`).value  = "0";
                           document.getElementById(`total${id}`).innerHTML = "$0";
+                          calTotal();
+                        }
+                        else{
+                          $.ajax({
+                              url:'/edit-qty-cart',
+                              type:'post',
+                              data: {id:id,qty:input},
+                              success:function(result){
+                                  console.log(result['success']);
+                              },error:function(err){
+                                  console.log(err);
+                              }
+                          });
                         }
                       }
                       function datareflash(id,price,qty,discount){
