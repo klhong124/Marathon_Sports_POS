@@ -331,10 +331,13 @@ app.get('/createbill', urlencodedParser, (req, res) => {
                     `INSERT INTO "G1_TEAM001"."ORDERS" (ORDER_ID, P_ID, SIZE_ID, QTY, PRICE, DISCOUNT) VALUES (ID.currval, :p_id, :p_size, :qty, :price, :discount)`,
                     cartlist
                   );
-                  var order = await conn.execute(
+                var order = await conn.execute(
                  `select * from USER_ORDERS where ORDER_ID = (select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']})`
-               );
-                  res.render('pages/checkout', {order: order.rows[0], items:cartlist});
+                );
+                var userinfo = await conn.execute(
+                 `select * from users where user_id = ${req.cookies['user_id']}`
+                );
+                  res.render('pages/checkout', {order: order.rows[0], items:cartlist, userinfo: userinfo.rows[0]});
               } catch (err) {
             console.log('Ouch!', err);
             } finally {
@@ -520,7 +523,33 @@ app.get('/contact',(req, res) => {
 
 // checkout page
 app.get('/checkout',(req, res) => {
-    res.render('pages/checkout');
+  if (req.cookies['username']) {
+      async function oracledbconn(){
+        let conn;
+          try{
+            conn = await oracledb.getConnection(dum);
+            var order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = (select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']})`
+            );
+            var userinfo = await conn.execute(
+             `select * from users where user_id = ${req.cookies['user_id']}`
+            );
+            var countries = require('country-list')();
+            console.log(order.rows[0]);
+            console.log(userinfo.rows[0]);
+            res.render('pages/checkout', {order: order.rows[0], userinfo: userinfo.rows[0],country:countries.getNames()});
+          } catch (err) {
+          console.log('Ouch!', err);
+        } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+        }
+      }
+      oracledbconn();
+  } else {
+      res.send({"error" : "Update error"});
+  }
 });
 
 // forget password page
