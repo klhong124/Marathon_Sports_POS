@@ -58,7 +58,7 @@ app.get('/',(req, res, next) => {
            `select email from users`
           );
           var products = await conn.execute(
-           `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 9`
+           `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1)AS product_image FROM products WHERE rownum <= 9`
           );
           var sizes = await conn.execute(
             `SELECT * from sizes order by CM ASC`
