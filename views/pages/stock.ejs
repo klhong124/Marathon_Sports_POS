@@ -41,16 +41,16 @@
                         <tr>
                             <th> Product Name </th>
                             <th> Branches Detials </th>
-                            <th> Size-(Quantity) </th>
-                            <!-- <th> Stock </th> -->
+                            <th> Size </th>
+                            <th> Stock </th>
                         </tr>
                     </thead>
                     <tbody>
                         <% for(var i=0; i<data.length; i++){ %>
                         <tr>
-                            <td> <%= data[i][10] %></td>
+                            <td> <%= data[i][0] %></td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-outline-info" data-toggle="collapse" data-target="#data<%= i %>"><i class="far fa-address-card"></i> <%= data[i][4] %></button>
+                                <button type="button" class="btn btn-sm btn-outline-info" data-toggle="collapse" data-target="#data<%= i %>"><i class="far fa-address-card"></i> <%= data[i][1] %></button>
                                 <!-- <div id="demo" class="collapse">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -59,28 +59,15 @@
                                 <div id="data<%= i %>" class="panel-collapse collapse">
                                     <ul class="list-group">
                                             <li class="list-group-item">
-                                                <p><b>Address: </b><%= data[i][3] %><br><hr>
-                                                <b>Tel: </b><%= data[i][1] %><br><hr><b>Business Hour: </b><%= data[i][2] %></p>
+                                                <p><b>Address: </b><%= data[i][4] %><br><hr>
+                                                <b>Tel: </b><%= data[i][2] %><br><hr><b>Business Hour: </b><%= data[i][3] %></p>
                                             </li>
                                     </ul>
                                     <!-- <div class="panel-footer">Footer</div> -->
                                 </div>
                             </td>
-                            <td>
-                                <% if((typeof data[i][6] != null && data[i][6] != 0)) { %>
-                                    <span>30-(<%= data[i][6] %>)</span><br>
-                                <% } %>
-                                <% if((typeof data[i][7] != null && data[i][7] != 0)) { %>
-                                    <span>31-(<%= data[i][7] %>)</span><br>
-                                <% } %>
-                                <% if((typeof data[i][8] != null && data[i][8] != 0)) { %>
-                                    <span>32-(<%= data[i][8] %>)</span><br> 
-                                <% } %>
-                                <% if((typeof data[i][9] != null && data[i][9] != 0)) { %>
-                                    <span>33-(<%= data[i][9] %>)</span>
-                                <% } %>
-                            </td>
-                            <!-- <td> <%= data[i][7] %></td> -->
+                            <td> <%= data[i][5] %></td>
+                            <td> <%= data[i][6] %></td>
                         </tr>
                         <% } %>
                     </tbody>
