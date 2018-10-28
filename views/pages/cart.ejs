@@ -51,12 +51,16 @@
                         <tr id="tr<%= cartlist[i][3]%>">
                             <td class="product_name"><%= cartlist[i][4]%></td>
                             <td>
-                              <select onchange="editSizeCart(<%=cartlist[i][3]%>,this.value)">
+                             <select onchange="editSizeCart(<%=cartlist[i][3]%>,this.value)">
                                   <% for(var s=0; s<size.length; s++) { %>
-                                        <% if (size[s][0] == cartlist[i][0]) { %>
-                                            <option value="<%= size[s][0]%>"><%= size[s][1]%></option>
-                                        <% } %>
+                                    <% if (size[s][0]>14 && size[s][0]<21) { %> <!--forkids-->
+                                        <% if(cartlist[i][1] == size[s][0]) { %>
+                                           <option value="<%= size[s][0]%>" selected><%= size[s][5]%></option>
+                                        <% } else { %>
+                                          <option value="<%= size[s][0]%>"><%= size[s][5]%></option>
+                                          <% } %>
                                     <% } %>
+                                  <% } %>
                                       </select>
                                       <script type="text/javascript">
                                         function sizeSelect(id,size){
