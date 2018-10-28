@@ -304,7 +304,50 @@ app.post('/del-from-cart', urlencodedParser, (req, res) => {
         res.send({"error" : "Update error"});
     }
 });
-
+app.get('/createbill', urlencodedParser, (req, res) => {
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+            let conn;
+            try{
+                conn = await oracledb.getConnection(dum);
+                var data = await conn.execute(
+                    `select P_id, size_id, QTY from cart where user_id = ${req.cookies['user_id']}`,[]
+                  );
+                  await conn.execute(
+                    `DELETE FROM "G1_TEAM001"."CART" WHERE user_id = ${req.cookies['user_id']}`,[]
+                  );
+                  var cartlist = data.rows;
+                  for(var i=0;i<cartlist.length;i++){
+                    var products = await conn.execute(
+                     `select price,discount from products where p_id = ${cartlist[i][0]}`
+                   );
+                   // P_id, size_id, QTY ,price,discount
+                    cartlist[i] = [...cartlist[i],products.rows[0][0],products.rows[0][1]]
+                  }
+                await conn.execute(
+                    `INSERT INTO "G1_TEAM001"."USER_ORDERS" (ORDER_ID, USER_ID, CREATE_AT, STATUS) VALUES (ID.nextval, '${req.cookies['user_id']}', CURRENT_TIMESTAMP, '0')`,[]
+                  );
+                await conn.executeMany(
+                    `INSERT INTO "G1_TEAM001"."ORDERS" (ORDER_ID, P_ID, SIZE_ID, QTY, PRICE, DISCOUNT) VALUES (ID.currval, :p_id, :p_size, :qty, :price, :discount)`,
+                    cartlist
+                  );
+                  var order = await conn.execute(
+                 `select * from USER_ORDERS where ORDER_ID = (select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']})`
+               );
+                  res.render('pages/checkout', {order: order.rows[0], items:cartlist});
+              } catch (err) {
+            console.log('Ouch!', err);
+            } finally {
+                if (conn) { // conn assignment worked, need to close
+                    await conn.close();
+                }
+            }
+        }
+        oracledbconn();
+    } else {
+        res.send({"error" : "Update error"});
+    }
+});
 app.post('/to-cart', urlencodedParser, (req, res) => {
     console.log(req.body.p_id);
     console.log(req.body.p_price);
@@ -410,10 +453,10 @@ app.get('/cart',(req, res) => {
     if (req.cookies['username']) {
       async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
-        var data = await conn.execute(
+        var cart = await conn.execute(
          `select p_id,size_id,qty,id from cart where user_id = ${req.cookies['user_id']}`
         );
-        var cartlist = data.rows;
+        var cartlist = cart.rows;
         for(var i=0;i<cartlist.length;i++){
           var p_name = await conn.execute(
            `select p_name,price,discount from products where p_id = ${cartlist[i][0]}`

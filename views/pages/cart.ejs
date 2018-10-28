@@ -138,6 +138,9 @@
                         for(var i=0;i<subTotal.length;i++){
                           netPurchaseAmount = netPurchaseAmount + Number(subTotal[i].textContent.substr(1));
                         }
+                        if (netPurchaseAmount==0){
+                          document.getElementById(`checkoutbth`).disabled = true;
+                        }
                         if (netPurchaseAmount>500){
                           document.getElementById(`deliveryfee`).innerHTML = `$0`;
                         }else{
@@ -179,9 +182,10 @@
         </div><br><br>
     <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   -->
         <center>
-          <button type="button" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Contiue Shopping</button>
-          <button type="button" class="btn btn-success">Checkout <i class="fas fa-caret-right"></i></button>
+          <button type="button" class="btn btn-primary" onclick="window.location.href='../'"><i class="fas fa-shopping-cart"></i> Contiue Shopping</button>
+          <button type="button" class="btn btn-success" onclick="window.location.href='../createbill'" id="checkoutbth">Checkout <i class="fas fa-caret-right"></i></button>
         </center>
+    <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   -->
       </div>
       <small>
            <ul>
