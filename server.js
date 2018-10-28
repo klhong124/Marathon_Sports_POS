@@ -58,10 +58,10 @@ app.get('/',(req, res, next) => {
            `select email from users`
           );
           var products = await conn.execute(
-           `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 9`
+           `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) AS product_image FROM products WHERE rownum <= 9`
           );
           var sizes = await conn.execute(
-            `SELECT * from sizes order by EU ASC`
+            `SELECT products.p_id, sizes.cm FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id WHERE rownum <= 500 GROUP BY p_id, sizes.cm ORDER BY p_id`
           );
         } catch (err) {
             console.log('Ouch!', err);
@@ -464,7 +464,7 @@ app.get('/cart',(req, res) => {
           cartlist[i] = [...cartlist[i],p_name.rows[0][0],p_name.rows[0][1],p_name.rows[0][2]]
         }
         var sizes = await conn.execute(
-          `SELECT * from sizes order by EU ASC`
+          `SELECT products.p_id, sizes.cm FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id GROUP BY p_id, sizes.cm ORDER BY p_id`
         );
       if (conn) {await conn.close();};
       res.render('pages/cart',{username: req.cookies['username'],cartlist:cartlist,size:sizes.rows})
@@ -492,7 +492,9 @@ app.get('/products',(req, res) => {
             'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images LEFT JOIN products on products.p_id = images.p_id WHERE rownum <= 1) FROM products'
             // 'select * from images'
         );
-
+        var sizes = await conn.execute(
+          `SELECT products.p_id, sizes.cm FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id GROUP BY p_id, sizes.cm ORDER BY p_id`
+        );
         if (conn) {await conn.close();};
 
         // var data = JSON.stringify(result.rows);
@@ -502,7 +504,7 @@ app.get('/products',(req, res) => {
 
         // check if the user exists
         if (result.rows) {
-          res.render('pages/products', {username: req.cookies['username'], data:data});
+          res.render('pages/products', {username: req.cookies['username'], data:data,size:sizes.rows});
         }
         // res.render('pages/dashboard');
     };
