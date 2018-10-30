@@ -220,7 +220,6 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
-  console.log(`${req.body.p_size}`);
     if (req.cookies['username']) {
         async function oracledbconn(){
             let conn;
@@ -246,11 +245,9 @@ app.post('/edit-qty-cart', urlencodedParser, (req, res) => {
         async function oracledbconn(){
           let conn;
             try{
-              console.log(`data was passed here: qty${req.body.qty}, id${req.body.id}`);
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
                   `UPDATE "G1_TEAM001"."CART" SET qty = :size_id WHERE cart_id = :cart_zid`,[req.body.qty,req.body.id]);
-                  console.log("nothing run here");
             } catch (err) {
             console.log('Ouch!', err);
           } finally {
@@ -267,11 +264,9 @@ app.post('/edit-size-cart', urlencodedParser, (req, res) => {
         async function oracledbconn(){
           let conn;
             try{
-              console.log(`data was passed here: size${req.body.size}, id${req.body.id}`);
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
                   `UPDATE "G1_TEAM001"."CART" SET SIZE_ID = :size_id WHERE cart_id = :cart_id`,[req.body.size,req.body.id]);
-                  console.log("nothing run here");
             } catch (err) {
             console.log('Ouch!', err);
           } finally {
@@ -331,22 +326,10 @@ app.get('/createbill', urlencodedParser, (req, res) => {
                     `INSERT INTO "G1_TEAM001"."ORDERS" (ORDER_ID, P_ID, SIZE_ID, QTY, PRICE, DISCOUNT) VALUES (ID.currval, :p_id, :p_size, :qty, :price, :discount)`,
                     cartlist
                   );
-                var order = await conn.execute(
-                 `select * from USER_ORDERS where ORDER_ID = (select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']})`
+                var orderid = await conn.execute(
+                 `select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']}`
                 );
-                var userinfo = await conn.execute(
-                 `select * from users where user_id = ${req.cookies['user_id']}`
-                );
-                var countries = require('country-state-city');
-                var countrieslist = [];
-                for(var c = 0;c<countries.getAllCountries().length;c++){
-                  statelist = []
-                  for (var s = 0;s<countries.getStatesOfCountry((countries.getAllCountries())[c]['id']).length;s++){
-                    statelist = [...statelist,countries.getStatesOfCountry((countries.getAllCountries())[c]['id'])[s]['name']]
-                  }
-                  countrieslist = [...countrieslist,[(countries.getAllCountries())[c]['name'],statelist]]
-                }
-                  res.render('pages/checkout', {order: order.rows[0], items:cartlist, userinfo: userinfo.rows[0], country:countrieslist});
+                  res.redirect(`../checkout/${orderid.rows[0]}`)
               } catch (err) {
             console.log('Ouch!', err);
             } finally {
@@ -531,14 +514,17 @@ app.get('/contact',(req, res) => {
 });
 
 // checkout page
-app.get('/checkout',(req, res) => {
+app.get('/checkout/:order_id',(req, res) => {
   if (req.cookies['username']) {
       async function oracledbconn(){
         let conn;
           try{
             conn = await oracledb.getConnection(dum);
+            var user_order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
+            );
             var order = await conn.execute(
-             `select * from USER_ORDERS where ORDER_ID = (select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']})`
+             `select p_id, size_id, qty, price, discount from ORDERS where ORDER_ID = ${req.params.order_id}`
             );
             var userinfo = await conn.execute(
              `select * from users where user_id = ${req.cookies['user_id']}`
@@ -552,7 +538,7 @@ app.get('/checkout',(req, res) => {
               }
               countrieslist = [...countrieslist,[(countries.getAllCountries())[c]['name'],statelist]]
             }
-            res.render('pages/checkout', {order: order.rows[0], userinfo: userinfo.rows[0],country:countrieslist});
+            res.render('pages/checkout', {order: user_order.rows[0],order_detail:order.rows, userinfo: userinfo.rows[0],country:countrieslist});
           } catch (err) {
           console.log('Ouch!', err);
         } finally {

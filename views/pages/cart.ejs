@@ -22,7 +22,7 @@
   <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   -->
     <div class="container">
         <div class="col-md-8" style="float:left">
-                <table id="" class="display" style="width:100%">
+                <table class="display" style="width:100%">
                     <thead>
                         <tr>
                             <th>Product</th>
@@ -140,6 +140,8 @@
                         }
                         if (netPurchaseAmount==0){
                           document.getElementById(`checkoutbth`).disabled = true;
+                        }else{
+                          document.getElementById(`checkoutbth`).disabled = false;
                         }
                         if (netPurchaseAmount>500){
                           document.getElementById(`deliveryfee`).innerHTML = `$0`;
