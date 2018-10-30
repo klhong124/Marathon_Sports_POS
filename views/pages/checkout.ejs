@@ -100,10 +100,10 @@
           <div class="row">
             <div class="col-md-5 mb-3">
               <label for="country">Country</label>
-              <select class="custom-select d-block w-100" id="country" required="">
+              <select class="custom-select d-block w-100" id="country" onchange="giveSelection(this.value)">
                 <option value="">Choose...</option>
                 <% for(var i=0;i<country.length;i++){ %>
-                <option value="country[i]"><%= country[i]%></option>
+                <option value="<%=country[i][0]%>"><%= country[i][0]%></option>
                 <% } %>
               </select>
               <div class="invalid-feedback">
@@ -112,14 +112,33 @@
             </div>
             <div class="col-md-4 mb-3">
               <label for="state">State</label>
-              <select class="custom-select d-block w-100" id="state" required="">
-                <option value="">Choose...</option>
-                <option>California</option>
+              <select class="custom-select d-block w-100" id="state">
+                <option data-option="">Please select a country...</option>
+                <% for(var i=0;i<country.length;i++){ %>
+                  <% for(var s=0;s<country[i][1].length;s++){ %>
+                    <option data-option="<%=country[i][0]%>"><%= country[i][1][s]%></option>
+                  <% } %>
+                <% } %>
               </select>
               <div class="invalid-feedback">
                 Please provide a valid state.
               </div>
             </div>
+            <script type="text/javascript">
+              var country = document.querySelector('#country');
+              var state = document.querySelector('#state');
+              var options2 = state.querySelectorAll('option');
+              function giveSelection(selValue) {
+              state.innerHTML = '';
+                for(var i = 0; i < options2.length; i++) {
+                  if(options2[i].dataset.option === selValue) {
+                    state.appendChild(options2[i]);
+                  }
+                }
+              }
+              giveSelection(country.value);
+            </script>
+
             <div class="col-md-3 mb-3">
               <label for="zip">Zip</label>
               <input type="text" class="form-control" id="zip" placeholder="" required="">

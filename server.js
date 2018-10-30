@@ -227,7 +227,7 @@ app.post('/add-to-cart', urlencodedParser, (req, res) => {
             try{
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
-                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[]);
+                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, cart_id) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[]);
               } catch (err) {
             console.log('Ouch!', err);
             } finally {
@@ -249,7 +249,7 @@ app.post('/edit-qty-cart', urlencodedParser, (req, res) => {
               console.log(`data was passed here: qty${req.body.qty}, id${req.body.id}`);
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
-                  `UPDATE "G1_TEAM001"."CART" SET qty = :size WHERE id = :id`,[req.body.qty,req.body.id]);
+                  `UPDATE "G1_TEAM001"."CART" SET qty = :size_id WHERE cart_id = :cart_zid`,[req.body.qty,req.body.id]);
                   console.log("nothing run here");
             } catch (err) {
             console.log('Ouch!', err);
@@ -270,7 +270,7 @@ app.post('/edit-size-cart', urlencodedParser, (req, res) => {
               console.log(`data was passed here: size${req.body.size}, id${req.body.id}`);
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
-                  `UPDATE "G1_TEAM001"."CART" SET SIZE_ID = :size WHERE id = :id`,[req.body.size,req.body.id]);
+                  `UPDATE "G1_TEAM001"."CART" SET SIZE_ID = :size_id WHERE cart_id = :cart_id`,[req.body.size,req.body.id]);
                   console.log("nothing run here");
             } catch (err) {
             console.log('Ouch!', err);
@@ -290,7 +290,7 @@ app.post('/del-from-cart', urlencodedParser, (req, res) => {
             try{
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
-                    `DELETE FROM "G1_TEAM001"."CART" WHERE id = ${req.body.id}`,[]);
+                    `DELETE FROM "G1_TEAM001"."CART" WHERE cart_id = ${req.body.id}`,[]);
             } catch (err) {
             console.log('Ouch!', err);
           } finally {
@@ -337,7 +337,16 @@ app.get('/createbill', urlencodedParser, (req, res) => {
                 var userinfo = await conn.execute(
                  `select * from users where user_id = ${req.cookies['user_id']}`
                 );
-                  res.render('pages/checkout', {order: order.rows[0], items:cartlist, userinfo: userinfo.rows[0]});
+                var countries = require('country-state-city');
+                var countrieslist = [];
+                for(var c = 0;c<countries.getAllCountries().length;c++){
+                  statelist = []
+                  for (var s = 0;s<countries.getStatesOfCountry((countries.getAllCountries())[c]['id']).length;s++){
+                    statelist = [...statelist,countries.getStatesOfCountry((countries.getAllCountries())[c]['id'])[s]['name']]
+                  }
+                  countrieslist = [...countrieslist,[(countries.getAllCountries())[c]['name'],statelist]]
+                }
+                  res.render('pages/checkout', {order: order.rows[0], items:cartlist, userinfo: userinfo.rows[0], country:countrieslist});
               } catch (err) {
             console.log('Ouch!', err);
             } finally {
@@ -362,7 +371,7 @@ app.post('/to-cart', urlencodedParser, (req, res) => {
                 var user_id = req.cookies['user_id'];
                 conn = await oracledb.getConnection(dum);
                 var result = await conn.execute(
-                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, ID) VALUES (:user_id, :p_id, :p_size, :p_qty, id.nextval)`,[
+                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, cart_id) VALUES (:user_id, :p_id, :p_size, :p_qty, id.nextval)`,[
                         user_id,
                         req.body.p_id,
                         req.body.p_size,
@@ -457,7 +466,7 @@ app.get('/cart',(req, res) => {
       async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
         var cart = await conn.execute(
-         `select p_id,size_id,qty,id from cart where user_id = ${req.cookies['user_id']}`
+         `select p_id,size_id,qty,cart_id from cart where user_id = ${req.cookies['user_id']}`
         );
         var cartlist = cart.rows;
         for(var i=0;i<cartlist.length;i++){
@@ -534,10 +543,16 @@ app.get('/checkout',(req, res) => {
             var userinfo = await conn.execute(
              `select * from users where user_id = ${req.cookies['user_id']}`
             );
-            var countries = require('country-list')();
-            console.log(order.rows[0]);
-            console.log(userinfo.rows[0]);
-            res.render('pages/checkout', {order: order.rows[0], userinfo: userinfo.rows[0],country:countries.getNames()});
+            var countries = require('country-state-city');
+            var countrieslist = [];
+            for(var c = 0;c<countries.getAllCountries().length;c++){
+              statelist = []
+              for (var s = 0;s<countries.getStatesOfCountry((countries.getAllCountries())[c]['id']).length;s++){
+                statelist = [...statelist,countries.getStatesOfCountry((countries.getAllCountries())[c]['id'])[s]['name']]
+              }
+              countrieslist = [...countrieslist,[(countries.getAllCountries())[c]['name'],statelist]]
+            }
+            res.render('pages/checkout', {order: order.rows[0], userinfo: userinfo.rows[0],country:countrieslist});
           } catch (err) {
           console.log('Ouch!', err);
         } finally {
