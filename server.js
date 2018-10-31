@@ -408,25 +408,29 @@ app.get('/product/:p_id',(req, res) => {
             var result = await conn.execute(
                 'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
             );
+            console.log('1: ' + result);
             //
             // var product = await conn.execute(
             //     'SELECT store_id, sps.store_qty, (select p_size from sizes where sps.size_id = sizes.size_id ) AS p_size FROM products p LEFT JOIN stores_products_sizes sps ON sps.product_id = p.p_id WHERE p.p_id = :p_id', [req.params.p_id]
             // );
 
             var product = await conn.execute(
-                'SELECT count(S_30) AS S30, count(S_31) AS S31, count(S_32) AS S32, count(S_33) AS S33 FROM stores_products_sizes sps LEFT JOIN sizes ON sizes.size_id = sps.size_id WHERE product_id = :p_id', [
+                'SELECT sps.size_id, sum(qty) AS inventory, (select cm from sizes where sizes.size_id = sps.size_id) AS CM FROM stores_products_sizes sps WHERE sps.product_id = :p_id GROUP BY sps.size_id', [
                     req.params.p_id
                 ]
             );
+            console.log('2: ' + product);
 
             var test = await conn.execute(
                 'SELECT * FROM orders'
             );
+            console.log('3: ' + test);
 
             var item = await conn.execute(
              `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
              // 'select * from products'
             );
+            console.log('4: ' + item);
         } catch (err) {
             console.log('Ouch!', err);
         } finally {
