@@ -39,6 +39,10 @@
     .title{
       color:#A62639;
     }
+    .printicon{
+      color: #A62639;
+      font-size: 35px;
+    }
 </style>
 
 <body>
@@ -54,8 +58,9 @@
                                         [4]SHIPPING_ADDRESS
                                         [5]comfirm_email
 ========================================================================================================================-->
-<button type="button" onclick="window.location.href='/download'"><i class="far fa-print-alt"></i></button>
+
   <div class="container">
+      <a style="float:right" href="javascript:window.location.href=window.location.href+'/download'" target="_blank" class="printicon"><i class="fas fa-print"></i></a>
       <h3 class="mb-3 title">Order Information</h3><hr>
       <p><b>Order Number : </b><%= order[0]%>-<%= order[1]%></p>
       <p><b>Order Date : </b><%= order[2]%></p>
@@ -83,16 +88,16 @@
   <div class="container">
       <h3 class="mb-3 title">Order Details</h3><hr>
       <table class="display" style="width:100%">
-        <thead style="width:100%">
+        <tbody>
           <tr>
-              <th>Product</th>
-              <th class="text-center">Size</th>
-              <th class="text-center">Quantity</th>
-              <th class="text-center">Price</th>
-              <th class="text-center">Discount</th>
-              <th class="text-center">Sub Total</th>
+              <th style="text-align: left;"><b>Product</b></th>
+              <th class="text-center"><b>Size</b></th>
+              <th class="text-center"><b>Quantity</b></th>
+              <th class="text-center"><b>Price</b></th>
+              <th class="text-center"><b>Discount</b></th>
+              <th class="text-center"><b>Sub Total</b></th>
           </tr>
-        </thead>
+        </tbody>
         <tbody>
           <% for (var i = 0; i<order_detail.length;i++) { %>
             <tr>
@@ -105,7 +110,7 @@
             </tr>
             <% } %>
           </tbody>
-        </table><br>
+        </table><hr>
           <div style="width: 100%; text-align:right; font-size:18px; margin-right:50px">
               <p>Net Purchase Amount : $<%= netPurchaseAmount%></p>
               <p>Delivery Fee : $<%= deliveryfee%></p>
