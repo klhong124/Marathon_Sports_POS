@@ -144,7 +144,7 @@ app.get('/stock',(req, res) => {
           conn = await oracledb.getConnection(dum);
 
           var result = await conn.execute(
-            'SELECT stores.*, sizes.*, products.p_name FROM stores LEFT JOIN stores_products_sizes sps ON sps.store_id = stores.store_id LEFT JOIN sizes ON sizes.size_id = sps.size_id LEFT JOIN products ON products.p_id = sps.product_id'
+            'SELECT (SELECT p_name FROM products WHERE products.p_id = stores_products_sizes.product_id) AS product_name, stores.store_name, stores.tel, stores.open, stores.address, (SELECT cm FROM sizes WHERE sizes.size_id =stores_products_sizes.size_id) AS CM, qty FROM stores_products_sizes INNER JOIN stores ON stores_products_sizes.store_id = stores.store_id WHERE rownum<1000'
             // 'SELECT * FROM products'
           );
         } catch (err) {
