@@ -546,7 +546,8 @@ app.get('/checkout/:order_id',(req, res) => {
              `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
             );
             var order = await conn.execute(
-             `select p_id, size_id, qty, price, discount from ORDERS where ORDER_ID = ${req.params.order_id}`
+              `SELECT Products.P_name, Sizes.Cm, Orders.Qty, Orders.Price, Orders.Discount FROM ((Orders INNER JOIN Sizes ON Orders.Size_ID = Sizes.Size_ID) INNER JOIN Products ON Orders.P_id = Products.P_id) INNER JOIN User_orders ON Orders.Order_id = User_orders.Order_id where orders.order_id = ${req.params.order_id}`
+
             );
             var userinfo = await conn.execute(
              `select * from users where user_id = ${req.cookies['user_id']}`
@@ -560,7 +561,23 @@ app.get('/checkout/:order_id',(req, res) => {
               }
               countrieslist = [...countrieslist,[(countries.getAllCountries())[c]['name'],statelist]]
             }
-            res.render('pages/checkout', {order: user_order.rows[0],order_detail:order.rows, userinfo: userinfo.rows[0],country:countrieslist});
+            var netPurchaseAmount = 0;
+            for (var t=0;t<order.rows.length;t++){
+              netPurchaseAmount = netPurchaseAmount + Math.round(order.rows[t][2]*order.rows[t][3]*(1-order.rows[t][4]/100)*10)/10
+            }
+            var deliveryfee = 300;
+            if (netPurchaseAmount>500){
+              deliveryfee = 0;
+            }
+            var totalHKD = netPurchaseAmount + deliveryfee;
+            res.render('pages/checkout', {order: user_order.rows[0],
+                                       order_detail:order.rows,
+                                       userinfo: userinfo.rows[0],
+                                       netPurchaseAmount:netPurchaseAmount,
+                                       deliveryfee:deliveryfee,
+                                       totalHKD:totalHKD,
+                                       country:countrieslist
+                                     });
           } catch (err) {
           console.log('Ouch!', err);
         } finally {
@@ -585,12 +602,85 @@ app.get('/order/:order_id',(req, res) => {
              `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
             );
             var order = await conn.execute(
-             `select p_id, size_id, qty, price, discount from ORDERS where ORDER_ID = ${req.params.order_id}`
+             `SELECT Products.P_name, Sizes.Cm, Orders.Qty, Orders.Price, Orders.Discount FROM ((Orders INNER JOIN Sizes ON Orders.Size_ID = Sizes.Size_ID) INNER JOIN Products ON Orders.P_id = Products.P_id) INNER JOIN User_orders ON Orders.Order_id = User_orders.Order_id where orders.order_id = ${req.params.order_id}`
             );
             var userinfo = await conn.execute(
              `select * from users where user_id = ${req.cookies['user_id']}`
             );
-            res.render('pages/order', {order: user_order.rows[0],order_detail:order.rows, userinfo: userinfo.rows[0]});
+            var netPurchaseAmount = 0;
+            for (var t=0;t<order.rows.length;t++){
+              netPurchaseAmount = netPurchaseAmount + Math.round(order.rows[t][2]*order.rows[t][3]*(1-order.rows[t][4]/100)*10)/10
+            }
+            var deliveryfee = 300;
+            if (netPurchaseAmount>500){
+              deliveryfee = 0;
+            }
+            var totalHKD = netPurchaseAmount + deliveryfee;
+            res.render('pages/order', {order: user_order.rows[0],
+                                       order_detail:order.rows,
+                                       userinfo: userinfo.rows[0],
+                                       netPurchaseAmount:netPurchaseAmount,
+                                       deliveryfee:deliveryfee,
+                                       totalHKD:totalHKD
+                                     });
+          } catch (err) {
+          console.log('Ouch!', err);
+        } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+        }
+      }
+      oracledbconn();
+  } else {
+      res.send({"error" : "Update error"});
+  }
+});
+app.get('/order/:order_id/download',(req, res) => {
+  if (req.cookies['username']) {
+      async function oracledbconn(){
+        let conn;
+          try{
+            conn = await oracledb.getConnection(dum);
+            var user_order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
+            );
+            var order = await conn.execute(
+             `SELECT Products.P_name, Sizes.Cm, Orders.Qty, Orders.Price, Orders.Discount FROM ((Orders INNER JOIN Sizes ON Orders.Size_ID = Sizes.Size_ID) INNER JOIN Products ON Orders.P_id = Products.P_id) INNER JOIN User_orders ON Orders.Order_id = User_orders.Order_id where orders.order_id = ${req.params.order_id}`
+            );
+            var userinfo = await conn.execute(
+             `select * from users where user_id = ${req.cookies['user_id']}`
+            );
+            var netPurchaseAmount = 0;
+            for (var t=0;t<order.rows.length;t++){
+              netPurchaseAmount = netPurchaseAmount + Math.round(order.rows[t][2]*order.rows[t][3]*(1-order.rows[t][4]/100)*10)/10
+            }
+            var deliveryfee = 300;
+            if (netPurchaseAmount>500){
+              deliveryfee = 0;
+            }
+            var totalHKD = netPurchaseAmount + deliveryfee;
+            //===============================================================
+            var pdfMaker = require('pdf-maker');
+            var template = "views/pages/order.ejs";
+            var data = { order: user_order.rows[0],
+                         order_detail:order.rows,
+                         userinfo: userinfo.rows[0],
+                         netPurchaseAmount:netPurchaseAmount,
+                         deliveryfee:deliveryfee,
+                         totalHKD:totalHKD
+                       };
+            var pdfPath = `pdf_orders/${req.params.order_id}.pdf`;
+            var option = {
+                    paperSize: {
+                        format: 'A4',
+                        orientation: 'portrait',
+                        border: '1.8cm'
+                    }
+            };
+
+            pdfMaker(template, data, pdfPath, option);
+            res.download(`C:\\Users\\Hong\\GitHub\\Marathon_Sports_POS\\pdf_orders\\${req.params.order_id}.pdf`, `MSPOS_bill_no_${req.params.order_id}_${req.cookies['username']}.pdf`);
           } catch (err) {
           console.log('Ouch!', err);
         } finally {

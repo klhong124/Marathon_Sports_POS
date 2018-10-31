@@ -38,7 +38,7 @@
       <h3 class="mb-3 title">Order Information</h3><hr>
       <p><b>Order Number : </b><%= order[0]%>-<%= order[1]%></p>
       <p><b>Order Date : </b><%= order[2]%></p>
-      <p><b>Order Price : </b>HK <span class="totalHKD"></span></p>
+      <p><b>Order Price : </b>HKD $<%= totalHKD%></p>
       <% if (order[3] == 1) { %>
         <p><b>Payment Method : </b>Credit Card</p>
       <% } else if (order[3] == 2) { %>
@@ -62,32 +62,32 @@
       <table class="display" style="width:100%">
         <thead>
           <tr>
-              <th>Product</th>
-              <th>Size</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Discount</th>
-              <th>Sub Total</th>
+            <th>Product</th>
+            <th class="text-center">Size</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">Discount</th>
+            <th class="text-center">Sub Total</th>
           </tr>
         </thead>
         <tbody>
           <% for (var i = 0; i<order_detail.length;i++) { %>
             <tr>
               <td><%=order_detail[i][0]%></td>
-              <td><%=order_detail[i][1]%></td>
-              <td><%=order_detail[i][2]%></td>
-              <td>HKD $<%=order_detail[i][3]%></td>
-              <td><%=order_detail[i][4]%>% OFF</td>
-              <td class="subTotal">$<%= Math.round(order_detail[i][2]*order_detail[i][3]*(1-order_detail[i][4]/100)*10)/10%></td>
+              <td class="text-center"><%=order_detail[i][1]%></td>
+              <td class="text-center"><%=order_detail[i][2]%></td>
+              <td class="text-center">HKD $<%=order_detail[i][3]%></td>
+              <td class="text-center"><%=order_detail[i][4]%>% OFF</td>
+              <td class="text-center">$<%= Math.round(order_detail[i][2]*order_detail[i][3]*(1-order_detail[i][4]/100)*10)/10%></td>
             </tr>
             <% } %>
           </tbody>
         </table><br>
-          <div style="width: 100%; text-align:right;font-size:18px;">
-              <p>Net Purchase Amount : <span id="netPurchaseAmount"><span></p>
-              <p>Delivery Fee : <span id="deliveryfee"><span></p>
-              <p><b>Total HKD : <span class="totalHKD tfoot"><span></b></p>
-          </div>
+        <div style="width: 100%; text-align:right; font-size:18px; margin-right:50px">
+            <p>Net Purchase Amount : $<%= netPurchaseAmount%></p>
+            <p>Delivery Fee : $<%= deliveryfee%></p>
+            <p><b>Total HKD : $<%= totalHKD%></b></p>
+        </div>
 
   </div>
 
@@ -102,25 +102,6 @@
       "scrollX": true,
     });
   } );
-
-    function calTotal(){
-      console.log("loaded");
-      var subTotal = document.getElementsByClassName("subTotal");
-      var netPurchaseAmount = 0;
-      for(var i=0;i<subTotal.length;i++){
-        netPurchaseAmount = netPurchaseAmount + Number(subTotal[i].textContent.substr(1));
-      }
-      if (netPurchaseAmount>500){
-        document.getElementById(`deliveryfee`).innerHTML = `$0`;
-      }else{
-        document.getElementById(`deliveryfee`).innerHTML = `$300`;
-      }
-      document.getElementById(`netPurchaseAmount`).innerHTML = `$${netPurchaseAmount}`;
-      var totalelement = document.getElementsByClassName(`totalHKD`)
-      for(var e=0;e<totalelement.length;e++){
-        totalelement[e].innerHTML = `$${Number(document.getElementById(`netPurchaseAmount`).textContent.substr(1))+Number(document.getElementById(`deliveryfee`).textContent.substr(1))}`;
-      }
-    }
   </script>
   <!--========================================================================================================================-->
   <div class="container">
