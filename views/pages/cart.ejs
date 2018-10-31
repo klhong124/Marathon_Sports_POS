@@ -52,13 +52,15 @@
                             <td class="product_name"><%= cartlist[i][4]%></td>
                             <td>
                              <select onchange="editSizeCart(<%=cartlist[i][3]%>,this.value)">
-                                  <% for(var s=0; s<size.length; s++) { %>
-                                      <% if(cartlist[i][1] == size[s][0]) { %>
-                                         <option value="<%= size[s][0]%>" selected><%= size[s][5]%></option>
-                                      <% } else { %>
-                                        <option value="<%= size[s][0]%>"><%= size[s][5]%></option>
-                                      <% } %>
-                                  <% } %>
+                               <% for(var s=0; s<size.length; s++) { %>
+                                 <% if (cartlist[i][0] == size[s][0]) { %>
+                                   <% if(cartlist[i][1] == size[s][2]) { %>
+                                      <option value="<%= size[s][2]%>" selected><%= size[s][1]%></option>
+                                   <% } else { %>
+                                     <option value="<%= size[s][2]%>"><%= size[s][1]%></option>
+                                   <% } %>
+                                 <% } %>
+                               <% } %>
                                       </select>
                                       <script type="text/javascript">
                                         function sizeSelect(id,size){
