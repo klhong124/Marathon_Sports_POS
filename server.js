@@ -321,6 +321,8 @@ app.post('/del-from-cart', urlencodedParser, (req, res) => {
         res.send({"error" : "Update error"});
     }
 });
+
+//create bill function
 app.get('/createbill', urlencodedParser, (req, res) => {
     if (req.cookies['username']) {
         async function oracledbconn(){
