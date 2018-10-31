@@ -144,7 +144,7 @@ app.get('/stock',(req, res) => {
           conn = await oracledb.getConnection(dum);
 
           var result = await conn.execute(
-            'SELECT (SELECT p_name FROM products WHERE products.p_id = stores_products_sizes.product_id) AS product_name, stores.store_name, stores.tel, stores.open, stores.address, (SELECT cm FROM sizes WHERE sizes.size_id =stores_products_sizes.size_id) AS CM, qty FROM stores_products_sizes INNER JOIN stores ON stores_products_sizes.store_id = stores.store_id WHERE rownum<1000'
+            'SELECT stores.*, sizes.*, products.p_name FROM stores LEFT JOIN stores_products_sizes sps ON sps.store_id = stores.store_id LEFT JOIN sizes ON sizes.size_id = sps.size_id LEFT JOIN products ON products.p_id = sps.product_id'
             // 'SELECT * FROM products'
           );
         } catch (err) {
@@ -166,6 +166,28 @@ app.get('/stock',(req, res) => {
         }
     }
     oracledbconn();
+
+});
+
+// payment
+app.post('/payment',(req, res) => {
+    console.log(req.body);
+    async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        var fulladdress = `${req.body.address},${req.body.district},${req.body.country},${req.body.state}`
+        console.log(fulladdress);
+        await conn.execute(
+            `UPDATE "G1_TEAM001"."USER_ORDERS" SET SHIPPING_ADDRESS = :address, CONFIRM_EMAIL = :email, STATUS = :status WHERE order_id = :order_id`, [fulladdress, req.body.email,req.body.paymentMethod,req.body.orderid]
+        );
+        console.log("updated");
+        if (conn) {await conn.close();};
+        // check if the user exists
+        if (result.rows) {
+            res.redirect('/');
+        }
+        // res.render('pages/dashboard');
+    };
+    oracledbconn(); // call the function run
 
 });
 
@@ -220,14 +242,13 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
-  console.log(`${req.body.p_size}`);
     if (req.cookies['username']) {
         async function oracledbconn(){
             let conn;
             try{
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
-                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, CART_ID) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[]);
+                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, cart_id) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[]);
               } catch (err) {
             console.log('Ouch!', err);
             } finally {
@@ -246,11 +267,9 @@ app.post('/edit-qty-cart', urlencodedParser, (req, res) => {
         async function oracledbconn(){
           let conn;
             try{
-              console.log(`data was passed here: qty${req.body.qty}, id${req.body.id}`);
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
-                  `UPDATE "G1_TEAM001"."CART" SET qty = :size WHERE cart_id = :id`,[req.body.qty,req.body.id]);
-                  console.log("nothing run here");
+                  `UPDATE "G1_TEAM001"."CART" SET qty = :size_id WHERE cart_id = :cart_zid`,[req.body.qty,req.body.id]);
             } catch (err) {
             console.log('Ouch!', err);
           } finally {
@@ -267,11 +286,9 @@ app.post('/edit-size-cart', urlencodedParser, (req, res) => {
         async function oracledbconn(){
           let conn;
             try{
-              console.log(`data was passed here: size${req.body.size}, id${req.body.id}`);
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
-                  `UPDATE cart SET SIZE_ID = :size_id WHERE cart_id = :cart_id`,[req.body.size,req.body.id]);
-                  console.log("nothing run here");
+                  `UPDATE "G1_TEAM001"."CART" SET SIZE_ID = :size_id WHERE cart_id = :cart_id`,[req.body.size,req.body.id]);
             } catch (err) {
             console.log('Ouch!', err);
           } finally {
@@ -290,7 +307,7 @@ app.post('/del-from-cart', urlencodedParser, (req, res) => {
             try{
                 conn = await oracledb.getConnection(dum);
                 await conn.execute(
-                    `DELETE FROM "G1_TEAM001"."CART" WHERE id = ${req.body.id}`,[]);
+                    `DELETE FROM "G1_TEAM001"."CART" WHERE cart_id = ${req.body.id}`,[]);
             } catch (err) {
             console.log('Ouch!', err);
           } finally {
@@ -331,13 +348,10 @@ app.get('/createbill', urlencodedParser, (req, res) => {
                     `INSERT INTO "G1_TEAM001"."ORDERS" (ORDER_ID, P_ID, SIZE_ID, QTY, PRICE, DISCOUNT) VALUES (ID.currval, :p_id, :p_size, :qty, :price, :discount)`,
                     cartlist
                   );
-                var order = await conn.execute(
-                 `select * from USER_ORDERS where ORDER_ID = (select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']})`
+                var orderid = await conn.execute(
+                 `select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']}`
                 );
-                var userinfo = await conn.execute(
-                 `select * from users where user_id = ${req.cookies['user_id']}`
-                );
-                  res.render('pages/checkout', {order: order.rows[0], items:cartlist, userinfo: userinfo.rows[0]});
+                  res.redirect(`../checkout/${orderid.rows[0]}`)
               } catch (err) {
             console.log('Ouch!', err);
             } finally {
@@ -362,7 +376,7 @@ app.post('/to-cart', urlencodedParser, (req, res) => {
                 var user_id = req.cookies['user_id'];
                 conn = await oracledb.getConnection(dum);
                 var result = await conn.execute(
-                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, CART_ID) VALUES (:user_id, :p_id, :p_size, :p_qty, id.nextval)`,[
+                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, cart_id) VALUES (:user_id, :p_id, :p_size, :p_qty, id.nextval)`,[
                         user_id,
                         req.body.p_id,
                         req.body.p_size,
@@ -522,22 +536,151 @@ app.get('/contact',(req, res) => {
 });
 
 // checkout page
-app.get('/checkout',(req, res) => {
+app.get('/checkout/:order_id',(req, res) => {
   if (req.cookies['username']) {
       async function oracledbconn(){
         let conn;
           try{
             conn = await oracledb.getConnection(dum);
+            var user_order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
+            );
             var order = await conn.execute(
-             `select * from USER_ORDERS where ORDER_ID = (select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']})`
+              `SELECT Products.P_name, Sizes.Cm, Orders.Qty, Orders.Price, Orders.Discount FROM ((Orders INNER JOIN Sizes ON Orders.Size_ID = Sizes.Size_ID) INNER JOIN Products ON Orders.P_id = Products.P_id) INNER JOIN User_orders ON Orders.Order_id = User_orders.Order_id where orders.order_id = ${req.params.order_id}`
+
             );
             var userinfo = await conn.execute(
              `select * from users where user_id = ${req.cookies['user_id']}`
             );
-            var countries = require('country-list')();
-            console.log(order.rows[0]);
-            console.log(userinfo.rows[0]);
-            res.render('pages/checkout', {order: order.rows[0], userinfo: userinfo.rows[0],country:countries.getNames()});
+            var countries = require('country-state-city');
+            var countrieslist = [];
+            for(var c = 0;c<countries.getAllCountries().length;c++){
+              statelist = []
+              for (var s = 0;s<countries.getStatesOfCountry((countries.getAllCountries())[c]['id']).length;s++){
+                statelist = [...statelist,countries.getStatesOfCountry((countries.getAllCountries())[c]['id'])[s]['name']]
+              }
+              countrieslist = [...countrieslist,[(countries.getAllCountries())[c]['name'],statelist]]
+            }
+            var netPurchaseAmount = 0;
+            for (var t=0;t<order.rows.length;t++){
+              netPurchaseAmount = netPurchaseAmount + Math.round(order.rows[t][2]*order.rows[t][3]*(1-order.rows[t][4]/100)*10)/10
+            }
+            var deliveryfee = 300;
+            if (netPurchaseAmount>500){
+              deliveryfee = 0;
+            }
+            var totalHKD = netPurchaseAmount + deliveryfee;
+            res.render('pages/checkout', {order: user_order.rows[0],
+                                       order_detail:order.rows,
+                                       userinfo: userinfo.rows[0],
+                                       netPurchaseAmount:netPurchaseAmount,
+                                       deliveryfee:deliveryfee,
+                                       totalHKD:totalHKD,
+                                       country:countrieslist
+                                     });
+          } catch (err) {
+          console.log('Ouch!', err);
+        } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+        }
+      }
+      oracledbconn();
+  } else {
+      res.send({"error" : "Update error"});
+  }
+});
+//order page
+app.get('/order/:order_id',(req, res) => {
+  if (req.cookies['username']) {
+      async function oracledbconn(){
+        let conn;
+          try{
+            conn = await oracledb.getConnection(dum);
+            var user_order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
+            );
+            var order = await conn.execute(
+             `SELECT Products.P_name, Sizes.Cm, Orders.Qty, Orders.Price, Orders.Discount FROM ((Orders INNER JOIN Sizes ON Orders.Size_ID = Sizes.Size_ID) INNER JOIN Products ON Orders.P_id = Products.P_id) INNER JOIN User_orders ON Orders.Order_id = User_orders.Order_id where orders.order_id = ${req.params.order_id}`
+            );
+            var userinfo = await conn.execute(
+             `select * from users where user_id = ${req.cookies['user_id']}`
+            );
+            var netPurchaseAmount = 0;
+            for (var t=0;t<order.rows.length;t++){
+              netPurchaseAmount = netPurchaseAmount + Math.round(order.rows[t][2]*order.rows[t][3]*(1-order.rows[t][4]/100)*10)/10
+            }
+            var deliveryfee = 300;
+            if (netPurchaseAmount>500){
+              deliveryfee = 0;
+            }
+            var totalHKD = netPurchaseAmount + deliveryfee;
+            res.render('pages/order', {order: user_order.rows[0],
+                                       order_detail:order.rows,
+                                       userinfo: userinfo.rows[0],
+                                       netPurchaseAmount:netPurchaseAmount,
+                                       deliveryfee:deliveryfee,
+                                       totalHKD:totalHKD
+                                     });
+          } catch (err) {
+          console.log('Ouch!', err);
+        } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+        }
+      }
+      oracledbconn();
+  } else {
+      res.send({"error" : "Update error"});
+  }
+});
+app.get('/order/:order_id/download',(req, res) => {
+  if (req.cookies['username']) {
+      async function oracledbconn(){
+        let conn;
+          try{
+            conn = await oracledb.getConnection(dum);
+            var user_order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
+            );
+            var order = await conn.execute(
+             `SELECT Products.P_name, Sizes.Cm, Orders.Qty, Orders.Price, Orders.Discount FROM ((Orders INNER JOIN Sizes ON Orders.Size_ID = Sizes.Size_ID) INNER JOIN Products ON Orders.P_id = Products.P_id) INNER JOIN User_orders ON Orders.Order_id = User_orders.Order_id where orders.order_id = ${req.params.order_id}`
+            );
+            var userinfo = await conn.execute(
+             `select * from users where user_id = ${req.cookies['user_id']}`
+            );
+            var netPurchaseAmount = 0;
+            for (var t=0;t<order.rows.length;t++){
+              netPurchaseAmount = netPurchaseAmount + Math.round(order.rows[t][2]*order.rows[t][3]*(1-order.rows[t][4]/100)*10)/10
+            }
+            var deliveryfee = 300;
+            if (netPurchaseAmount>500){
+              deliveryfee = 0;
+            }
+            var totalHKD = netPurchaseAmount + deliveryfee;
+            //===============================================================
+            var pdfMaker = require('pdf-maker');
+            var template = "views/pages/order.ejs";
+            var data = { order: user_order.rows[0],
+                         order_detail:order.rows,
+                         userinfo: userinfo.rows[0],
+                         netPurchaseAmount:netPurchaseAmount,
+                         deliveryfee:deliveryfee,
+                         totalHKD:totalHKD
+                       };
+            var pdfPath = `pdf_orders/${req.params.order_id}.pdf`;
+            var option = {
+                    paperSize: {
+                        format: 'A4',
+                        orientation: 'portrait',
+                        border: '1.8cm'
+                    }
+            };
+
+            pdfMaker(template, data, pdfPath, option);
+            res.download(`C:\\Users\\Hong\\GitHub\\Marathon_Sports_POS\\pdf_orders\\${req.params.order_id}.pdf`, `MSPOS_bill_no_${req.params.order_id}_${req.cookies['username']}.pdf`);
           } catch (err) {
           console.log('Ouch!', err);
         } finally {
@@ -562,7 +705,7 @@ app.get('/forgetpassword',(req, res) => {
 });
 
 app.use('/public', express.static('public'));
-var port = 3000; //change here bitch!!!
+var port = 4000; //change here bitch!!!
 app.listen(port);
 console.log(`Server Running on port ${port}`);
 // require("openurl").open(`http://localhost:${port}`);
