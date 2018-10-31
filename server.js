@@ -169,6 +169,28 @@ app.get('/stock',(req, res) => {
 
 });
 
+// payment
+app.post('/payment',(req, res) => {
+    console.log(req.body);
+    async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        var fulladdress = `${req.body.address},${req.body.district},${req.body.country},${req.body.state}`
+        console.log(fulladdress);
+        await conn.execute(
+            `UPDATE "G1_TEAM001"."USER_ORDERS" SET SHIPPING_ADDRESS = :address, CONFIRM_EMAIL = :email, STATUS = :status WHERE order_id = :order_id`, [fulladdress, req.body.email,req.body.paymentMethod,req.body.orderid]
+        );
+        console.log("updated");
+        if (conn) {await conn.close();};
+        // check if the user exists
+        if (result.rows) {
+            res.redirect('/');
+        }
+        // res.render('pages/dashboard');
+    };
+    oracledbconn(); // call the function run
+
+});
+
 // store page
 app.get('/store',(req, res) => {
     async function oracledbconn(){
@@ -539,6 +561,36 @@ app.get('/checkout/:order_id',(req, res) => {
               countrieslist = [...countrieslist,[(countries.getAllCountries())[c]['name'],statelist]]
             }
             res.render('pages/checkout', {order: user_order.rows[0],order_detail:order.rows, userinfo: userinfo.rows[0],country:countrieslist});
+          } catch (err) {
+          console.log('Ouch!', err);
+        } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+        }
+      }
+      oracledbconn();
+  } else {
+      res.send({"error" : "Update error"});
+  }
+});
+//order page
+app.get('/order/:order_id',(req, res) => {
+  if (req.cookies['username']) {
+      async function oracledbconn(){
+        let conn;
+          try{
+            conn = await oracledb.getConnection(dum);
+            var user_order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
+            );
+            var order = await conn.execute(
+             `select p_id, size_id, qty, price, discount from ORDERS where ORDER_ID = ${req.params.order_id}`
+            );
+            var userinfo = await conn.execute(
+             `select * from users where user_id = ${req.cookies['user_id']}`
+            );
+            res.render('pages/order', {order: user_order.rows[0],order_detail:order.rows, userinfo: userinfo.rows[0]});
           } catch (err) {
           console.log('Ouch!', err);
         } finally {

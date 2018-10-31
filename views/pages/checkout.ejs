@@ -21,10 +21,19 @@
 </style>
 
 <body onload="calTotal()">
+  <form action="/payment" method="post">
   <div class="album py-5 bgcolor">
         <center><a href="../"><img src="/public/marathon-logobgred.png" alt="" class="Marathon-logo" width="300px"></a></center>
   </div>
-  <!--========================================================================================================================-->
+  <!--========================================================================================================================-
+                                        <%= order %>
+                                        [0]order_id
+                                        [1]user_id
+                                        [2]create_at
+                                        [3]status
+                                        [4]SHIPPING_ADDRESS
+                                        [5]comfirm_email
+========================================================================================================================-->
   <div class="container">
       <h3 class="mb-3 title">Order Information</h3><hr>
       <p><b>Order Number : </b><%= order[0]%>-<%= order[1]%></p>
@@ -47,7 +56,7 @@
                                         [2]order.qty
                                         [3]order.price
                                         [4]order.discount
---========================================================================================================================-->
+========================================================================================================================-->
   <div class="container">
       <h3 class="mb-3 title">Order Details</h3><hr>
       <table class="display" style="width:100%">
@@ -67,8 +76,8 @@
               <td><%=order_detail[i][0]%></td>
               <td><%=order_detail[i][1]%></td>
               <td><%=order_detail[i][2]%></td>
-              <td><%=order_detail[i][3]%></td>
-              <td><%=order_detail[i][4]%></td>
+              <td>HKD $<%=order_detail[i][3]%></td>
+              <td><%=order_detail[i][4]%>% OFF</td>
               <td class="subTotal">$<%= Math.round(order_detail[i][2]*order_detail[i][3]*(1-order_detail[i][4]/100)*10)/10%></td>
             </tr>
             <% } %>
@@ -146,7 +155,8 @@
           </div>
         </div>
       </div>
-<form action="/payment" method="post">
+
+      <input value="<%= order[0]%>" name="orderid" style="display:none">
       <div class="mb-3">
         <label for="email">Email <span class="text-muted">(For order confirmation)</span></label>
         <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email">
@@ -176,7 +186,7 @@
           <div class="row">
             <div class="col-md-5 mb-3">
               <label for="country">Country</label>
-              <select class="custom-select d-block w-100" id="country" onchange="giveSelection(this.value)">
+              <select class="custom-select d-block w-100" id="country" onchange="giveSelection(this.value)" name="country">
                 <option value="">Choose...</option>
                 <% for(var i=0;i<country.length;i++){ %>
                 <option value="<%=country[i][0]%>"><%= country[i][0]%></option>
@@ -188,7 +198,7 @@
             </div>
             <div class="col-md-4 mb-3">
               <label for="state">State</label>
-              <select class="custom-select d-block w-100" id="state">
+              <select class="custom-select d-block w-100" id="state" name="state">
                 <option data-option="">Please select a country...</option>
                 <% for(var i=0;i<country.length;i++){ %>
                   <% for(var s=0;s<country[i][1].length;s++){ %>
@@ -238,15 +248,15 @@
 
           <div class="d-block my-3">
             <div class="custom-control custom-radio">
-              <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked="" required="">
+              <input id="credit" name="paymentMethod" value="1" type="radio" class="custom-control-input" checked="" required="">
               <label class="custom-control-label" for="credit">Credit card</label>
             </div>
             <div class="custom-control custom-radio">
-              <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required="">
+              <input id="debit" name="paymentMethod" value="2" type="radio" class="custom-control-input" required="">
               <label class="custom-control-label" for="debit">Debit card</label>
             </div>
             <div class="custom-control custom-radio">
-              <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required="">
+              <input id="paypal" name="paymentMethod" value="3"  type="radio" class="custom-control-input" required="">
               <label class="custom-control-label" for="paypal">Paypal</label>
             </div>
           </div>
@@ -286,6 +296,6 @@
           <hr class="mb-4">
           <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
       </div>
-</form>
+    </form>
 </body>
 </html>
