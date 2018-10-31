@@ -410,7 +410,8 @@ app.get('/product/:p_id',(req, res) => {
             var result = await conn.execute(
                 'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
             );
-            console.log('1: ' + result);
+            console.log('1: ');
+            console.log(result);
             //
             // var product = await conn.execute(
             //     'SELECT store_id, sps.store_qty, (select p_size from sizes where sps.size_id = sizes.size_id ) AS p_size FROM products p LEFT JOIN stores_products_sizes sps ON sps.product_id = p.p_id WHERE p.p_id = :p_id', [req.params.p_id]
@@ -421,18 +422,21 @@ app.get('/product/:p_id',(req, res) => {
                     req.params.p_id
                 ]
             );
-            console.log('2: ' + product);
+            console.log('2: ');
+            console.log(product);
 
             var test = await conn.execute(
                 'SELECT * FROM orders'
             );
-            console.log('3: ' + test);
+            console.log('3: ');
+            console.log(test);
 
             var item = await conn.execute(
              `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
              // 'select * from products'
             );
-            console.log('4: ' + item);
+            console.log('4: ');
+            console.log(item);
         } catch (err) {
             console.log('Ouch!', err);
         } finally {
@@ -443,7 +447,7 @@ app.get('/product/:p_id',(req, res) => {
 
         var data = result.rows[0];
         item = item.rows;
-        product = product.rows[0];
+        product = product.rows;
         console.log(test);
 
 
