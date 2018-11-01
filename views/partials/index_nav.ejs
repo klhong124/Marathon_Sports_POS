@@ -1,5 +1,8 @@
 <!-- views/partials/header -->
 <style>
+    #navbar{
+      top:-200px;
+    }
     .cart-num {
         position: absolute;
         left: 20px;
@@ -16,7 +19,7 @@
         position:fixed;
         width: 100%;
         z-index: 1000;
-        transition: top 1s;
+        transition: top .5s;
     }
 </style>
 <header>
@@ -67,18 +70,18 @@
                 <input class="form-control mr-sm-2" type="search" placeholder="Find ..." aria-label="Search" name="keyword">
                 <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
             </form>
+            <!-- <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form> -->
             <script>
             window.addEventListener("scroll", navfx);
-            var prevScrollpos = window.pageYOffset;
             function navfx() {
-              var currentScrollPos = window.pageYOffset;
-                  var currentScrollPos = window.pageYOffset;
-                  if (prevScrollpos > currentScrollPos) {
+                if (window.pageYOffset == 0){
+                  document.getElementById("navbar").style.top = "-200px";
+                } else {
                     document.getElementById("navbar").style.top = "0";
-                  } else {
-                    document.getElementById("navbar").style.top = "-200px";
-                  }
-                  prevScrollpos = currentScrollPos;
+                }
                 }
             </script>
 

@@ -591,7 +591,7 @@ app.get('/products',(req, res) => {
             // 'select * from images'
         );
         var sizes = await conn.execute(
-          `SELECT * from sizes order by CM ASC`
+            `SELECT products.p_id, sizes.cm, sizes.size_id FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id WHERE rownum <= 500 GROUP BY p_id, sizes.cm, sizes.size_id ORDER BY p_id`
         );
 
         if (conn) {await conn.close();};
