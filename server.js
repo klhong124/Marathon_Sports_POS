@@ -169,6 +169,42 @@ app.get('/stock',(req, res) => {
 
 });
 
+// history page
+app.get('/history',(req, res) => {
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+            try {
+              conn = await oracledb.getConnection(dum);
+
+              var result = await conn.execute(
+                'SELECT order_id, status, create_at FROM user_orders WHERE user_id = :user_id', [
+                    req.cookies['user_id']
+                ]
+              );
+            } catch (err) {
+                console.log('Ouch!', err);
+            } finally {
+                if (conn) { // conn assignment worked, need to close
+                    await conn.close();
+                }
+            }
+            console.log(result);
+
+            var data = result.rows;
+
+
+            if (req.cookies['username']) {
+              res.render('pages/history', {username: req.cookies['username'], data: data});
+            } else {
+              res.redirect('/');
+            }
+        }
+        oracledbconn();
+    } else {
+        res.send({"error" : "Update error"});
+    }
+});
+
 // payment
 app.post('/payment',(req, res) => {
     console.log(req.body);
@@ -190,6 +226,8 @@ app.post('/payment',(req, res) => {
     oracledbconn(); // call the function run
 
 });
+
+
 
 // store page
 app.get('/store',(req, res) => {
