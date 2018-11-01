@@ -127,6 +127,28 @@ app.post('/register',urlencodedParser,(req, res) => {
     res.redirect('/');
 });
 
+// payment
+app.post('/payment',urlencodedParser,(req, res) => {
+    async function oracledbconn(){
+      try {
+        conn = await oracledb.getConnection(dum);
+        var fulladdress = `${req.body.address},${req.body.district},${req.body.country},${req.body.state}`;
+        console.log(fulladdress);
+        await conn.execute(
+            `UPDATE "G1_TEAM001"."USER_ORDERS" SET SHIPPING_ADDRESS = :address, CONFIRM_EMAIL = :email, STATUS = :status WHERE order_id = :order_id`, [fulladdress, req.body.email,req.body.paymentMethod,req.body.orderid]
+        );
+        res.redirect(`/order/${req.body.orderid}`)
+      } catch (err) {
+          console.log('Ouch! ', err);
+      } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+      }
+    };
+    oracledbconn(); // call the function run
+});
+
 // support page
 app.get('/help',(req, res) => {
     if (typeof req.cookies['username'] != 'undefined') {
@@ -169,28 +191,6 @@ app.get('/stock',(req, res) => {
 
 });
 
-// payment
-app.post('/payment',(req, res) => {
-    console.log(req.body);
-    async function oracledbconn(){
-        conn = await oracledb.getConnection(dum);
-        var fulladdress = `${req.body.address},${req.body.district},${req.body.country},${req.body.state}`
-        console.log(fulladdress);
-        await conn.execute(
-            `UPDATE "G1_TEAM001"."USER_ORDERS" SET SHIPPING_ADDRESS = :address, CONFIRM_EMAIL = :email, STATUS = :status WHERE order_id = :order_id`, [fulladdress, req.body.email,req.body.paymentMethod,req.body.orderid]
-        );
-        console.log("updated");
-        if (conn) {await conn.close();};
-        // check if the user exists
-        if (result.rows) {
-            res.redirect('/');
-        }
-        // res.render('pages/dashboard');
-    };
-    oracledbconn(); // call the function run
-
-});
-
 // store page
 app.get('/store',(req, res) => {
     async function oracledbconn(){
@@ -230,8 +230,8 @@ app.post('/login', urlencodedParser, (req, res) => {
         if (conn) {await conn.close();};
         // check if the user exists
         if (result.rows[0] !== undefined) {
-            res.cookie('username', result.rows[0][0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
-            res.cookie('user_id', result.rows[0][1], { maxAge: 900000});
+            res.cookie('username', result.rows[0][0], { maxAge: 9000000000}); // put username to cookie and set expire time for cookie
+            res.cookie('user_id', result.rows[0][1], { maxAge: 9000000000});
             res.render('pages/dashboard', {username: req.cookies['username']});
         } else {
             res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
