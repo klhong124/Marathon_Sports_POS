@@ -206,25 +206,25 @@ app.get('/history',(req, res) => {
 });
 
 // payment
-app.post('/payment',(req, res) => {
-    console.log(req.body);
+app.post('/payment',urlencodedParser,(req, res) => {
     async function oracledbconn(){
+      try {
         conn = await oracledb.getConnection(dum);
-        var fulladdress = `${req.body.address},${req.body.district},${req.body.country},${req.body.state}`
+        var fulladdress = `${req.body.address},${req.body.district},${req.body.country},${req.body.state}`;
         console.log(fulladdress);
         await conn.execute(
             `UPDATE "G1_TEAM001"."USER_ORDERS" SET SHIPPING_ADDRESS = :address, CONFIRM_EMAIL = :email, STATUS = :status WHERE order_id = :order_id`, [fulladdress, req.body.email,req.body.paymentMethod,req.body.orderid]
         );
-        console.log("updated");
-        if (conn) {await conn.close();};
-        // check if the user exists
-        if (result.rows) {
-            res.redirect('/');
-        }
-        // res.render('pages/dashboard');
+        res.redirect(`/order/${req.body.orderid}`)
+      } catch (err) {
+          console.log('Ouch! ', err);
+      } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+      }
     };
     oracledbconn(); // call the function run
-
 });
 
 
