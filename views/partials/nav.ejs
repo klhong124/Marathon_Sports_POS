@@ -150,12 +150,11 @@
 
     var count = 1;
     function addToCart(id){
-        console.log(id);
-
+      var size = document.getElementById(`size${id}`).value;
         $.ajax({
             url:'/add-to-cart',
             type:'post',
-            data: {p_id: id},
+            data: {p_id: id,p_size:size},
             success:function(result){
                 console.log(result['success']);
                 $('.cart-num').html(count);

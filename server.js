@@ -1,6 +1,7 @@
 // requirement
 const express = require('express');
 const oracledb = require('oracledb');
+oracledb.autoCommit = true;
 const bodyParser = require('body-parser');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 const cookieParser = require('cookie-parser');
@@ -45,62 +46,56 @@ app.set('view engine', 'ejs'); // set the view engine to ejs
 // use res.render to load up an ejs view file
 // index page
 app.get('/',(req, res, next) => {
-     async function oracledbconn(){
-            conn = await oracledb.getConnection(dum);
-            var userslist = await conn.execute(
-             `select username from users`
-            );
-            var testing = await conn.execute(
-             `select * from users`
-            );
-            console.log(testing);
-            var emailslist = await conn.execute(
-             `select email from users`
-            );
-            var products = await conn.execute(
-             `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
-             // 'select * from images'
-            );
-            if (conn) {await conn.close();};
-            // check if the user exists
-            if (userslist.rows) {
 
-                if(req.cookies['username']) {
-                    res.render('pages/index', {
-                        username: req.cookies['username'],
-                        error_message:false,
-                        userslist:userslist.rows,
-                        emailslist:emailslist.rows,
-                        data:products.rows
-                    });
-                }else {
-                    res.render('pages/index', {
-                       username:undefined,
-                       error_message:false,
-                       userslist:userslist.rows,
-                       emailslist:emailslist.rows,
-                       data:products.rows
-                    });
-                }
+    async function oracledbconn(){
+        try {
+          conn = await oracledb.getConnection(dum);
+
+          var userslist = await conn.execute(
+           `select username from users`
+          );
+          var emailslist = await conn.execute(
+           `select email from users`
+          );
+          var products = await conn.execute(
+           `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1)AS product_image FROM products WHERE rownum <= 9`
+          );
+          var sizes = await conn.execute(
+            `SELECT products.p_id, sizes.cm, sizes.size_id FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id WHERE rownum <= 500 GROUP BY p_id, sizes.cm, sizes.size_id ORDER BY p_id`
+          );
+        } catch (err) {
+            console.log('Ouch!', err);
+        } finally {
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
+               // check if the user exists
+               if (userslist.rows) {
+                   if(req.cookies['username']) {
+                     res.render('pages/index', {
+                         username: req.cookies['username'],
+                         error_message:false,
+                         userslist:userslist.rows,
+                         emailslist:emailslist.rows,
+                         data:products.rows,
+                         size:sizes.rows
+                       });
+                   }else {
+                       res.render('pages/index', {
+                          username:undefined,
+                          error_message:false,
+                          userslist:userslist.rows,
+                          emailslist:emailslist.rows,
+                          data:products.rows,
+                          size:sizes.rows
+                       });
+                   }
+               }
             }
+        }
 
-    };
-     oracledbconn(); // call the function run
 
-     // req.query.errormessage ? res.render('pages/index', {error_message: req.query.errormessage}) : res.render('pages/index');
-     // if (req.query.errormessage){
-     //     res.render('pages/index', {
-     //         username: false,
-     //         error_message: req.query.errormessage
-     //     });
-     // } else if (typeof req.cookies['username'] != 'undefined') {
-    //     res.render('pages/index', {username: req.cookies['username'], error_message: false});
-    // } else if (req.query.errormessage) {
-    //     res.render('pages/index', {username: false, error_message: req.query.errormessage});
-    // } else {
-    //     res.render('pages/index', {username: false, error_message: false});
-    // }
-
+    }
+    oracledbconn();
 });
 
 // signup page
@@ -111,26 +106,47 @@ app.post('/join',urlencodedParser,(req, res) => {
                                password:req.body.password
                              });
 });
+
 app.post('/register',urlencodedParser,(req, res) => {
-  async function oracledbconn(){
-      conn = await oracledb.getConnection(dum);
-      conn.execute(
-      `INSERT INTO users VALUES (user_id.nextval, :username, :email, :password, :lastname, :firstname)`,
-      [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname],  // Bind values
-      { autoCommit: true},  // Override the default non-autocommit behavior
-      function(err, result) {
-        if (err) {
-          // return cb(err, conn);
-          console.log(err);
-        } else {
-          console.log("Rows inserted: " + result.rowsAffected);  // 1
-          // return cb(null, conn);
+    async function oracledbconn(){
+        try {
+          conn = await oracledb.getConnection(dum);
+
+          const result = await conn.execute(
+            'INSERT INTO users VALUES(users_seq.nextval, :name, :email, :pw, :lname, :fname, :phone)', [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname, req.body.phone], {autoCommit: true}
+          );
+        } catch (err) {
+            console.log('Ouch! ', err);
+        } finally {
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
+            }
         }
-      });
-      // if (conn) {await conn.close();};
-  };
-  oracledbconn();
-  res.redirect('/');
+    }
+    oracledbconn();
+    res.redirect('/');
+});
+
+// payment
+app.post('/payment',urlencodedParser,(req, res) => {
+    async function oracledbconn(){
+      try {
+        conn = await oracledb.getConnection(dum);
+        var fulladdress = `${req.body.address},${req.body.district},${req.body.country},${req.body.state}`;
+        console.log(fulladdress);
+        await conn.execute(
+            `UPDATE "G1_TEAM001"."USER_ORDERS" SET SHIPPING_ADDRESS = :address, CONFIRM_EMAIL = :email, STATUS = :status WHERE order_id = :order_id`, [fulladdress, req.body.email,req.body.paymentMethod,req.body.orderid]
+        );
+        res.redirect(`/order/${req.body.orderid}`)
+      } catch (err) {
+          console.log('Ouch! ', err);
+      } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+      }
+    };
+    oracledbconn(); // call the function run
 });
 
 // support page
@@ -146,28 +162,33 @@ app.get('/help',(req, res) => {
 // stock page
 app.get('/stock',(req, res) => {
     async function oracledbconn(){
-        conn = await oracledb.getConnection(dum);
-        const result = await conn.execute(
-            'select products.p_name, sizes.p_size, stores.*, sps.qty from stores inner join stores_products_sizes sps on sps.store_id = stores.store_id inner join sizes on sizes.size_id = sps.size_id inner join products on products.p_id=sps.product_id'
-        );
+        try {
+          conn = await oracledb.getConnection(dum);
 
-        if (conn) {await conn.close();};
+          var result = await conn.execute(
+            'SELECT (SELECT p_name FROM products WHERE products.p_id = stores_products_sizes.product_id) AS product_name, stores.store_name, stores.tel, stores.open, stores.address, (SELECT cm FROM sizes WHERE sizes.size_id =stores_products_sizes.size_id) AS CM, qty FROM stores_products_sizes INNER JOIN stores ON stores_products_sizes.store_id = stores.store_id WHERE rownum<1000'
+            // 'SELECT * FROM products'
+          );
+        } catch (err) {
+            console.log('Ouch!', err);
+        } finally {
+            if (conn) { // conn assignment worked, need to close
+                await conn.close();
+            }
+        }
+        console.log(result);
 
-        // var data = JSON.stringify(result.rows);
         var data = result.rows;
 
-        console.log(data);
 
         if (req.cookies['username']) {
           res.render('pages/stock', {username: req.cookies['username'], data: data});
         } else {
           res.redirect('/');
         }
-        // res.render('pages/dashboard');
-    };
-    oracledbconn(); // call the function run
+    }
+    oracledbconn();
 
-    // res.render('pages/stock');
 });
 
 // store page
@@ -203,15 +224,14 @@ app.get('/about',(req, res) => {
 app.post('/login', urlencodedParser, (req, res) => {
     async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
-        const result = await conn.execute(
-            `select username from users where email = '${req.body.email}' and password = '${req.body.password}'`,
+        var result = await conn.execute(
+            `select username,user_id from users where email = '${req.body.email}' and password = '${req.body.password}'`,
         );
         if (conn) {await conn.close();};
-        console.log(`${result.rows[0]}`);
         // check if the user exists
         if (result.rows[0] !== undefined) {
-            res.cookie('username', result.rows[0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
-
+            res.cookie('username', result.rows[0][0], { maxAge: 9000000000}); // put username to cookie and set expire time for cookie
+            res.cookie('user_id', result.rows[0][1], { maxAge: 9000000000});
             res.render('pages/dashboard', {username: req.cookies['username']});
         } else {
             res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
@@ -222,72 +242,219 @@ app.post('/login', urlencodedParser, (req, res) => {
 
 // get product if from ajax
 app.post('/add-to-cart', urlencodedParser, (req, res) => {
-    console.log(req.body.p_id); // print params
-    var product_id = req.body.p_id;
-
     if (req.cookies['username']) {
-        oracledbconn(); // call the function run
         async function oracledbconn(){
-            conn = await oracledb.getConnection(dum);
-
-            const result = await conn.execute(
-                'select user_id from users where username = :username',
-                [req.cookies['username'][0]]);
-
-            var user_id = result.rows[0][0];
-            console.log(user_id);
-
-            const check = await conn.execute(
-                'select order_id from orders where p_id = :p_id and user_id = :user_id and status = 0', [product_id, user_id]
-            );
-            // if (check.rows && check.rows != "undefined"){
-            //     console.log(check.rows[0][0]);
-            // } else{
-            //     console.log('check');
-            // }
-
-            await conn.execute(
-                'insert into orders(order_id, p_id, user_id) values (orders_seq.nextval, :p_id, :user_id)',[product_id, user_id], {autoCommit: true}
-            );
-
-            if (conn) {
-                await conn.close();
-                // .catch((error) => {})
-            };
-            res.send({"success" : "Updated Successfully", "status" : 200});
-        };
+            let conn;
+            try{
+                conn = await oracledb.getConnection(dum);
+                await conn.execute(
+                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, cart_id) VALUES (${req.cookies['user_id']}, ${req.body.p_id}, ${req.body.p_size}, '1', id.nextval)`,[]);
+              } catch (err) {
+            console.log('Ouch!', err);
+            } finally {
+                if (conn) { // conn assignment worked, need to close
+                    await conn.close();
+                }
+            }
+        }
+        oracledbconn();
     } else {
         res.send({"error" : "Update error"});
     }
-
 });
+app.post('/edit-qty-cart', urlencodedParser, (req, res) => {
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+          let conn;
+            try{
+                conn = await oracledb.getConnection(dum);
+                await conn.execute(
+                  `UPDATE "G1_TEAM001"."CART" SET qty = :size_id WHERE cart_id = :cart_zid`,[req.body.qty,req.body.id]);
+            } catch (err) {
+            console.log('Ouch!', err);
+          } finally {
+            if (conn) {await conn.close();}
+          }
+        }
+        oracledbconn();
+    } else {
+        res.send({"error" : "Update error"});
+    }
+});
+app.post('/edit-size-cart', urlencodedParser, (req, res) => {
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+          let conn;
+            try{
+                conn = await oracledb.getConnection(dum);
+                await conn.execute(
+                  `UPDATE "G1_TEAM001"."CART" SET SIZE_ID = :size_id WHERE cart_id = :cart_id`,[req.body.size,req.body.id]);
+            } catch (err) {
+            console.log('Ouch!', err);
+          } finally {
+            if (conn) {await conn.close();}
+          }
+        }
+        oracledbconn();
+    } else {
+        res.send({"error" : "Update error"});
+    }
+});
+app.post('/del-from-cart', urlencodedParser, (req, res) => {
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+          let conn;
+            try{
+                conn = await oracledb.getConnection(dum);
+                await conn.execute(
+                    `DELETE FROM "G1_TEAM001"."CART" WHERE cart_id = ${req.body.id}`,[]);
+            } catch (err) {
+            console.log('Ouch!', err);
+          } finally {
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
+            }
+          }
+        }
+        oracledbconn();
+    } else {
+        res.send({"error" : "Update error"});
+    }
+});
+
+//create bill function
+app.get('/createbill', urlencodedParser, (req, res) => {
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+            let conn;
+            try{
+                conn = await oracledb.getConnection(dum);
+                var data = await conn.execute(
+                    `select P_id, size_id, QTY from cart where user_id = ${req.cookies['user_id']}`,[]
+                  );
+                  await conn.execute(
+                    `DELETE FROM "G1_TEAM001"."CART" WHERE user_id = ${req.cookies['user_id']}`,[]
+                  );
+                  var cartlist = data.rows;
+                  for(var i=0;i<cartlist.length;i++){
+                    var products = await conn.execute(
+                     `select price,discount from products where p_id = ${cartlist[i][0]}`
+                   );
+                   // P_id, size_id, QTY ,price,discount
+                    cartlist[i] = [...cartlist[i],products.rows[0][0],products.rows[0][1]]
+                  }
+                await conn.execute(
+                    `INSERT INTO "G1_TEAM001"."USER_ORDERS" (ORDER_ID, USER_ID, CREATE_AT, STATUS) VALUES (ID.nextval, '${req.cookies['user_id']}', CURRENT_TIMESTAMP, '0')`,[]
+                  );
+                await conn.executeMany(
+                    `INSERT INTO "G1_TEAM001"."ORDERS" (ORDER_ID, P_ID, SIZE_ID, QTY, PRICE, DISCOUNT) VALUES (ID.currval, :p_id, :p_size, :qty, :price, :discount)`,
+                    cartlist
+                  );
+                var orderid = await conn.execute(
+                 `select MAX(ORDER_ID) from USER_ORDERS where user_ID = ${req.cookies['user_id']}`
+                );
+                  res.redirect(`../checkout/${orderid.rows[0]}`)
+              } catch (err) {
+            console.log('Ouch!', err);
+            } finally {
+                if (conn) { // conn assignment worked, need to close
+                    await conn.close();
+                }
+            }
+        }
+        oracledbconn();
+    } else {
+        res.send({"error" : "Update error"});
+    }
+});
+app.post('/to-cart', urlencodedParser, (req, res) => {
+    console.log(req.body.p_id);
+    console.log(req.body.p_price);
+    console.log(req.body.p_qty);
+    console.log(req.body.p_size);
+    if (req.cookies['user_id']){
+        async function oracledbconn(){
+            try{
+                var user_id = req.cookies['user_id'];
+                conn = await oracledb.getConnection(dum);
+                var result = await conn.execute(
+                    `INSERT INTO "G1_TEAM001"."CART" (USER_ID, P_ID, SIZE_ID, QTY, cart_id) VALUES (:user_id, :p_id, :p_size, :p_qty, id.nextval)`,[
+                        user_id,
+                        req.body.p_id,
+                        req.body.p_size,
+                        req.body.p_qty
+                    ]
+                );
+            } catch (err) {
+                console.log('Ouch!', err);
+            } finally {
+                if (conn) { // conn assignment worked, need to close
+                   await conn.close();
+                   res.redirect('/cart');
+                }
+            }
+        };
+        oracledbconn(); // call the function run
+    } else {
+        res.send({"error" : "Please login your account first"});
+    }
+});
+
 
 // product page
 app.get('/product/:p_id',(req, res) => {
     async function oracledbconn(){
-        conn = await oracledb.getConnection(dum);
-        // should group by this sql
-        const result = await conn.execute(
-            'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
-        );
+        try {
+            conn = await oracledb.getConnection(dum);
+            // should group by this sql
+            var result = await conn.execute(
+                'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
+            );
+            console.log('1: ');
+            console.log(result);
+            //
+            // var product = await conn.execute(
+            //     'SELECT store_id, sps.store_qty, (select p_size from sizes where sps.size_id = sizes.size_id ) AS p_size FROM products p LEFT JOIN stores_products_sizes sps ON sps.product_id = p.p_id WHERE p.p_id = :p_id', [req.params.p_id]
+            // );
 
-        var item = await conn.execute(
-         `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
-         // 'select * from products'
-        );
+            var product = await conn.execute(
+                'SELECT sps.size_id, sum(qty) AS inventory, (select cm from sizes where sizes.size_id = sps.size_id) AS CM FROM stores_products_sizes sps WHERE sps.product_id = :p_id GROUP BY sps.size_id', [
+                    req.params.p_id
+                ]
+            );
+            console.log('2: ');
+            console.log(product);
 
-        if (conn) {await conn.close();};
+            var test = await conn.execute(
+                'SELECT * FROM orders'
+            );
+            console.log('3: ');
+            console.log(test);
 
-        // var data = JSON.stringify(result.rows[0]);
+            var item = await conn.execute(
+             `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
+             // 'select * from products'
+            );
+            console.log('4: ');
+            console.log(item);
+        } catch (err) {
+            console.log('Ouch!', err);
+        } finally {
+            if (conn) { // conn assignment worked, need to close
+               await conn.close();
+            }
+        }
+
         var data = result.rows[0];
         item = item.rows;
+        product = product.rows;
+        console.log(test);
 
 
-        console.log(data);
 
         // check if the user exists
         if (result.rows) {
-            res.render('pages/product', {username: req.cookies['username'], data:data, item: item});
+            res.render('pages/product', {username: req.cookies['username'], data:data, item: item, product: product});
         }
     };
     oracledbconn(); // call the function run
@@ -311,7 +478,25 @@ app.get('/logout',(req, res) => {
 // shopping cart
 app.get('/cart',(req, res) => {
     if (req.cookies['username']) {
-      res.render('pages/shopping-cart', {username: req.cookies['username']});
+      async function oracledbconn(){
+        conn = await oracledb.getConnection(dum);
+        var cart = await conn.execute(
+         `select p_id,size_id,qty,cart_id from cart where user_id = ${req.cookies['user_id']}`
+        );
+        var cartlist = cart.rows;
+        for(var i=0;i<cartlist.length;i++){
+          var p_name = await conn.execute(
+           `select p_name,price,discount from products where p_id = ${cartlist[i][0]}`
+          );
+          cartlist[i] = [...cartlist[i],p_name.rows[0][0],p_name.rows[0][1],p_name.rows[0][2]]
+        }
+        var sizes = await conn.execute(
+          `SELECT products.p_id, sizes.cm, sizes.size_id FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id WHERE rownum <= 500 GROUP BY p_id, sizes.cm, sizes.size_id ORDER BY p_id`
+        );
+      if (conn) {await conn.close();};
+      res.render('pages/cart',{username: req.cookies['username'],cartlist:cartlist,size:sizes.rows})
+      };
+      oracledbconn();
     } else {
       res.redirect('/');
     }
@@ -331,8 +516,11 @@ app.get('/products',(req, res) => {
     async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
         const result = await conn.execute(
-            'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products'
+            'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images LEFT JOIN products on products.p_id = images.p_id WHERE rownum <= 1) FROM products'
             // 'select * from images'
+        );
+        var sizes = await conn.execute(
+          `SELECT * from sizes order by CM ASC`
         );
 
         if (conn) {await conn.close();};
@@ -344,7 +532,7 @@ app.get('/products',(req, res) => {
 
         // check if the user exists
         if (result.rows) {
-          res.render('pages/products', {username: req.cookies['username'], data:data});
+          res.render('pages/products', {username: req.cookies['username'], data:data, size:sizes.rows});
         }
         // res.render('pages/dashboard');
     };
@@ -358,8 +546,163 @@ app.get('/contact',(req, res) => {
 });
 
 // checkout page
-app.get('/checkout',(req, res) => {
-    res.render('pages/checkout');
+app.get('/checkout/:order_id',(req, res) => {
+  if (req.cookies['username']) {
+      async function oracledbconn(){
+        let conn;
+          try{
+            conn = await oracledb.getConnection(dum);
+            var user_order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
+            );
+            var order = await conn.execute(
+              `SELECT Products.P_name, Sizes.Cm, Orders.Qty, Orders.Price, Orders.Discount FROM ((Orders INNER JOIN Sizes ON Orders.Size_ID = Sizes.Size_ID) INNER JOIN Products ON Orders.P_id = Products.P_id) INNER JOIN User_orders ON Orders.Order_id = User_orders.Order_id where orders.order_id = ${req.params.order_id}`
+
+            );
+            var userinfo = await conn.execute(
+             `select * from users where user_id = ${req.cookies['user_id']}`
+            );
+            var countries = require('country-state-city');
+            var countrieslist = [];
+            for(var c = 0;c<countries.getAllCountries().length;c++){
+              statelist = []
+              for (var s = 0;s<countries.getStatesOfCountry((countries.getAllCountries())[c]['id']).length;s++){
+                statelist = [...statelist,countries.getStatesOfCountry((countries.getAllCountries())[c]['id'])[s]['name']]
+              }
+              countrieslist = [...countrieslist,[(countries.getAllCountries())[c]['name'],statelist]]
+            }
+            var netPurchaseAmount = 0;
+            for (var t=0;t<order.rows.length;t++){
+              netPurchaseAmount = netPurchaseAmount + Math.round(order.rows[t][2]*order.rows[t][3]*(1-order.rows[t][4]/100)*10)/10
+            }
+            var deliveryfee = 300;
+            if (netPurchaseAmount>500){
+              deliveryfee = 0;
+            }
+            var totalHKD = netPurchaseAmount + deliveryfee;
+            res.render('pages/checkout', {order: user_order.rows[0],
+                                       order_detail:order.rows,
+                                       userinfo: userinfo.rows[0],
+                                       netPurchaseAmount:netPurchaseAmount,
+                                       deliveryfee:deliveryfee,
+                                       totalHKD:totalHKD,
+                                       country:countrieslist
+                                     });
+          } catch (err) {
+          console.log('Ouch!', err);
+        } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+        }
+      }
+      oracledbconn();
+  } else {
+      res.send({"error" : "Update error"});
+  }
+});
+//order page
+app.get('/order/:order_id',(req, res) => {
+  if (req.cookies['username']) {
+      async function oracledbconn(){
+        let conn;
+          try{
+            conn = await oracledb.getConnection(dum);
+            var user_order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
+            );
+            var order = await conn.execute(
+             `SELECT Products.P_name, Sizes.Cm, Orders.Qty, Orders.Price, Orders.Discount FROM ((Orders INNER JOIN Sizes ON Orders.Size_ID = Sizes.Size_ID) INNER JOIN Products ON Orders.P_id = Products.P_id) INNER JOIN User_orders ON Orders.Order_id = User_orders.Order_id where orders.order_id = ${req.params.order_id}`
+            );
+            var userinfo = await conn.execute(
+             `select * from users where user_id = ${req.cookies['user_id']}`
+            );
+            var netPurchaseAmount = 0;
+            for (var t=0;t<order.rows.length;t++){
+              netPurchaseAmount = netPurchaseAmount + Math.round(order.rows[t][2]*order.rows[t][3]*(1-order.rows[t][4]/100)*10)/10
+            }
+            var deliveryfee = 300;
+            if (netPurchaseAmount>500){
+              deliveryfee = 0;
+            }
+            var totalHKD = netPurchaseAmount + deliveryfee;
+            res.render('pages/order', {order: user_order.rows[0],
+                                       order_detail:order.rows,
+                                       userinfo: userinfo.rows[0],
+                                       netPurchaseAmount:netPurchaseAmount,
+                                       deliveryfee:deliveryfee,
+                                       totalHKD:totalHKD
+                                     });
+          } catch (err) {
+          console.log('Ouch!', err);
+        } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+        }
+      }
+      oracledbconn();
+  } else {
+      res.send({"error" : "Update error"});
+  }
+});
+app.get('/order/:order_id/download',(req, res) => {
+  if (req.cookies['username']) {
+      async function oracledbconn(){
+        let conn;
+          try{
+            conn = await oracledb.getConnection(dum);
+            var user_order = await conn.execute(
+             `select * from USER_ORDERS where ORDER_ID = ${req.params.order_id} and user_id = ${req.cookies['user_id']}`
+            );
+            var order = await conn.execute(
+             `SELECT Products.P_name, Sizes.Cm, Orders.Qty, Orders.Price, Orders.Discount FROM ((Orders INNER JOIN Sizes ON Orders.Size_ID = Sizes.Size_ID) INNER JOIN Products ON Orders.P_id = Products.P_id) INNER JOIN User_orders ON Orders.Order_id = User_orders.Order_id where orders.order_id = ${req.params.order_id}`
+            );
+            var userinfo = await conn.execute(
+             `select * from users where user_id = ${req.cookies['user_id']}`
+            );
+            var netPurchaseAmount = 0;
+            for (var t=0;t<order.rows.length;t++){
+              netPurchaseAmount = netPurchaseAmount + Math.round(order.rows[t][2]*order.rows[t][3]*(1-order.rows[t][4]/100)*10)/10
+            }
+            var deliveryfee = 300;
+            if (netPurchaseAmount>500){
+              deliveryfee = 0;
+            }
+            var totalHKD = netPurchaseAmount + deliveryfee;
+            //===============================================================
+            var pdfMaker = require('pdf-maker');
+            var template = "views/pages/order.ejs";
+            var data = { order: user_order.rows[0],
+                         order_detail:order.rows,
+                         userinfo: userinfo.rows[0],
+                         netPurchaseAmount:netPurchaseAmount,
+                         deliveryfee:deliveryfee,
+                         totalHKD:totalHKD
+                       };
+            var pdfPath = `pdf_orders/${req.params.order_id}.pdf`;
+            var option = {
+                    paperSize: {
+                        format: 'A4',
+                        orientation: 'portrait',
+                        border: '1.8cm'
+                    }
+            };
+
+            pdfMaker(template, data, pdfPath, option);
+            res.download(`C:\\Users\\Hong\\GitHub\\Marathon_Sports_POS\\pdf_orders\\${req.params.order_id}.pdf`, `MSPOS_bill_no_${req.params.order_id}_${req.cookies['username']}.pdf`);
+          } catch (err) {
+          console.log('Ouch!', err);
+        } finally {
+          if (conn) { // conn assignment worked, need to close
+             await conn.close();
+          }
+        }
+      }
+      oracledbconn();
+  } else {
+      res.send({"error" : "Update error"});
+  }
 });
 
 // forget password page

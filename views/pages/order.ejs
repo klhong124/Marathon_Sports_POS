@@ -1,0 +1,137 @@
+<html lang="en" class="gr__getbootstrap_com">
+<head>
+    <!-- Bootstrap core CSS -->
+    <!-- views/partials/head.ejs -->
+    <meta charset="UTF-8">
+    <title>Marathon Sports</title>
+
+    <!-- icon  -->
+    <link rel="icon" href="http://localhost:4000/public/favicon.ico">
+
+    <!-- CSS (load bootstrap from a CDN) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Rationale" rel="stylesheet">
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <!-- AOS (https://michalsnik.github.io/aos/)-->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" type="text/css" href="http://localhost:4000/public/signin.css">
+</head>
+<style>
+    .bgcolor{
+      background:#A62639;
+    }
+    .container{
+      margin-top: 30px;
+    }
+    .title{
+      color:#A62639;
+    }
+    .printicon{
+      color: #A62639;
+      font-size: 35px;
+    }
+</style>
+
+<body>
+  <div class="album py-5 bgcolor">
+        <center><a href="../../"><img src="http://localhost:4000/public/marathon-logobgred.png" alt="" width="300px"></a></center>
+  </div>
+  <!--========================================================================================================================
+                                        <%= order %>
+                                        [0]order_id
+                                        [1]user_id
+                                        [2]create_at
+                                        [3]status
+                                        [4]SHIPPING_ADDRESS
+                                        [5]comfirm_email
+========================================================================================================================-->
+
+  <div class="container">
+      <a style="float:right" href="javascript:window.location.href=window.location.href+'/download'" target="_blank" class="printicon"><i class="fas fa-print"></i></a>
+      <h3 class="mb-3 title">Order Information</h3><hr>
+      <p><b>Order Number : </b>#<%= order[0]%>-<%= order[1]%></p>
+      <p><b>Order Date : </b><%= order[2]%></p>
+      <p><b>Order Price : </b>HKD $<%= totalHKD%></p>
+      <% if (order[3] == 1) { %>
+        <p><b>Payment Method : </b>Credit Card (VISA)</p>
+      <% } else if (order[3] == 2) { %>
+        <p><b>Payment Method : </b>Debit Card</p>
+      <% } else if (order[3] == 3) { %>
+        <p><b>Payment Method : </b>Paypal</p>
+      <% } else { %>
+        <p><b>Payment Method : </b>Pending</p>
+      <% } %>
+      <p><b>Shipping Address : </b><%= order[4]%></p>
+      <p><b>Email : </b><%= order[5]%></p>
+  </div>
+  <!--========================================================================================================================
+                                        <%= order_detail %>
+                                        [0]products.p_name
+                                        [1]sizes.cm
+                                        [2]order.qty
+                                        [3]order.price
+                                        [4]order.discount
+========================================================================================================================-->
+  <div class="container">
+      <h3 class="mb-3 title">Order Details</h3><hr>
+      <table class="display" style="width:100%">
+        <tbody>
+          <tr>
+              <th style="text-align: left;"><b>Product</b></th>
+              <th class="text-center"><b>Size</b></th>
+              <th class="text-center"><b>Quantity</b></th>
+              <th class="text-center"><b>Price</b></th>
+              <th class="text-center"><b>Discount</b></th>
+              <th class="text-center"><b>Sub Total</b></th>
+          </tr>
+        </tbody>
+        <tbody>
+          <% for (var i = 0; i<order_detail.length;i++) { %>
+            <tr>
+              <td><%=order_detail[i][0]%></td>
+              <td class="text-center"><%=order_detail[i][1]%></td>
+              <td class="text-center"><%=order_detail[i][2]%></td>
+              <td class="text-center">HKD $<%=order_detail[i][3]%></td>
+              <td class="text-center"><%=order_detail[i][4]%>% OFF</td>
+              <td class="text-center">$<%= Math.round(order_detail[i][2]*order_detail[i][3]*(1-order_detail[i][4]/100)*10)/10%></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table><hr>
+          <div style="width: 100%; text-align:right; font-size:18px; margin-right:50px">
+              <p>Net Purchase Amount : $<%= netPurchaseAmount%></p>
+              <p>Shipping & Handling : $<%= deliveryfee%></p>
+              <p><b>Grand Total : $<%= totalHKD%></b></p>
+          </div>
+
+  </div>
+
+  <script type="text/javascript">
+  $(document).ready( function () {
+      $('table.display').DataTable(
+    { 'ordering': false,
+      'searching': false,
+      'paging': false,
+      'info': false,
+      'responsive': true,
+      "scrollX": true,
+    });
+  } );
+  </script>
+  <!--========================================================================================================================-->
+
+</body>
+</html>

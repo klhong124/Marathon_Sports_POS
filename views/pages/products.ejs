@@ -21,8 +21,8 @@
                         <div style="height:24px; width:100%;"></div>
                         <div class="row">
                             <% for(var i=0; i<data.length; i++) { %>
-                                <div class="col-md-4">
-                                    <div class="card mb-4 shadow-sm">
+                                <div class="col-md-3">
+                                    <div class="card mb-3 shadow-sm">
                                         <a href="/product/<%= data[i][3] %>">
                                             <% if((typeof data[i][4] != null && data[i][4])) { %>
                                             <img class="card-img-top" src="/public/images/<%= data[i][3] %>/<%= data[i][4]%>.jpg" alt="Card image cap"></a>
@@ -31,6 +31,11 @@
                                             <% } %>
                                         <div class="card-body">
                                             <p class="card-text"><%= data[i][0] %><br><span style="color:#ff6e00;">$ <b><%= data[i][1] %></b></span> </p>
+                                            <p>Size : <select id="size<%= data[i][3]%>">
+                                                <% for(var s=0; s<size.length; s++) { %>
+                                                        <option value="<%= size[s][0]%>"><%= size[s][5]%></option>
+                                                <% } %>
+                                                      </select></p>
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group">
                                                     <a href="/product/<%= data[i][3] %>"><button type="button" class="btn btn-sm btn-outline-primary">View</button></a>

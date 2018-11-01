@@ -23,6 +23,9 @@
         weight: 100%;
         /* object-fit: contain; */
     }
+    #stock-tooltip {
+        text-decoration: none;
+    }
 </style>
 
 
@@ -40,7 +43,7 @@
                             <!-- <<img style="width:40px; height:40px;"  data-target="#product" data-slide-to="0" class="active" src="./public/images/2.jpg">
                             <img style="width:40px; height:40px;" data-target="#product" data-slide-to="1" src="./public/images/2.jpg">
                             <img style="width:40px; height:40px;" data-target="#product" data-slide-to="2" src="./public/images/2.jpg"> -->
-                            <div data-target="#product" data-slide-to="0" class="active"><img src="/public/images/<%= data[7] %>/<%= data[6] %>.jpg"></div>
+                            <div data-target="#product" data-slide-to="0" class="active"><img src="/public/images/<%= data[0] %>/<%= data[10] %>.jpg"></div>
                             <!-- <div data-target="#product" data-slide-to="1"><img src="/public/images/2.jpg"></div>
                             <div data-target="#product" data-slide-to="2"><img src="/public/images/3.jpg"></div> -->
                         </ul>
@@ -48,7 +51,7 @@
                         <!-- The slideshow -->
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <img src="/public/images/<%= data[7] %>/<%= data[6] %>.jpg">
+                                <img src="/public/images/<%= data[0] %>/<%= data[10] %>.jpg">
                             </div>
                             <!-- <div class="carousel-item">
                                 <img src="/public/images/2.jpg">
@@ -71,12 +74,14 @@
 
             <aside class="col-sm-7">
                 <article class="card-body p-5">
-                    <form  action="" method="post" >
+                    <form  action="/to-cart" method="post" >
+                        <input hidden name="p_id" value="<%= data[0] %>">
                         <h3 class="title mb-3"> <%= data[1] %></h3>
 
                         <p class="price-detail-wrap">
                             <span class="price h3 text-warning">
-                                <span class="currency">HK $</span><span class="num"><%= data[3] %></span>
+                                <span class="currency">HK $</span><span class="num" name="p_price"><%= data[3] %></span>
+                                <input hidden name="p_price" value="<%= data[3] %>">
                             </span>
                         </p> <!-- price-detail-wrap .// -->
                         <dl class="item-property">
@@ -100,24 +105,24 @@
                         <div class="row">
                             <div class="col-sm-5">
                                 <dl class="param param-inline">
-                                    <dt>Quantity: </dt>
+                                    <dt>Quantity:</dt>
                                     <dd>
-                                        <select class="form-control form-control-sm" style="width:70px;">
-                                            <option> 1 </option>
-                                            <option> 2 </option>
-                                            <option> 3 </option>
-                                        </select>
+                                        <input class="form-control" style="width: 80px;" type="number" min="1" name="p_qty" value="1">
                                     </dd>
                                 </dl>  <!-- item-property .// -->
                             </div> <!-- col.// -->
                             <div class="col-sm-7">
                                 <dl class="param param-inline">
-                                    <dt>Size Available: </dt>
+                                    <dt>Size Available (CM): </dt>
                                     <dd>
-                                        <label class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                            <span class="form-check-label"><%= data[3] %></span>
-                                        </label>
+                                        <% for(var i=1; i<product.length; i++ ){ %>
+                                            <a href="#" id="stock-tooltip" data-toggle="tooltip" title="<%= product[i][1] %> in stocks">
+                                            <label class="form-check form-check-inline">
+                                                  <input class="form-check-input" type="radio" name="p_size" value="<%= product[i][0] %>">
+                                                <span class="form-check-label" ><%= product[i][2] %></span>
+                                            </label></a>
+                                        <% } %>
+
                                         <!-- <label class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
                                         <span class="form-check-label">MD</span>
@@ -131,7 +136,8 @@
                             </div>
                         </div>
                         <hr>
-                        <a href="#" class="btn btn-lg btn-primary text-uppercase"> Buy now </a>
+                        <button class="btn btn-primary" type="submit">Buy now</button>
+                        <!-- <a href="#" class="btn btn-lg btn-primary text-uppercase"> Buy now </a> -->
                 <!-- <button class="btn btn-lg btn-outline-success text-uppercase" onclick="addToCart('<%= data[1] %>')" data-id="a<%= data[1] %>"> <i class="fas fa-shopping-cart"></i> Add to cart </button> -->
                     </form>
                 </article>
@@ -141,6 +147,11 @@
 </div> <!--container.//-->
 <div style="height:120px; width:100%;"></div>
 <div class="container">
+    <div style="width:100%; height:100%;">
+        <center><img src="/public/shop_size_table.png" class="img-thumbnail"></center>
+    </div>
+    <div style="height:480px; width:100%;"></div>
+    </div>
     <div><center><h3 style="color:grey;">You may also interested in</h3></center></div>
     <hr>
     <div style="height:24px; width:100%;"></div>
@@ -156,7 +167,7 @@
                                 <% if((typeof item[i][4] != null && item[i][4])) { %>
                                 <img class="card-img-top" src="/public/images/<%= item[i][3] %>/<%= item[i][4]%>.jpg" alt="Card image cap"></a>
                                 <% } else { %>
-                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap"></a>
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
                                 <% } %>
                             <!-- <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap"> -->
                             <div class="card-body">
@@ -185,7 +196,7 @@
                                 <% if((typeof item[i][4] != null && item[i][4])) { %>
                                 <img class="card-img-top" src="/public/images/<%= item[i][3] %>/<%= item[i][4]%>.jpg" alt="Card image cap"></a>
                                 <% } else { %>
-                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap"></a>
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
                                 <% } %>
                             <!-- <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap"> -->
                             <div class="card-body">
@@ -230,4 +241,8 @@
           }
         prevScrollpos = currentScrollPos;
     }
+
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 </script>

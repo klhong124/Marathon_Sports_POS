@@ -2,157 +2,285 @@
 <head>
     <!-- Bootstrap core CSS -->
     <% include ../partials/head %>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <!-- Custom styles for this template -->
     <link rel="stylesheet" type="text/css" href="/public/signin.css">
 </head>
+<style>
+    .bgcolor{
+      background:#A62639;
+    }
+    .container{
+      margin-top: 30px;
+    }
+    .title{
+      color:#A62639;
+    }
+</style>
 
-<body>
-  <div class="col-md-8 order-md-1">
-            <h4 class="mb-3">Billing address</h4>
-            <form class="needs-validation" novalidate="">
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="firstName">First name</label>
-                  <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
-                  <div class="invalid-feedback">
-                    Valid first name is required.
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="lastName">Last name</label>
-                  <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
-                  <div class="invalid-feedback">
-                    Valid last name is required.
-                  </div>
-                </div>
-              </div>
+<body onload="calTotal()">
+  <div class="album py-5 bgcolor">
+        <center><a href="../"><img src="/public/marathon-logobgred.png" alt="" class="Marathon-logo" width="300px"></a></center>
+  </div>
+  <!--========================================================================================================================-
+                                        <%= order %>
+                                        [0]order_id
+                                        [1]user_id
+                                        [2]create_at
+                                        [3]status
+                                        [4]SHIPPING_ADDRESS
+                                        [5]comfirm_email
+========================================================================================================================-->
+  <div class="container">
+      <h3 class="mb-3 title">Order Information</h3><hr>
+      <p><b>Order Number : </b>#<%= order[0]%>-<%= order[1]%></p>
+      <p><b>Order Date : </b><%= order[2]%></p>
+      <p><b>Order Price : </b>HKD $<%= totalHKD%></p>
+      <% if (order[3] == 1) { %>
+        <p><b>Payment Method : </b>Credit Card</p>
+      <% } else if (order[3] == 2) { %>
+        <p><b>Payment Method : </b>Debit Card</p>
+      <% } else if (order[3] == 3) { %>
+        <p><b>Payment Method : </b>Paypal</p>
+      <% } else { %>
+        <p><b>Payment Method : </b>Pending</p>
+      <% } %>
+  </div>
+  <!--========================================================================================================================
+                                        <%= order_detail %>
+                                        [0]products.p_name
+                                        [1]sizes.cm
+                                        [2]order.qty
+                                        [3]order.price
+                                        [4]order.discount
+========================================================================================================================-->
+  <div class="container">
+      <h3 class="mb-3 title">Order Details</h3><hr>
+      <table class="display" style="width:100%">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th class="text-center">Size</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">Discount</th>
+            <th class="text-center">Sub Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var i = 0; i<order_detail.length;i++) { %>
+            <tr>
+              <td><%=order_detail[i][0]%></td>
+              <td class="text-center"><%=order_detail[i][1]%></td>
+              <td class="text-center"><%=order_detail[i][2]%></td>
+              <td class="text-center">HKD $<%=order_detail[i][3]%></td>
+              <td class="text-center"><%=order_detail[i][4]%>% OFF</td>
+              <td class="text-center">$<%= Math.round(order_detail[i][2]*order_detail[i][3]*(1-order_detail[i][4]/100)*10)/10%></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table><br>
+        <div style="width: 100%; text-align:right; font-size:18px; margin-right:50px">
+            <p>Net Purchase Amount : $<%= netPurchaseAmount%></p>
+            <p>Shipping & Handling : $<%= deliveryfee%></p>
+            <p><b>Grand Total : $<%= totalHKD%></b></p>
+        </div>
 
-              <div class="mb-3">
-                <label for="username">Username</label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">@</span>
-                  </div>
-                  <input type="text" class="form-control" id="username" placeholder="Username" required="">
-                  <div class="invalid-feedback" style="width: 100%;">
-                    Your username is required.
-                  </div>
-                </div>
-              </div>
+  </div>
 
-              <div class="mb-3">
-                <label for="email">Email <span class="text-muted">(Optional)</span></label>
-                <input type="email" class="form-control" id="email" placeholder="you@example.com">
-                <div class="invalid-feedback">
-                  Please enter a valid email address for shipping updates.
-                </div>
-              </div>
+  <script type="text/javascript">
+  $(document).ready( function () {
+      $('table.display').DataTable(
+    { 'ordering': false,
+      'searching': false,
+      'paging': false,
+      'info': false,
+      'responsive': true,
+      "scrollX": true,
+    });
+  } );
+  </script>
+  <!--========================================================================================================================-->
+  <form action="/payment" method="post">
+  <div class="container">
+      <h3 class="mb-3 title">Customer Information</h3><hr>
 
-              <div class="mb-3">
-                <label for="address">Address</label>
-                <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
-                <div class="invalid-feedback">
-                  Please enter your shipping address.
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
-              </div>
-
-              <div class="row">
-                <div class="col-md-5 mb-3">
-                  <label for="country">Country</label>
-                  <select class="custom-select d-block w-100" id="country" required="">
-                    <option value="">Choose...</option>
-                    <option>United States</option>
-                  </select>
-                  <div class="invalid-feedback">
-                    Please select a valid country.
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <label for="state">State</label>
-                  <select class="custom-select d-block w-100" id="state" required="">
-                    <option value="">Choose...</option>
-                    <option>California</option>
-                  </select>
-                  <div class="invalid-feedback">
-                    Please provide a valid state.
-                  </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                  <label for="zip">Zip</label>
-                  <input type="text" class="form-control" id="zip" placeholder="" required="">
-                  <div class="invalid-feedback">
-                    Zip code required.
-                  </div>
-                </div>
-              </div>
-              <hr class="mb-4">
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="same-address">
-                <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="save-info">
-                <label class="custom-control-label" for="save-info">Save this information for next time</label>
-              </div>
-              <hr class="mb-4">
-
-              <h4 class="mb-3">Payment</h4>
-
-              <div class="d-block my-3">
-                <div class="custom-control custom-radio">
-                  <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked="" required="">
-                  <label class="custom-control-label" for="credit">Credit card</label>
-                </div>
-                <div class="custom-control custom-radio">
-                  <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required="">
-                  <label class="custom-control-label" for="debit">Debit card</label>
-                </div>
-                <div class="custom-control custom-radio">
-                  <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required="">
-                  <label class="custom-control-label" for="paypal">Paypal</label>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="cc-name">Name on card</label>
-                  <input type="text" class="form-control" id="cc-name" placeholder="" required="">
-                  <small class="text-muted">Full name as displayed on card</small>
-                  <div class="invalid-feedback">
-                    Name on card is required
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="cc-number">Credit card number</label>
-                  <input type="text" class="form-control" id="cc-number" placeholder="" required="">
-                  <div class="invalid-feedback">
-                    Credit card number is required
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-3 mb-3">
-                  <label for="cc-expiration">Expiration</label>
-                  <input type="text" class="form-control" id="cc-expiration" placeholder="" required="">
-                  <div class="invalid-feedback">
-                    Expiration date required
-                  </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                  <label for="cc-expiration">CVV</label>
-                  <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
-                  <div class="invalid-feedback">
-                    Security code required
-                  </div>
-                </div>
-              </div>
-              <hr class="mb-4">
-              <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
-            </form>
+      <div class="mb-3">
+        <label for="username">Username</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">@</span>
           </div>
+          <input type="text" class="form-control" id="username" value="<%= userinfo[1]%>" disabled>
+          <div class="invalid-feedback" style="width: 100%;">
+            Your username is required.
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="firstName">First name</label>
+          <input type="text" class="form-control" id="firstName" value="<%= userinfo[5]%>" disabled>
+          <div class="invalid-feedback">
+            Valid first name is required.
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="lastName">Last name</label>
+          <input type="text" class="form-control" id="lastName" value="<%= userinfo[4]%>" disabled>
+          <div class="invalid-feedback">
+            Valid last name is required.
+          </div>
+        </div>
+      </div>
+
+      <input value="<%= order[0]%>" name="orderid" style="display:none">
+      <div class="mb-3">
+        <label for="email">Email <span class="text-muted">(For order confirmation)</span></label>
+        <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email">
+        <div class="invalid-feedback">
+          Please enter a valid email address for shipping updates.
+        </div>
+      </div>
+
+  </div>
+  <!--========================================================================================================================-->
+  <div class="container">
+        <h3 class="mb-3 title">Shipping address</h3><hr>
+
+          <div class="mb-3">
+            <label for="address">Address</label>
+            <input type="text" class="form-control" name="address" placeholder="address" required="">
+            <div class="invalid-feedback">
+              Please enter your shipping address.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="address2">District</label>
+            <input type="text" class="form-control" name="district" placeholder="district">
+          </div>
+
+          <div class="row">
+            <div class="col-md-5 mb-3">
+              <label for="country">Country</label>
+              <select class="custom-select d-block w-100" id="country" onchange="giveSelection(this.value)" name="country">
+                <option value="">Choose...</option>
+                <% for(var i=0;i<country.length;i++){ %>
+                <option value="<%=country[i][0]%>"><%= country[i][0]%></option>
+                <% } %>
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid country.
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="state">State</label>
+              <select class="custom-select d-block w-100" id="state" name="state">
+                <option data-option="">Please select a country...</option>
+                <% for(var i=0;i<country.length;i++){ %>
+                  <% for(var s=0;s<country[i][1].length;s++){ %>
+                    <option data-option="<%=country[i][0]%>"><%= country[i][1][s]%></option>
+                  <% } %>
+                <% } %>
+              </select>
+              <div class="invalid-feedback">
+                Please provide a valid state.
+              </div>
+            </div>
+
+            <script type="text/javascript">
+              var country = document.querySelector('#country');
+              var state = document.querySelector('#state');
+              var options2 = state.querySelectorAll('option');
+              function giveSelection(selValue) {
+              state.innerHTML = '';
+                for(var i = 0; i < options2.length; i++) {
+                  if(options2[i].dataset.option === selValue) {
+                    state.appendChild(options2[i]);
+                  }
+                }
+              }
+              giveSelection(country.value);
+            </script>
+
+            <div class="col-md-3 mb-3">
+              <label for="zip">Zip</label>
+              <input type="text" class="form-control" id="zip" placeholder="" required="">
+              <div class="invalid-feedback">
+                Zip code required.
+              </div>
+            </div>
+
+          </div>
+          <hr class="mb-4">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="same-address">
+            <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="save-info">
+            <label class="custom-control-label" for="save-info">Save this information for next time</label>
+          </div>
+          <hr class="mb-4">
+  <!--========================================================================================================================-->
+          <h3 class="mb-3 title">Payment</h3><hr>
+
+          <div class="d-block my-3">
+            <div class="custom-control custom-radio">
+              <input id="credit" name="paymentMethod" value="1" type="radio" class="custom-control-input" checked="" required="">
+              <label class="custom-control-label" for="credit">Credit card</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input id="debit" name="paymentMethod" value="2" type="radio" class="custom-control-input" required="">
+              <label class="custom-control-label" for="debit">Debit card</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input id="paypal" name="paymentMethod" value="3"  type="radio" class="custom-control-input" required="">
+              <label class="custom-control-label" for="paypal">Paypal</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="cc-name">Name on card</label>
+              <input type="text" class="form-control" id="cc-name" placeholder="" required="">
+              <small class="text-muted">Full name as displayed on card</small>
+              <div class="invalid-feedback">
+                Name on card is required
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="cc-number">Credit card number</label>
+              <input type="text" class="form-control" id="cc-number" placeholder="" required="">
+              <div class="invalid-feedback">
+                Credit card number is required
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <label for="cc-expiration">Expiration</label>
+              <input type="text" class="form-control" id="cc-expiration" placeholder="" required="">
+              <div class="invalid-feedback">
+                Expiration date required
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="cc-expiration">CVV</label>
+              <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
+              <div class="invalid-feedback">
+                Security code required
+              </div>
+            </div>
+          </div>
+          <hr class="mb-4">
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+      </div>
+    </form>
 </body>
 </html>

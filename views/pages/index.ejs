@@ -9,7 +9,6 @@
       <link href="/public/slider.css" rel="stylesheet">
       <link href="/public/scrolldown.css" rel="stylesheet">
       <!-- Custom script for this template -->
-      <script src="/public/holder.min.js"></script>
       <!-- ==================================================================================================================== -->
       <style media="screen">
       *{
@@ -70,14 +69,15 @@
         </div>
         <!-- ==================================================================================================================== -->
         <div class="album py-5 bgcolor" style="color:white;">
-          <center><h2>NEW ARRIVALS</h2></center>
+          <center><h1>NEW ARRIVALS</h1></center>
+          <center><p>Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.</p></center>
         </div>
         <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  -->
         <div class="bg-light" style="padding:70px 0;">
           <div class="container">
               <div class="row">
                   <% for(var i=1; i<data.length; i++) { %>
-                    <div data-aos="zoom-in" data-aos-offset="0" class="col-md-4">
+                    <div data-aos="zoom-in" data-aos-offset="0" class="col-md-3">
                         <div class="card mb-4 shadow-sm">
                             <a href="/product/<%= data[i][3] %>">
                                 <% if((typeof data[i][4] != null && data[i][4])) { %>
@@ -87,12 +87,19 @@
                                 <% } %>
                             <div class="card-body">
                                 <p class="card-text"><%= data[i][0] %><br><span style="color:#ff6e00;">$ <b><%= data[i][1] %></b></span></p>
+                                <p>Size : <select id="size<%= data[i][3]%>">
+                                  <% for(var s=0; s<size.length; s++) { %>
+                                    <% if (size[s][0] == data[i][3]) { %>
+                                        <option value="<%= size[s][2]%>"><%= size[s][1]%></option>
+                                    <% } %>
+                                  <% } %>
+                                          </select></p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
                                         <a href="/product/<%= data[i][3] %>"><button type="button" class="btn btn-sm btn-outline-primary">View</button></a>
                                         <!-- <form action="/add-to-cart" method="post"> -->
-
-                                        <button type="submit" class="btn btn-sm btn-success"  onclick="addToCart('<%= data[i][3] %>')" data-id="a<%= data[i][3] %>">Add to chart</button>
+                                        <button type="submit" class="btn btn-sm btn-success"  onclick="addToCart(<%= data[i][3]%>)" id="addto<%= data[i][3] %>">Add to cart</button>
+                                        <button type="submit" class="btn btn-sm btn-info" id="added<%= data[i][3] %>" style="display:none;">added</button>
                                     </div>
                                     <small class="text-muted"> <%= data[i][2]%></small>
                                 </div>
