@@ -1,37 +1,60 @@
 <!-- views/partials/footer.ejs -->
-<div class="f-style">
-  <div class="container">
-      <div class="row">
-        <div class="col-md-2">
-          <p>hi</p>
-        </div>
-        <div class="col-md-2">
-          <p>hi</p>
-        </div>
-        <div class="col-md-2">
-          <p>hi</p>
-        </div>
-        <div class="col-md-3">
-          <p>hi</p>
-        </div>
-        <div class="col-md-3" style="float:right;width:100%;">
-          <p>hi</p>
-        </div>
-  </div>
-</div>
 <style>
     .f-style {
-        height: 300px;
-        padding: 40px;
+        padding: 50px;
         background:#A62639;
         box-shadow: 0 0 0 4px rgba(0,0,0, 0.2);
         color:white;
     }
     .f-style a {
-        text-decoration: underline;
+        text-decoration: none;
         color: white;
     }
+    .f-style a:hover {
+        text-transform: uppercase;
+    }
+    hr.hrstyle{
+    	border-top: 1.5px solid #A29C9B;
+    }
 </style>
+
+<div class="f-style">
+  <div class="container">
+      <div class="row">
+          <div class="col-md-3">
+            <a href="/">Shopping</a>
+            <hr class="hrstyle">
+            <a href="/">How to Shop</a><br>
+            <a href="/">Latest Promotions</a><br>
+            <a href="/">Shipping & Delivery</a><br>
+            <a href="/">Return & Refund</a><br>
+            <a href="/">Order Status</a><br>
+            <a href="/">FAQs</a>
+          </div>
+          <div class="col-md-3">
+            <a href="/">Company</a>
+            <hr class="hrstyle">
+            <a href="/">About Us</a><br>
+            <a href="/">Find A Store</a><br>
+            <a href="/">Terms of Use</a><br>
+            <a href="/">Privacy Policy</a><br>
+            <a href="/">Disclaimer & Copyright</a><br>
+            <a href="/">Staff Registration</a>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-4">
+            <a  href="/">Contact Us</a>
+            <hr class="hrstyle">
+            <p><i class="fas fa-phone"></i> : (+852)218 00000</p>
+            <p><i class="fas fa-envelope"></i> : <a href="/"><u>marathon-pos@my.cityu.edu.hk</u></a></p>
+            <p><i class="fas fa-map-marker-alt"></i> : LI-2301, 2/F, Li Dak Sum Yip Yio Chin Academic Building, City University of Hong Kong, Kowloon Tong</p>
+
+          </div>
+      </div><br>
+      <hr class="hrstyle">
+      <center><p>Copyright © 2017 Swire Resources Limited. All Rights Reserved.</p></center>
+</div>
+
 <script type="text/javascript">
   function BTT(){
     document.getElementById("why-Marathonid").scrollIntoView(false);
