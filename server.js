@@ -541,12 +541,69 @@ app.get('/cart',(req, res) => {
 });
 
 // change password page
-app.get('/changepassword',(req, res) => {
+app.get('/changepassword',(req,res) => {
     if (req.cookies['username']) {
-      res.render('pages/change-password', {username: req.cookies['username']});
+        async function oracledbconn(){
+            try {
+                  conn = await oracledb.getConnection(dum);
+
+                  var get_password = await conn.execute(
+                      `SELECT password FROM users WHERE user_id = ${req.cookies['user_id']}`
+                  );
+
+                  var old_password = get_password.rows[0][0];
+
+                  res.render('pages/change-password', {username: req.cookies['username'], password: old_password});
+              } catch (err) {
+                  console.log('Ouch! ', err);
+              } finally {
+                  if (conn) { // conn assignment worked, need to close
+                     await conn.close();
+                  }
+              }
+          }
+          oracledbconn();
     } else {
-      res.redirect('/');
+        res.redirect('/');
     }
+});
+
+app.post('/passwordchanging',urlencodedParser,(req, res) => {
+        async function oracledbconn(){
+            try {
+              conn = await oracledb.getConnection(dum);
+
+              var get_password = await conn.execute(
+                  `SELECT password FROM users WHERE user_id = ${req.cookies['user_id']}`
+              );
+
+              var old_password = get_password.rows[0][0];
+              console.log(req.body.old_password);
+
+              if (old_password == req.body.old_password) {
+                  if (req.body.old_password == req.body.new_password) {
+                  } else {
+                      await conn.execute(
+                          `UPDATE users SET password = :new_password WHERE user_id = ${req.cookies['user_id']}`, [req.body.new_password]
+                      );
+
+                      res.redirect('/changepassword');
+                  }
+              } else {
+                  console.log("wrong psd");
+
+                  res.redirect('/changepassword');
+              }
+            } catch (err) {
+                console.log('Ouch! ', err);
+            } finally {
+                if (conn) { // conn assignment worked, need to close
+                   await conn.close();
+                }
+            }
+        }
+        oracledbconn();
+
 });
 
 // all products page
@@ -753,7 +810,7 @@ app.get('/forgetpassword',(req, res) => {
 });
 
 app.use('/public', express.static('public'));
-var port = 3200; //change here
+var port = 5000; //change here
 app.listen(port);
 console.log(`Server Running on port ${port}`);
 // require("openurl").open(`http://localhost:${port}`);
