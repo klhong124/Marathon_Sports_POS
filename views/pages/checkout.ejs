@@ -21,7 +21,6 @@
 </style>
 
 <body onload="calTotal()">
-  <form action="/payment" method="post">
   <div class="album py-5 bgcolor">
         <center><a href="../"><img src="/public/marathon-logobgred.png" alt="" class="Marathon-logo" width="300px"></a></center>
   </div>
@@ -36,7 +35,7 @@
 ========================================================================================================================-->
   <div class="container">
       <h3 class="mb-3 title">Order Information</h3><hr>
-      <p><b>Order Number : </b><%= order[0]%>-<%= order[1]%></p>
+      <p><b>Order Number : </b>#<%= order[0]%>-<%= order[1]%></p>
       <p><b>Order Date : </b><%= order[2]%></p>
       <p><b>Order Price : </b>HKD $<%= totalHKD%></p>
       <% if (order[3] == 1) { %>
@@ -85,8 +84,8 @@
         </table><br>
         <div style="width: 100%; text-align:right; font-size:18px; margin-right:50px">
             <p>Net Purchase Amount : $<%= netPurchaseAmount%></p>
-            <p>Delivery Fee : $<%= deliveryfee%></p>
-            <p><b>Total HKD : $<%= totalHKD%></b></p>
+            <p>Shipping & Handling : $<%= deliveryfee%></p>
+            <p><b>Grand Total : $<%= totalHKD%></b></p>
         </div>
 
   </div>
@@ -104,6 +103,7 @@
   } );
   </script>
   <!--========================================================================================================================-->
+  <form action="/payment" method="post">
   <div class="container">
       <h3 class="mb-3 title">Customer Information</h3><hr>
 
@@ -177,6 +177,7 @@
                 Please select a valid country.
               </div>
             </div>
+
             <div class="col-md-4 mb-3">
               <label for="state">State</label>
               <select class="custom-select d-block w-100" id="state" name="state">
@@ -191,6 +192,7 @@
                 Please provide a valid state.
               </div>
             </div>
+
             <script type="text/javascript">
               var country = document.querySelector('#country');
               var state = document.querySelector('#state');
@@ -213,6 +215,7 @@
                 Zip code required.
               </div>
             </div>
+
           </div>
           <hr class="mb-4">
           <div class="custom-control custom-checkbox">
@@ -241,6 +244,7 @@
               <label class="custom-control-label" for="paypal">Paypal</label>
             </div>
           </div>
+
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="cc-name">Name on card</label>
