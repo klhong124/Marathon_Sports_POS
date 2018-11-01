@@ -98,6 +98,38 @@ app.get('/',(req, res, next) => {
     oracledbconn();
 });
 
+// search page
+app.post('/search', urlencodedParser, (req, res) => {
+    console.log(req.body.keyword);
+    var keyword = (req.body.keyword).toUpperCase();
+
+    async function oracledbconn(){
+        try {
+            conn = await oracledb.getConnection(dum);
+            var result = await conn.execute(
+                `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images LEFT JOIN products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE products.p_name LIKE '%${keyword}%'`);
+
+            var sizes = await conn.execute(
+                `SELECT products.p_id, sizes.cm, sizes.size_id FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id WHERE rownum <= 500 GROUP BY p_id, sizes.cm, sizes.size_id ORDER BY p_id`
+            );
+            console.log(sizes);
+        } catch (err) {
+            console.log('Ouch!', err);
+        } finally {
+            if (conn) { // conn assignment worked, need to close
+                await conn.close();
+                // check if the user exists
+                if (result && sizes) {
+                    res.render('pages/products', {username: req.cookies['username'], data:result.rows, size:sizes.rows});
+                } else {
+                    res.redirect('/');
+                }
+            }
+        }
+    }
+    oracledbconn();
+});
+
 // signup page
 app.post('/join',urlencodedParser,(req, res) => {
   console.log(req.body.email);
@@ -204,6 +236,7 @@ app.get('/history',(req, res) => {
         res.send({"error" : "Update error"});
     }
 });
+
 
 // payment
 app.post('/payment',urlencodedParser,(req, res) => {
