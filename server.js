@@ -299,6 +299,10 @@ app.get('/howtoshop',(req, res) => {
 app.get('/termsofuse',(req, res) => {
     res.render('pages/termsofuse');
 });
+// privacy policy page
+app.get('/privacypolicy',(req, res) => {
+    res.render('pages/privacypolicy');
+});
 
 // POST '/login' gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
