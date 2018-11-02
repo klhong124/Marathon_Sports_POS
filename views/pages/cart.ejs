@@ -98,6 +98,7 @@
                       document.getElementById(`tr${id}`).style.display = "none";
                       document.getElementById(`input${id}`).value  = "0";
                       document.getElementById(`total${id}`).innerHTML = "$0";
+                      var subTotalelement = document.getElementsByClassName("subTotal");
                       calTotal();
                         $.ajax({
                             url:'/del-from-cart',
@@ -112,8 +113,8 @@
                     }
                       function editQtyCart(id,input){
                         if (input<0){
-                          document.getElementById(`input${id}`).value  = "0";
-                          document.getElementById(`total${id}`).innerHTML = "$0";
+                          document.getElementById("input"+id).value  = `0`;
+                          document.getElementById("total"+id).innerHTML = "$0";
                           calTotal();
                         }
                         else{
@@ -160,7 +161,7 @@
                         <% if(cartlist.length == 0) { %>
                         <td colspan="6">Your shopping cart is empty</td>
                         <% } else { %>
-                        <td colspan="6">You have <%= cartlist.length%> item(s) in your cart.</td>
+                        <td colspan="6"><span id="tableinfo">This is the end of your cart list.</span></td>
                         <% } %>
                       </tfoor>
                         <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   -->

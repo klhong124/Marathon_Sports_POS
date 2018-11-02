@@ -2,14 +2,32 @@
 <html lang="en">
     <head>
         <% include ../partials/head %>
+        <style>
+        .bgcolor{
+            background:#A62639;
+        }
+        .Marathon-logo{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 400px;
+        }
+        </style>
     </head>
     <body>
         <!-- navbar -->
-        <% include ../partials/nav %>
-        <div style="height:80px; width:100%;"></div>
-
-        <div class="embed-responsive embed-responsive-16by9">
-            <iframe class="embed-responsive-item" src="http://www.nationalarchives.gov.uk/doc/non-commercial-government-licence/version/2/" allowfullscreen></iframe>
+    <% include ../partials/nav %>
+    <div style="height:50px; width:100%;"></div> 
+    <div>
+        <img src="/public/images/aboutus_title.jpg" style="width: 100%;">
+    </div>
+    <div class="album py-5 bgcolor" style="color:white;">
+            <center><h1>NON-COMMERCIAL USE STATEMENT</h1></center>
+    </div>
+    <div class="container">
+        <div class="bg-light card mt-5 mb-5">
+            <iframe scrolling="no" style="height: 2730px;" class="embed-responsive-item" src="http://www.nationalarchives.gov.uk/doc/non-commercial-government-licence/version/2/"></iframe>
+        </div>
         </div>
         <!-- footer -->
         <% include ../partials/footer %>

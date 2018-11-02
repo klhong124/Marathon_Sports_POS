@@ -1,0 +1,113 @@
+<!-- views/pages/privacypolicy.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+
+    <style>
+            .description-title {
+            font-weight: bold;
+            color: #C81D25;
+        }
+        .policy-detail {
+            padding-left: 20px;
+        }
+                .bgcolor{
+            background:#A62639;
+        }
+             .Marathon-logo{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 400px;
+      }
+    </style>
+</head>
+<body>
+    <!-- header -->
+    <% include ../partials/nav %>
+    <div style="height:50px; width:100%;"></div> 
+    <div>
+        <img src="/public/images/aboutus_title.jpg" style="width: 100%;">
+    </div>
+    <div class="album py-5 bgcolor" style="color:white;">
+            <center><h1>SHIPPING & DELIVERY</h1></center>
+    </div>
+    <div class="container">
+        <main role="main">
+            <div class="album py-5 bg-light card mt-5 mb-5">
+                <div class="container" style="width:75%;">
+                    <div class="album py-5 mb-5">
+                        <img src="/public/marathon-logo.png" alt="" class="Marathon-logo">
+                    </div>
+                    <div>
+                        <br><h6 class="description-title">
+                            Delivery Areas
+                        </h6><br>
+
+                        <div class="policy-detail">
+                            <ul>
+                                <li> Any where </li>
+                            </ul>
+                        </div>
+
+                        <br><h6 class="description-title">
+                            Delivery Methods
+                        </h6><br>
+
+                        <div class="policy-detail">
+                           <ul>
+                                <li>The products will be delivered by S.F. Express to the address stated on your Order Confirmation email. The shipping details of your order will be shown on the Shipment Confirmation email.</li>
+                                <li>If we cannot contact you for delivery after two attempts, the related order will be automatically canceled and your payment will be refunded to your original payment account.</li>
+                            </ul>
+                        </div>
+
+                        <br><h6 class="description-title">
+                            Delivery Timeline
+                        </h6><br>
+
+                        <div class="policy-detail">
+                             <ul>
+                                <li>Commercial and industrial areas: 2 – 4 working days</li>
+                                <li>Outlying islands: at least 4 working days</li>
+                                <li>No delivery service on Saturdays, Sundays and public holidays</li>
+                            </ul>
+                        </div>
+
+                        <br><h6 class="description-title">
+                            Delivery Charge
+                        </h6><br>
+
+                        <div class="policy-detail">
+                             <ul>
+                                <li>For registered members, we provide free delivery service if you purchase HK$500 net above.</li>
+                                <li>Delivery charge for orders cannot fulfill the above purchase amounts is HK$50.</li>
+                                <li>However, we may have shipping charge promotions from time to time. Keep updated on Promotions to get the latest shipping promotion offers.</li>
+                                <li>If the products are returned to us due to conflict between the delivery address and the address you filled in, no delivery charge can be refunded, but you will still be issued a full refund for the non-receiving orders.</li>
+                            </ul>
+                        </div>
+
+                        <br><h6 class="description-title">
+                           Return Policy
+                        </h6><br>
+
+                        <div class="policy-detail">
+                            <p>
+                                &emsp;You can track the delivery status of your orders via the below links together with your shipping reference. If you need to rearrange the delivery time, please contact S.F. Express directly. 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <!-- footer -->
+    <% include ../partials/footer %>
+</body>
+
+
+
+
+</html>

@@ -11,14 +11,6 @@
       <!-- Custom script for this template -->
       <!-- ==================================================================================================================== -->
       <style media="screen">
-      *{
-        animation-name:show;
-        animation-duration: 1.5s;
-      }
-      @keyframes show {
-        from {opacity:0;}
-        to {opacity: 1;}
-      }
       .bgcolor{
         background:#A62639;
       }
@@ -35,12 +27,17 @@
       </style>
       <!-- ==================================================================================================================== -->
     </head>
-    <body>
+    <body onload="init()">
       <% include ../partials/index_nav %>
       <% include ../partials/alert %>
       <% include ../partials/box %>
       <a href="javascript:sdbth()"id="scroll-down-bth"></a>
       <script type="text/javascript">
+      function init(){
+        <% if (username) { %>
+          sdbth();
+        <% } %> 
+      }
         function sdbth(){
               document.getElementById("scroll-down-bth").scrollIntoView({ behavior: 'smooth',block: 'start' });
         }
@@ -61,7 +58,7 @@
                 <p>Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!</p>
                 <p><small style="float:right">~ Marathon Sports</small></p>
                 <br><br><br>
-                <div data-aos="fade-right" data-aos-offset="0">
+                <div data-aos="zoom-out" data-aos-offset="10">
                   <img src="public/marathon-logo.png" alt="marathon sports" class="brandimg">
                   <img src="https://wwwm.marathonsports-eshop.hk/wysiwyg/Logo/new-balance-logo.png" alt="new balance" class="brandimg">
                   <img src="public/images/Reebok-Logo-Transparent-PNG.png" alt="reebok" class="brandimg">
