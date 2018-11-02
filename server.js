@@ -815,6 +815,7 @@ app.get('/order/:order_id/download',(req, res) => {
             }
             var totalHKD = netPurchaseAmount + deliveryfee;
             //===============================================================
+            const fs = require('fs');
             var pdfMaker = require('pdf-maker');
             var template = "views/pages/order.ejs";
             var data = { order: user_order.rows[0],
@@ -832,10 +833,16 @@ app.get('/order/:order_id/download',(req, res) => {
                         border: '1.8cm'
                     }
             };
-
             pdfMaker(template, data, pdfPath, option);
-            res.download(`C:\\Users\\Hong\\GitHub\\Marathon_Sports_POS\\pdf_orders\\${req.params.order_id}.pdf`, `MSPOS_bill_no_${req.params.order_id}_${req.cookies['username']}.pdf`);
-          } catch (err) {
+            pdfcheck();
+            function pdfcheck(){
+                if (fs.existsSync(pdfPath)) {
+                    res.download(`C:\\Users\\Hong\\GitHub\\Marathon_Sports_POS\\pdf_orders\\${req.params.order_id}.pdf`, `MSPOS_bill_no_${req.params.order_id}_${req.cookies['username']}.pdf`)
+                }else{
+                    setTimeout(function(){ pdfcheck(); }, 1000);
+                }
+            }
+        } catch (err) {
           console.log('Ouch!', err);
         } finally {
           if (conn) { // conn assignment worked, need to close
