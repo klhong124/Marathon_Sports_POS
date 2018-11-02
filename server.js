@@ -289,7 +289,15 @@ app.get('/store',(req, res) => {
 
 // about page
 app.get('/about',(req, res) => {
-    res.render('pages/about', {output: req.params.id});
+    res.render('pages/about');
+});
+// how to shop page
+app.get('/howtoshop',(req, res) => {
+    res.render('pages/howtoshop');
+});
+// terms of use page
+app.get('/termsofuse',(req, res) => {
+    res.render('pages/termsofuse');
 });
 
 // POST '/login' gets urlencoded bodies
@@ -587,7 +595,9 @@ app.get('/changepassword',(req,res) => {
 
                   var old_password = get_password.rows[0][0];
 
-                  res.render('pages/change-password', {username: req.cookies['username'], password: old_password});
+                  var update_success = 0;
+
+                  res.render('pages/change-password', {username: req.cookies['username'], password: old_password, update_success: update_success});
               } catch (err) {
                   console.log('Ouch! ', err);
               } finally {
@@ -612,7 +622,6 @@ app.post('/passwordchanging',urlencodedParser,(req, res) => {
               );
 
               var old_password = get_password.rows[0][0];
-              console.log(req.body.old_password);
 
               if (old_password == req.body.old_password) {
                   if (req.body.old_password == req.body.new_password) {
@@ -621,12 +630,14 @@ app.post('/passwordchanging',urlencodedParser,(req, res) => {
                           `UPDATE users SET password = :new_password WHERE user_id = ${req.cookies['user_id']}`, [req.body.new_password]
                       );
 
-                      res.redirect('/changepassword');
+                      var update_success = 1; // update success
+
+                      res.render('pages/change-password', {username: req.cookies['username'], update_success: update_success});
                   }
               } else {
-                  console.log("wrong psd");
+                  update_success = 2; // wrong password
 
-                  res.redirect('/changepassword');
+                  res.render('pages/change-password', {username: req.cookies['username'], update_success: update_success});
               }
             } catch (err) {
                 console.log('Ouch! ', err);
