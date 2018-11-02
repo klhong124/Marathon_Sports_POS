@@ -846,12 +846,8 @@ app.get('/order/:order_id/download',(req, res) => {
 });
 
 // forget password page
-app.get('/forgetpassword',(req, res) => {
-    if (req.cookies['username']) {
-        res.render('pages/forget-password');
-    } else {
-        res.redirect('/');
-    }
+app.get('/forgetpassword', (req, res) => {
+    res.render('pages/forget-password');
 });
 
 app.use('/public', express.static('public'));
