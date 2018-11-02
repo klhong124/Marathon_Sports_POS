@@ -121,7 +121,7 @@ app.post('/search', urlencodedParser, (req, res) => {
                 await conn.close();
                 // check if the user exists
                 if (result && sizes) {
-                    res.render('pages/products', {username: req.cookies['username'], data:result.rows, size:sizes.rows});
+                    res.render('pages/products', {username: req.cookies['username'], data:result.rows, size:sizes.rows,keyword:`RESULT OF "${keyword}"`});
                 } else {
                     res.redirect('/');
                 }
@@ -298,6 +298,10 @@ app.get('/howtoshop',(req, res) => {
 // terms of use page
 app.get('/termsofuse',(req, res) => {
     res.render('pages/termsofuse');
+});
+// privacy policy page
+app.get('/privacypolicy',(req, res) => {
+    res.render('pages/privacypolicy');
 });
 
 // POST '/login' gets urlencoded bodies
@@ -672,7 +676,7 @@ app.get('/products',(req, res) => {
 
         // check if the user exists
         if (result.rows) {
-          res.render('pages/products', {username: req.cookies['username'], data:data, size:sizes.rows});
+          res.render('pages/products', {username: req.cookies['username'], data:data, size:sizes.rows, keyword:"ALL PRODUCTS"});
         }
         // res.render('pages/dashboard');
     };
@@ -850,8 +854,12 @@ app.get('/forgetpassword', (req, res) => {
     res.render('pages/forget-password');
 });
 
+app.get('/copyright',(req, res) => {
+    res.render('pages/copyright');
+});
+
 app.use('/public', express.static('public'));
-var port = 3000; //change here
+var port = 4000; //change here
 app.listen(port);
 console.log(`Server Running on port ${port}`);
 // require("openurl").open(`http://localhost:${port}`);

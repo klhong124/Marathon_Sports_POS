@@ -38,12 +38,19 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Online Store
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Men</a>
-                        <a class="dropdown-item" href="#">Women</a>
-                        <a class="dropdown-item" href="#">Kids</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/products">All Categories</a>
+                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <form action="/search" method="post">
+                            <input name="keyword" value="men" hidden>
+                            <button  type="submit" class="dropdown-item">Men</button>
+                        </form><form action="/search" method="post">
+                            <input name="keyword" value="women" hidden>
+                            <button  type="submit" class="dropdown-item">Women</button>
+                        </form><form action="/search" method="post">
+                            <input name="keyword" value="kids" hidden>
+                            <button  type="submit" class="dropdown-item">Kids</button>
+                        </form>   
+                    <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/products">All Categories</a>
                     </div>
                 </li>
 
