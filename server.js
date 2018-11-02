@@ -289,7 +289,15 @@ app.get('/store',(req, res) => {
 
 // about page
 app.get('/about',(req, res) => {
-    res.render('pages/about', {output: req.params.id});
+    res.render('pages/about');
+});
+// how to shop page
+app.get('/howtoshop',(req, res) => {
+    res.render('pages/howtoshop');
+});
+// terms of use page
+app.get('/termsofuse',(req, res) => {
+    res.render('pages/termsofuse');
 });
 
 // POST '/login' gets urlencoded bodies
