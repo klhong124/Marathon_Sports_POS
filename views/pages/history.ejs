@@ -82,7 +82,7 @@
                             <h3 class="box-title">Orders</h3>
                         </div>
                         <div class="box-body">
-                            <table id="" class="display q-table" style="width:100%">
+                            <table id="history-table" class="display q-table table-striped" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th> Order ID </th>
@@ -132,8 +132,16 @@
 
     <!-- jQuery 3 -->
     <script src="public/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script> -->
     <!-- jQuery UI 1.11.4 -->
-    <script src="public/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
+    <!-- <script src="public/bower_components/jquery-ui/jquery-ui.min.js"></script> -->
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button);
@@ -148,7 +156,7 @@
     <script>
         $(document).ready(function() {
             // script relavant to datatable
-            $('table.display').DataTable({
+            $('#history-table').DataTable({
                 "ordering": false,
                 'columnDefs': [
                     {
