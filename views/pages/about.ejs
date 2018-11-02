@@ -4,34 +4,66 @@
 <html lang="en">
 <head>
     <% include ../partials/head %>
+
+    <style>
+        .description-title {
+            color: red;
+        }
+    </style>
 </head>
-<body class="container">
-
-<header>
+<body>
+    <!-- header -->
     <% include ../partials/nav %>
-</header>
+    <div style="width:100%; height:60px;"></div>
+    <div class="container">
+        <main role="main">
+            <div class="album py-5 bg-light">
+                <div class="container">
+                    <div>
+                        <img src="/public/images/aboutus_title.jpg" style="width: 100%;">
+                    </div>
+                    <div><center><h2>ABOUT US</h2></center></div>
+                    <div style="height:24px; width:100%;"></div>
+                    <div>
+                        <div class="each-row">
+                            <strong class="description-title">
+                                About Marathon Sports
+                            </strong>
+                            <p>
+                                Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!
+                            </p>
+                        </div>
+                            <div class="each-row">
+                                <strong class="description-title">
+                                    Everywhere Everything Everyone
+                                </strong>
+                                <p>
+                                    Marathon Sports is a convenient one-stop destination, offering multiple brands with a wide range of strategic locations throughout Hong Kong. Found in almost every neighbourhood, we pride ourselves on our friendly environment, and on our team of passionate, professional sales staff who are always ready to help with a warm welcome and a personal touch.
+                                    <br/><br/>
+                                    Boasting an unrivalled variety of affordable and popular brands, Marathon Sports caters to every sporting taste, need and skill level. Every customer - from aspiring competitive athletes and weekend gym-goers to fit families and active kids, will find what they need here to.
+                                </p>
+                            </div>
+                                <div class="each-row">
+                                    <strong class="description-title">
+                                        Fitness Fun Family Friends
+                                    </strong>
+                                    <p>
+                                        Marathon Sports believes an active community is a healthy community, and hopes to use sports to bring people together, promote unity and drive positive change.  We do this through organising events and activities that engage families, especially those with young children, so we can introduce healthy lifestyle habits to the next generation as early as possible while reinforcing the bonds between family members, friends and within the community as a whole.
+                                        <br/><br/>
+                                        Every member of our team loves sports and looks forward to sharing their knowledge with customers, whether it is to assist them in selecting suitable products for different sports activities or to offer tips for healthy and fit living.
+                                    </p>
+                                </div>
+                    </div>
+                </div>
+            </div>
 
-<main>
-<div class="row">
-    <div class="col-sm-8">
-        <div class="jumbotron">
-            <h1>This is great <%= text %></h1>
-            <p>Welcome to templating using EJS</p>
-        </div>
+        </main>
     </div>
-
-    <div class="col-sm-4">
-        <div class="well">
-            <h3>Look I'm A Sidebar!</h3>
-        </div>
-    </div>
-
-</div>
-</main>
-
-<footer>
+    <!-- footer -->
     <% include ../partials/footer %>
-</footer>
-
 </body>
+
+
+
+
 </html>
