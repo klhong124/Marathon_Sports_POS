@@ -295,6 +295,10 @@ app.get('/about',(req, res) => {
 app.get('/howtoshop',(req, res) => {
     res.render('pages/howtoshop');
 });
+// terms of use page
+app.get('/termsofuse',(req, res) => {
+    res.render('pages/termsofuse');
+});
 
 // POST '/login' gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
