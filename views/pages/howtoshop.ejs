@@ -1,0 +1,149 @@
+<!-- views/pages/howtoshop.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+
+    <style>
+        .circle {
+            height: 100px;
+            width: 100px;
+            border-radius: 50px;
+            border: pink 3px solid;
+        }
+        .step-icon {
+            font-size: 50px;
+            position: absolute;
+            transform: translate(57%, 40%);
+        }
+        .step-description {
+            padding-top: 35px;
+        }
+        .center-down-arrow {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- header -->
+    <% include ../partials/nav %>
+    <div style="width:100%; height:60px;"></div>
+    <div class="container">
+        <main role="main">
+            <div class="album py-5 bg-light">
+                <div class="container">
+                    <div>
+                        <img src="/public/images/aboutus_title.jpg" style="width: 100%;">
+                    </div>
+                    <div><center><h2>HOW TO SHOP</h2></center></div>
+                    <div style="height:24px; width:100%;"></div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="circle">
+                                <!-- <i class="fas fa-keyboard step-icon"></i> -->
+                                <!-- <i class="fas fa-user-circle step-icon"></i> -->
+                                <i class="fas fa-user step-icon"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="step-description" style="padding-top: 20px;">
+                                Sign in with your own account
+                                <br/>
+                                (Or sign up with a new account)
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm center-down-arrow">
+                            <p>&darr;</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="circle">
+                                <!-- <i class="fas fa-user step-icon"></i> -->
+                                <i class="fas fa-cart-plus step-icon" style="transform: translate(31%, 50%);"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="step-description">
+                                Add any product to cart
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm center-down-arrow">
+                            <p>&darr;</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="circle">
+                                <!-- <i class="fas fa-user step-icon"></i> -->
+                                <!-- <i class="fas fa-cart-plus step-icon" style="transform: translate(31%, 50%);"></i> -->
+                                <i class="far fa-credit-card step-icon" style="transform: translate(38%, 44%);"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="step-description">
+                                Checkout your cart
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm center-down-arrow">
+                            <p>&darr;</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="circle">
+                                <i class="fas fa-receipt step-icon" style="transform: translate(78%, 45%);"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="step-description">
+                                Keep your receipt for further use
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm center-down-arrow">
+                            <p>&darr;</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <!-- footer -->
+    <% include ../partials/footer %>
+</body>
+
+
+
+
+</html>
