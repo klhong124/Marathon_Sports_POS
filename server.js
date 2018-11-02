@@ -299,6 +299,10 @@ app.get('/howtoshop',(req, res) => {
 app.get('/termsofuse',(req, res) => {
     res.render('pages/termsofuse');
 });
+// privacy policy page
+app.get('/privacypolicy',(req, res) => {
+    res.render('pages/privacypolicy');
+});
 
 // POST '/login' gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
@@ -846,12 +850,12 @@ app.get('/order/:order_id/download',(req, res) => {
 });
 
 // forget password page
-app.get('/forgetpassword',(req, res) => {
-    if (req.cookies['username']) {
-        res.render('pages/forget-password');
-    } else {
-        res.redirect('/');
-    }
+app.get('/forgetpassword', (req, res) => {
+    res.render('pages/forget-password');
+});
+
+app.get('/copyright',(req, res) => {
+    res.render('pages/copyright');
 });
 
 app.use('/public', express.static('public'));
