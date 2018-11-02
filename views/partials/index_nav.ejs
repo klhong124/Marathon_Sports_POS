@@ -157,14 +157,14 @@
     var count = 1;
     function addToCart(id){
       var size = document.getElementById(`size${id}`).value;
+        $('.cart-num').html(count);
+        count++;
         $.ajax({
             url:'/add-to-cart',
             type:'post',
             data: {p_id: id,p_size:size},
             success:function(result){
                 console.log(result['success']);
-                $('.cart-num').html(count);
-                count++;
             },error:function(err){
                 console.log(err);
             }
