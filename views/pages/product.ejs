@@ -80,7 +80,9 @@
 
                         <p class="price-detail-wrap">
                             <span class="price h3 text-warning">
-                                <span class="currency">HK $</span><span class="num" name="p_price"><%= data[3] %></span>
+                                <span class="currency">HK $</span><span class="num" name="p_price"><% if(data[5] != 0){ %><%= Math.round(data[3]*(1-data[5]/100)*10)/10%><% } else{ %><%= data[3] %><%}%></span>
+                                <% if(data[5] != 0){ %> <span style="color:gray; font-size:0.7em;"><strike>$ <%= data[3] %></strike></span><span style="color:red;"> <%= data[5] %>% OFF</span><% } %>
+
                                 <input hidden name="p_price" value="<%= data[3] %>">
                             </span>
                         </p> <!-- price-detail-wrap .// -->
@@ -98,7 +100,7 @@
                         </dl> -->
                         <dl class="param param-feature">
                             <dt>Shipping & Delivery</dt>
-                            <dd>Shipping is free on <b>$300+</b> orders. Marathon Sports uses the best carriers in the business to make sure your order gets to you on time. From the Secure Checkout page you'll see your item description, price and delivery timing.</dd>
+                            <dd>Shipping is free on <b>$500+</b> orders. Marathon Sports uses the best carriers in the business to make sure your order gets to you on time. From the Secure Checkout page you'll see your item description, price and delivery timing.</dd>
                         </dl>
 
                         <hr>

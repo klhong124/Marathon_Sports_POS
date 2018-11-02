@@ -15,12 +15,12 @@
           background: orange;
           color: black;
         }
-        .f-style {
+        /* .f-style {
             position: fixed;
             bottom: 0px;
             width: 100%;
             z-index: 100;
-        }
+        } */
     </style>
 <head>
 
@@ -134,16 +134,16 @@
 
         } );
 
-        var prevScrollpos = window.pageYOffset;
-        window.onscroll = function hide_navbar() {
-            var currentScrollPos = window.pageYOffset;
-            if (prevScrollpos < currentScrollPos) {
-                document.getElementById("navbar").style.top = "0px";
-            } else {
-                document.getElementById("navbar").style.top = "0x";
-            }
-            prevScrollpos = currentScrollPos;
-        }
+        // var prevScrollpos = window.pageYOffset;
+        // window.onscroll = function hide_navbar() {
+        //     var currentScrollPos = window.pageYOffset;
+        //     if (prevScrollpos < currentScrollPos) {
+        //         document.getElementById("navbar").style.top = "0px";
+        //     } else {
+        //         document.getElementById("navbar").style.top = "0x";
+        //     }
+        //     prevScrollpos = currentScrollPos;
+        // }
 
     </script>
     <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js),datatables.mark.js"></script>

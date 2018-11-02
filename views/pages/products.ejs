@@ -30,7 +30,8 @@
                                             <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap"></a>
                                             <% } %>
                                         <div class="card-body">
-                                            <p class="card-text"><%= data[i][0] %><br><span style="color:#ff6e00;">$ <b><%= data[i][1] %></b></span> </p>
+                                            <!-- <p class="card-text"><%= data[i][0] %><br><span style="color:#ff6e00;">$ <b><%= data[i][1] %></b></span> </p> -->
+                                            <p class="card-text"><%= data[i][0] %><br><% if( data[i][5] != 0){ %> <span style="color:#ff6e00;"><b>$<%= Math.round(data[i][1]*(1-data[i][5]/100)*10)/10%></b> </span><span style="color:gray; font-size:11px;"><strike>$ <%= data[i][1] %></strike></span> <span style="color:red;"> <%= data[i][5] %>% OFF</span><% } else { %> <span style="color:#ff6e00;">$ <b><%= data[i][1] %></b></span> <% } %></p>
                                             <p>Size : <select id="size<%= data[i][3]%>">
                                               <% for(var s=0; s<size.length; s++) { %>
                                                 <% if (data[i][3] == size[s][0]) { %>

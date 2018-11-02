@@ -58,8 +58,9 @@ app.get('/',(req, res, next) => {
            `select email from users`
           );
           var products = await conn.execute(
-           `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1)AS product_image FROM products WHERE rownum <= 9`
+           `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1)AS product_image, products.discount FROM products WHERE rownum <= 9`
           );
+          // console.log(products);
           var sizes = await conn.execute(
             `SELECT products.p_id, sizes.cm, sizes.size_id FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id WHERE rownum <= 500 GROUP BY p_id, sizes.cm, sizes.size_id ORDER BY p_id`
           );
@@ -107,7 +108,7 @@ app.post('/search', urlencodedParser, (req, res) => {
         try {
             conn = await oracledb.getConnection(dum);
             var result = await conn.execute(
-                `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images LEFT JOIN products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE products.p_name LIKE '%${keyword}%'`);
+                `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images LEFT JOIN products on products.p_id = images.p_id WHERE rownum <= 1) AS product_image, products.discount FROM products WHERE products.p_name LIKE '%${keyword}%'`);
 
             var sizes = await conn.execute(
                 `SELECT products.p_id, sizes.cm, sizes.size_id FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id WHERE rownum <= 500 GROUP BY p_id, sizes.cm, sizes.size_id ORDER BY p_id`
@@ -481,7 +482,7 @@ app.get('/product/:p_id',(req, res) => {
             var result = await conn.execute(
                 'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
             );
-            console.log('1: ');
+            // console.log('1: ');
             console.log(result);
             //
             // var product = await conn.execute(
@@ -493,21 +494,21 @@ app.get('/product/:p_id',(req, res) => {
                     req.params.p_id
                 ]
             );
-            console.log('2: ');
-            console.log(product);
+            // console.log('2: ');
+            // console.log(product);
 
             var test = await conn.execute(
                 'SELECT * FROM orders'
             );
-            console.log('3: ');
-            console.log(test);
+            // console.log('3: ');
+            // console.log(test);
 
             var item = await conn.execute(
-             `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) FROM products WHERE rownum <= 7`
+             `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) AS product_image, products.discount FROM products WHERE rownum <= 7`
              // 'select * from products'
             );
-            console.log('4: ');
-            console.log(item);
+            // console.log('4: ');
+            // console.log(item);
         } catch (err) {
             console.log('Ouch!', err);
         } finally {
@@ -644,7 +645,7 @@ app.get('/products',(req, res) => {
     async function oracledbconn(){
         conn = await oracledb.getConnection(dum);
         const result = await conn.execute(
-            'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images LEFT JOIN products on products.p_id = images.p_id WHERE rownum <= 1) FROM products'
+            'SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images LEFT JOIN products on products.p_id = images.p_id WHERE rownum <= 1), products.discount FROM products'
             // 'select * from images'
         );
         var sizes = await conn.execute(
