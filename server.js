@@ -851,6 +851,10 @@ app.get('/forgetpassword',(req, res) => {
     }
 });
 
+app.get('/copyright',(req, res) => {
+    res.render('pages/copyright');
+});
+
 app.use('/public', express.static('public'));
 var port = 5000; //change here
 app.listen(port);
