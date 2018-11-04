@@ -140,10 +140,10 @@ app.post('/register',urlencodedParser,(req, res) => {
     async function oracledbconn(){
         try {
           conn = await oracledb.getConnection(dum);
-
-          const result = await conn.execute(
-            'INSERT INTO users VALUES(users_seq.nextval, :name, :email, :pw, :lname, :fname, :phone)', [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname, req.body.phone], {autoCommit: true}
+          await conn.execute(
+            'INSERT INTO users VALUES(users_seq.nextval, :name, :email, :pw, :lname, :fname, :phone)', [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname, req.body.phone]
           );
+          res.redirect('/');
         } catch (err) {
             console.log('Ouch! ', err);
         } finally {
@@ -153,7 +153,6 @@ app.post('/register',urlencodedParser,(req, res) => {
         }
     }
     oracledbconn();
-    res.redirect('/');
 });
 
 // support page
