@@ -107,9 +107,9 @@
                                          </td>
                                         <td>
                                             <% if(data[i][1] == 0) { %>
-                                                <a href="/order/<%= data[i][0] %>"><button type="button" class="btn btn-primary">Pay Now</button></a>
+                                                <a href="/checkout/<%= data[i][0] %>"><button type="button" class="btn btn-primary">Pay Now</button></a>
                                             <% } else { %>
-                                                <a href="/checkout/<%= data[i][0] %>"><button type="button" class="btn btn-success">View Details</button></a>
+                                                <a href="/order/<%= data[i][0] %>"><button type="button" class="btn btn-success">View Details</button></a>
                                             <% } %>
                                         </td>
                                     </tr>

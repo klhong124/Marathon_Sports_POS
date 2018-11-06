@@ -138,7 +138,9 @@
                             </div>
                         </div>
                         <hr>
-                        <button class="btn btn-primary" type="submit">Buy now</button>
+                        <% if (username) { %>
+                            <button class="btn btn-primary" type="submit">Buy now</button>
+                        <% } %>
                         <!-- <a href="#" class="btn btn-lg btn-primary text-uppercase"> Buy now </a> -->
                 <!-- <button class="btn btn-lg btn-outline-success text-uppercase" onclick="addToCart('<%= data[1] %>')" data-id="a<%= data[1] %>"> <i class="fas fa-shopping-cart"></i> Add to cart </button> -->
                     </form>
@@ -177,7 +179,9 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
                                         <a href="/product/<%= item[i][3] %>"><button type="button" class="btn btn-sm btn-outline-primary">View</button></a>
-                                        <button type="submit" class="btn btn-sm btn-success"  onclick="addToCart('<%= item[i][3] %>')" data-id="a<%= item[i][3] %>">Add to chart</button>
+                                        <% if (username) { %>
+                                            <button type="submit" class="btn btn-sm btn-success"  onclick="addToCart('<%= item[i][3] %>')" data-id="a<%= item[i][3] %>">Add to chart</button>
+                                        <% } %>
                                     </div>
                                     <small class="text-muted"><%= item[i][2]%></small>
                                 </div>

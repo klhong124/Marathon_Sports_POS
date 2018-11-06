@@ -11,14 +11,6 @@
       <!-- Custom script for this template -->
       <!-- ==================================================================================================================== -->
       <style media="screen">
-      *{
-        animation-name:show;
-        animation-duration: 1.5s;
-      }
-      @keyframes show {
-        from {opacity:0;}
-        to {opacity: 1;}
-      }
       .bgcolor{
         background:#A62639;
       }
@@ -35,20 +27,25 @@
       </style>
       <!-- ==================================================================================================================== -->
     </head>
-    <body>
+    <body onload="init()">
       <% include ../partials/index_nav %>
       <% include ../partials/alert %>
       <% include ../partials/box %>
       <a href="javascript:sdbth()"id="scroll-down-bth"></a>
       <script type="text/javascript">
+      function init(){
+        <% if (username) { %>
+          sdbth();
+        <% } %> 
+      }
         function sdbth(){
-              document.getElementById("Marathonid-logo").scrollIntoView({ behavior: 'smooth',block: 'start' });
+              document.getElementById("scroll-down-bth").scrollIntoView({ behavior: 'smooth',block: 'start' });
         }
       </script>
       <!-- header -->
       <main role="main">
         <!-- ==================================================================================================================== -->
-        <div class="album py-5 bgcolor" id="Marathonid-logo">
+        <div class="album py-5 bgcolor">
               <img src="/public/marathon-logobgred.png" alt="" class="Marathon-logo">
         </div>
         <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  -->
@@ -56,12 +53,12 @@
           <div class="container">
             <div class="row">
 
-              <div data-aos="fade-right" data-aos-offset="0" class="col-sm-12 col-md-6">
+              <div data-aos="fade-right" data-aos-offset="50" class="col-sm-12 col-md-6">
                 <center style="padding:20px;"><h1>Why Marathon Sports</h1></center>
                 <p>Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!</p>
                 <p><small style="float:right">~ Marathon Sports</small></p>
                 <br><br><br>
-                <div data-aos="fade-right" data-aos-offset="0">
+                <div data-aos="zoom-out" data-aos-offset="50">
                   <img src="public/marathon-logo.png" alt="marathon sports" class="brandimg">
                   <img src="https://wwwm.marathonsports-eshop.hk/wysiwyg/Logo/new-balance-logo.png" alt="new balance" class="brandimg">
                   <img src="public/images/Reebok-Logo-Transparent-PNG.png" alt="reebok" class="brandimg">
@@ -74,7 +71,7 @@
               </div>
 
               <div class="col-md-1"></div>
-              <div data-aos="fade-left" data-aos-offset="0" class="col-sm-12 col-md-5">
+              <div data-aos="fade-left" data-aos-offset="50" class="col-sm-12 col-md-5">
                 <% include ../partials/slider %>
               </div>
 
@@ -91,7 +88,7 @@
           <div class="container">
               <div class="row">
                   <% for(var i=1; i<data.length; i++) { %>
-                    <div data-aos="zoom-in" data-aos-offset="0" class="col-md-3">
+                    <div data-aos="zoom-in" data-aos-offset="50" class="col-md-3">
                         <div class="card mb-4 shadow-sm">
                             <a href="/product/<%= data[i][3] %>">
                                 <% if((typeof data[i][4] != null && data[i][4])) { %>
@@ -113,7 +110,10 @@
                                     <div class="btn-group">
                                         <a href="/product/<%= data[i][3] %>"><button type="button" class="btn btn-sm btn-outline-primary">View</button></a>
                                         <!-- <form action="/add-to-cart" method="post"> -->
+                                          <!-- <%= error_message %> -->
+                                          <% if (username) { %> 
                                         <button type="submit" class="btn btn-sm btn-success"  onclick="addToCart(<%= data[i][3]%>)" id="addto<%= data[i][3] %>">Add to cart</button>
+                                        <% } %> 
                                         <button type="submit" class="btn btn-sm btn-info" id="added<%= data[i][3] %>" style="display:none;">added</button>
                                     </div>
                                     <small class="text-muted"> <%= data[i][2]%></small>

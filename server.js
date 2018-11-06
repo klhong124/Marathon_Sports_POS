@@ -60,7 +60,6 @@ app.get('/',(req, res, next) => {
           var products = await conn.execute(
            `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1)AS product_image, products.discount FROM products WHERE rownum <= 9`
           );
-          // console.log(products);
           var sizes = await conn.execute(
             `SELECT products.p_id, sizes.cm, sizes.size_id FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id WHERE rownum <= 500 GROUP BY p_id, sizes.cm, sizes.size_id ORDER BY p_id`
           );
@@ -101,7 +100,6 @@ app.get('/',(req, res, next) => {
 
 // search page
 app.post('/search', urlencodedParser, (req, res) => {
-    console.log(req.body.keyword);
     var keyword = (req.body.keyword).toUpperCase();
 
     async function oracledbconn(){
@@ -113,7 +111,6 @@ app.post('/search', urlencodedParser, (req, res) => {
             var sizes = await conn.execute(
                 `SELECT products.p_id, sizes.cm, sizes.size_id FROM stores_products_sizes INNER JOIN products ON stores_products_sizes.product_id = products.p_id INNER JOIN sizes ON stores_products_sizes.size_id = sizes.size_id WHERE rownum <= 500 GROUP BY p_id, sizes.cm, sizes.size_id ORDER BY p_id`
             );
-            console.log(sizes);
         } catch (err) {
             console.log('Ouch!', err);
         } finally {
@@ -133,7 +130,6 @@ app.post('/search', urlencodedParser, (req, res) => {
 
 // signup page
 app.post('/join',urlencodedParser,(req, res) => {
-  console.log(req.body.email);
     res.render('pages/signup',{username:req.body.username,
                                email:req.body.email,
                                password:req.body.password
@@ -144,10 +140,10 @@ app.post('/register',urlencodedParser,(req, res) => {
     async function oracledbconn(){
         try {
           conn = await oracledb.getConnection(dum);
-
-          const result = await conn.execute(
-            'INSERT INTO users VALUES(users_seq.nextval, :name, :email, :pw, :lname, :fname, :phone)', [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname, req.body.phone], {autoCommit: true}
+          await conn.execute(
+            'INSERT INTO users VALUES(users_seq.nextval, :name, :email, :pw, :lname, :fname, :phone)', [req.body.username, req.body.email, req.body.password, req.body.lastname, req.body.firstname, req.body.phone]
           );
+          res.redirect('/');
         } catch (err) {
             console.log('Ouch! ', err);
         } finally {
@@ -157,13 +153,11 @@ app.post('/register',urlencodedParser,(req, res) => {
         }
     }
     oracledbconn();
-    res.redirect('/');
 });
 
 // support page
 app.get('/help',(req, res) => {
     if (typeof req.cookies['username'] != 'undefined') {
-        console.log(req.cookies['username']);
         res.render('pages/help', {username: req.cookies['username'], error_message: false});
     } else {
         res.render('pages/help', {username: false, error_message: false});
@@ -187,7 +181,6 @@ app.get('/stock',(req, res) => {
                 await conn.close();
             }
         }
-        console.log(result);
 
         var data = result.rows;
 
@@ -221,7 +214,6 @@ app.get('/history',(req, res) => {
                     await conn.close();
                 }
             }
-            console.log(result);
 
             var data = result.rows;
 
@@ -245,7 +237,6 @@ app.post('/payment',urlencodedParser,(req, res) => {
       try {
         conn = await oracledb.getConnection(dum);
         var fulladdress = `${req.body.address},${req.body.district},${req.body.country},${req.body.state}`;
-        console.log(fulladdress);
         await conn.execute(
             `UPDATE "G1_TEAM001"."USER_ORDERS" SET SHIPPING_ADDRESS = :address, CONFIRM_EMAIL = :email, STATUS = :status WHERE order_id = :order_id`, [fulladdress, req.body.email,req.body.paymentMethod,req.body.orderid]
         );
@@ -275,8 +266,6 @@ app.get('/store',(req, res) => {
 
         // var data = JSON.stringify(result.rows);
         var data = result.rows;
-
-        console.log(data);
 
         // check if the user exists
         if (result.rows) {
@@ -316,7 +305,7 @@ app.post('/login', urlencodedParser, (req, res) => {
         if (result.rows[0] !== undefined) {
             res.cookie('username', result.rows[0][0], { maxAge: 900000}); // put username to cookie and set expire time for cookie
             res.cookie('user_id', result.rows[0][1], { maxAge: 900000});
-            res.render('pages/dashboard', {username: req.cookies['username']});
+            res.redirect('/');
         } else {
             res.redirect('/?errormessage=' + encodeURIComponent('Incorrect username or password'));
         }
@@ -452,10 +441,6 @@ app.get('/createbill', urlencodedParser, (req, res) => {
     }
 });
 app.post('/to-cart', urlencodedParser, (req, res) => {
-    console.log(req.body.p_id);
-    console.log(req.body.p_price);
-    console.log(req.body.p_qty);
-    console.log(req.body.p_size);
     if (req.cookies['user_id']){
         async function oracledbconn(){
             try{
@@ -494,33 +479,19 @@ app.get('/product/:p_id',(req, res) => {
             var result = await conn.execute(
                 'select * from products left join images on images.p_id = products.p_id where products.p_id = :p_id', [req.params.p_id]
             );
-            // console.log('1: ');
-            console.log(result);
-            //
-            // var product = await conn.execute(
-            //     'SELECT store_id, sps.store_qty, (select p_size from sizes where sps.size_id = sizes.size_id ) AS p_size FROM products p LEFT JOIN stores_products_sizes sps ON sps.product_id = p.p_id WHERE p.p_id = :p_id', [req.params.p_id]
-            // );
 
             var product = await conn.execute(
                 'SELECT sps.size_id, sum(qty) AS inventory, (select cm from sizes where sizes.size_id = sps.size_id) AS CM FROM stores_products_sizes sps WHERE sps.product_id = :p_id GROUP BY sps.size_id', [
                     req.params.p_id
                 ]
             );
-            // console.log('2: ');
-            // console.log(product);
 
             var test = await conn.execute(
                 'SELECT * FROM orders'
             );
-            // console.log('3: ');
-            // console.log(test);
-
             var item = await conn.execute(
              `SELECT products.p_name, products.price, products.origin, products.p_id, (SELECT images.image_name FROM images left join products on products.p_id = images.p_id WHERE rownum <= 1) AS product_image, products.discount FROM products WHERE rownum <= 7`
-             // 'select * from products'
             );
-            // console.log('4: ');
-            // console.log(item);
         } catch (err) {
             console.log('Ouch!', err);
         } finally {
@@ -532,9 +503,6 @@ app.get('/product/:p_id',(req, res) => {
         var data = result.rows[0];
         item = item.rows;
         product = product.rows;
-        console.log(test);
-
-
 
         // check if the user exists
         if (result.rows) {
@@ -671,8 +639,6 @@ app.get('/products',(req, res) => {
 
         // var data = JSON.stringify(result.rows);
         var data = result.rows;
-
-        console.log(result);
 
         // check if the user exists
         if (result.rows) {
@@ -815,6 +781,7 @@ app.get('/order/:order_id/download',(req, res) => {
             }
             var totalHKD = netPurchaseAmount + deliveryfee;
             //===============================================================
+            const fs = require('fs');
             var pdfMaker = require('pdf-maker');
             var template = "views/pages/order.ejs";
             var data = { order: user_order.rows[0],
@@ -832,10 +799,16 @@ app.get('/order/:order_id/download',(req, res) => {
                         border: '1.8cm'
                     }
             };
-
             pdfMaker(template, data, pdfPath, option);
-            res.download(`C:\\Users\\Hong\\GitHub\\Marathon_Sports_POS\\pdf_orders\\${req.params.order_id}.pdf`, `MSPOS_bill_no_${req.params.order_id}_${req.cookies['username']}.pdf`);
-          } catch (err) {
+            pdfcheck();
+            function pdfcheck(){
+                if (fs.existsSync(pdfPath)) {
+                    res.download(`C:\\Users\\Hong\\GitHub\\Marathon_Sports_POS\\pdf_orders\\${req.params.order_id}.pdf`, `MSPOS_bill_no_${req.params.order_id}_${req.cookies['username']}.pdf`)
+                }else{
+                    setTimeout(function(){ pdfcheck(); }, 1000);
+                }
+            }
+        } catch (err) {
           console.log('Ouch!', err);
         } finally {
           if (conn) { // conn assignment worked, need to close
@@ -849,6 +822,26 @@ app.get('/order/:order_id/download',(req, res) => {
   }
 });
 
+app.get('/cart-count',(req,res) =>{
+    if (req.cookies['username']) {
+        async function oracledbconn(){
+            try{
+                conn = await oracledb.getConnection(dum);
+                var num_of_cart = await conn.execute(
+                    `select count(user_id) from cart where user_id = :user_id`,[req.cookies['user_id']]
+                );
+                
+                res.send({count:num_of_cart.rows[0]});
+            } catch (err) {
+                console.log('Ouch!', err);
+            } finally {
+                if (conn) {await conn.close();}
+            }
+        };
+        oracledbconn(); // call the function run
+    }
+})
+
 // forget password page
 app.get('/forgetpassword', (req, res) => {
     res.render('pages/forget-password');
@@ -856,6 +849,12 @@ app.get('/forgetpassword', (req, res) => {
 
 app.get('/copyright',(req, res) => {
     res.render('pages/copyright');
+});
+app.get('/refund',(req, res) => {
+    res.render('pages/refund');
+});
+app.get('/delivery',(req, res) => {
+    res.render('pages/delivery');
 });
 
 app.use('/public', express.static('public'));

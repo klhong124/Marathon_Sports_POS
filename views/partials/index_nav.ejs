@@ -14,6 +14,11 @@
         text-align: center;
         color: white;
     }
+    @media only screen and (min-width: 990px) {
+        .navbar-brand{
+            margin-left:5%;
+        }
+    }
     .navbar {
         box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
         position:fixed;
@@ -24,7 +29,7 @@
 </style>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light movedw" id="navbar">
-        <a class="navbar-brand" href="/"><b>Marathon</b> Sports</a>
+        <a class="navbar-brand" href="/"><b style="color:#A62630;">Marathon</b> Sports</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -126,45 +131,30 @@
     </nav>
 </header>
 <script>
-    function scrollToTop(scrollDuration) {
-    const   scrollHeight = window.scrollY,
-            scrollStep = Math.PI / ( scrollDuration / 15 ),
-            cosParameter = scrollHeight / 2;
-    var     scrollCount = 0,
-            scrollMargin,
-            scrollInterval = setInterval( function() {
-                if ( window.scrollY != 0 ) {
-                    scrollCount = scrollCount + 1;
-                    scrollMargin = cosParameter - cosParameter * Math.cos( scrollCount * scrollStep );
-                    window.scrollTo( 0, ( scrollHeight - scrollMargin ) );
-                }
-                else clearInterval(scrollInterval);
-            }, 15);
-    }
 
     function navsignin(){
-      scrollToTop(500);
+      $('html,body').animate({ scrollTop: 0 }, 'slow');
       document.getElementById("signupbox").style.display = "none";
       document.getElementById("loginbox").style.display = "block";
     }
 
     function navsignup(){
-      scrollToTop(500);
+      $('html,body').animate({ scrollTop: 0 }, 'slow');
       document.getElementById("signupbox").style.display = "block";
       document.getElementById("loginbox").style.display = "none";
     }
 
-    var count = 1;
     function addToCart(id){
       var size = document.getElementById(`size${id}`).value;
+
+        var count = $('.cart-num').text();
+        count++;
+        $('.cart-num').html(count);
         $.ajax({
             url:'/add-to-cart',
             type:'post',
             data: {p_id: id,p_size:size},
             success:function(result){
-                console.log(result['success']);
-                $('.cart-num').html(count);
-                count++;
             },error:function(err){
                 console.log(err);
             }
