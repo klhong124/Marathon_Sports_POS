@@ -53,12 +53,13 @@
           <div class="container">
             <div class="row">
 
-              <div data-aos="fade-right" data-aos-offset="50" class="col-sm-12 col-md-6">
+              <div data-aos="fade-right" data-aos-offset="50" class="col-sm-12 col-lg-6">
                 <center style="padding:20px;"><h1>Why Marathon Sports</h1></center>
                 <p>Marathon Sports is one  of the largest and most popular chains of sporting goods stores in Hong Kong.  It offers the widest range of sports and sports-inspired footwear, apparel and accessories to help every customer go the distance and enjoy a lifetime of active, healthy living!</p>
                 <p><small style="float:right">~ Marathon Sports</small></p>
                 <br><br><br>
-                <div data-aos="zoom-out" data-aos-offset="50">
+                <center>
+                <div data-aos="zoom-out" data-aos-offset="50" class="mb-5">
                   <img src="public/marathon-logo.png" alt="marathon sports" class="brandimg">
                   <img src="https://wwwm.marathonsports-eshop.hk/wysiwyg/Logo/new-balance-logo.png" alt="new balance" class="brandimg">
                   <img src="public/images/Reebok-Logo-Transparent-PNG.png" alt="reebok" class="brandimg">
@@ -68,11 +69,14 @@
                   <img src="https://wwwm.marathonsports-eshop.hk/wysiwyg/Logo/heelys_logo.png" alt="heelys" class="brandimg">
                   <img src="https://wwwm.marathonsports-eshop.hk/wysiwyg/Logo/adidas-originals-logo.png" alt="Adidas" class="brandimg">
                 </div>
+                </center>
               </div>
 
-              <div class="col-md-1"></div>
-              <div data-aos="fade-left" data-aos-offset="50" class="col-sm-12 col-md-5">
+              <div class="col-lg-1 col-sm-0"></div>
+              <div data-aos="fade-left" data-aos-offset="50" class="col-sm-12 col-lg-5">
+              <center>
                 <% include ../partials/slider %>
+              </center>
               </div>
 
             </div>
@@ -88,7 +92,7 @@
           <div class="container">
               <div class="row">
                   <% for(var i=1; i<data.length; i++) { %>
-                    <div data-aos="zoom-in" data-aos-offset="50" class="col-md-3">
+                    <div data-aos="zoom-in" data-aos-offset="50" class="col-lg-3 col-md-6 col-sm-6">
                         <div class="card mb-4 shadow-sm">
                             <a href="/product/<%= data[i][3] %>">
                                 <% if((typeof data[i][4] != null && data[i][4])) { %>
