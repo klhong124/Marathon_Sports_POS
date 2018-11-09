@@ -236,9 +236,9 @@ app.post('/payment',urlencodedParser,(req, res) => {
     async function oracledbconn(){
       try {
         conn = await oracledb.getConnection(dum);
-        var fulladdress = `${req.body.address},${req.body.district},${req.body.country},${req.body.state}`;
         await conn.execute(
-            `UPDATE "G1_TEAM001"."USER_ORDERS" SET SHIPPING_ADDRESS = :address, CONFIRM_EMAIL = :email, STATUS = :status WHERE order_id = :order_id`, [fulladdress, req.body.email,req.body.paymentMethod,req.body.orderid]
+            `UPDATE "G1_TEAM001"."USER_ORDERS" SET ADDRESS = :address, DISTRICT = :district,COUNTRY = :country,STATE = :state, CONFIRM_EMAIL = :email, STATUS = :status WHERE order_id = :order_id`, 
+            [req.body.address,req.body.district,req.body.country,req.body.state, req.body.email,req.body.paymentMethod,req.body.orderid]
         );
         res.redirect(`/order/${req.body.orderid}`)
       } catch (err) {
