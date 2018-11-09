@@ -11,6 +11,19 @@
         .container{
           margin-top: 30px;
         }
+        a:link {
+            color: black;
+        }
+        a:visited {
+            color: black;
+        }
+        a:hover {
+            color: black;
+            text-decoration:none;
+        }
+        a:active {
+            color: black;
+        }
     </style>
 <head>
 
@@ -49,7 +62,7 @@
                         <% for(var i=0; i<cartlist.length; i++) { %>
 
                         <tr id="tr<%= cartlist[i][3]%>">
-                            <td class="product_name"><%= cartlist[i][4]%></td>
+                            <td class="product_name"><a href="/product/<%= cartlist[i][0]%>" target="_blank"><%= cartlist[i][4]%></a></td>
                             <td>
                              <select onchange="editSizeCart(<%=cartlist[i][3]%>,this.value)">
                                <% for(var s=0; s<size.length; s++) { %>
