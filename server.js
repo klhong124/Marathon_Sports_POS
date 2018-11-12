@@ -830,7 +830,7 @@ app.get('/cart-count',(req,res) =>{
                 var num_of_cart = await conn.execute(
                     `select count(user_id) from cart where user_id = :user_id`,[req.cookies['user_id']]
                 );
-                
+
                 res.send({count:num_of_cart.rows[0]});
             } catch (err) {
                 console.log('Ouch!', err);
@@ -858,7 +858,7 @@ app.get('/delivery',(req, res) => {
 });
 
 app.use('/public', express.static('public'));
-var port = 4000; //change here
+var port = 3000; //change here
 app.listen(port);
 console.log(`Server Running on port ${port}`);
 // require("openurl").open(`http://localhost:${port}`);
