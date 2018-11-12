@@ -55,8 +55,11 @@
                                         [1]user_id
                                         [2]create_at
                                         [3]status
-                                        [4]SHIPPING_ADDRESS
-                                        [5]comfirm_email
+                                        [4]ADDRESS
+                                        [5]DISTRICT
+                                        [6]COUNTRY
+                                        [7]STATE
+                                        [8]comfirm_email
 ========================================================================================================================-->
 
   <div class="container">
@@ -74,8 +77,8 @@
       <% } else { %>
         <p><b>Payment Method : </b>Pending</p>
       <% } %>
-      <p><b>Shipping Address : </b><%= order[4]%></p>
-      <p><b>Email : </b><%= order[5]%></p>
+      <p><b>Shipping Address : </b><%= order[4]%>, <%= order[5]%> , <%= order[6]%>, <%= order[7]%></p>
+      <p><b>Email : </b><%= order[8]%></p>
   </div>
   <!--========================================================================================================================
                                         <%= order_detail %>

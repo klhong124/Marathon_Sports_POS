@@ -5,6 +5,14 @@
 </head>
 
 <style>
+    .bgcolor{
+        background:#A62639;
+    }
+    main{
+        width:100%;
+        background:#B5B1B1;
+        padding-bottom:70px;
+    }
     .slide>.small-img>div {
         width: 40px;
         height: 40px;
@@ -26,32 +34,52 @@
     #stock-tooltip {
         text-decoration: none;
     }
+    dt{
+        font-size:18px;
+        line-height:40px;
+    }
+    .card-text{
+        font-size:15px;
+    }
+     .Marathon-logo{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 300px;
+    }
+    .img-rounded{
+        border-radius:15%;
+    }
 </style>
 
 
 <% include ../partials/nav %>
+<main>
 <div class="container">
     <div style="height:120px; width:100%;"></div>  <!-- placeholder -->
-
     <div class="card">
         <div class="row">
-            <div class="col-sm-5">
-                <article class="card-body p-1">
-                    <div id="product" class="carousel slide" data-ride="carousel">
+            <div class="col-lg-5 col-md-12 col-sm-12 bgcolor">
+                <article class="card-body p-1 mt-3">
+                    <div class="mt-5">
+                        <a href="../../"><img src="/public/marathon-logobgred.png" alt="" class="Marathon-logo" ></a>
+                    </div>
+                <center>
+                    <div id="product" class="carousel slide mt-5" data-ride="carousel">
                         <!-- Indicators -->
                         <ul class="carousel-indicators small-img">
                             <!-- <<img style="width:40px; height:40px;"  data-target="#product" data-slide-to="0" class="active" src="./public/images/2.jpg">
                             <img style="width:40px; height:40px;" data-target="#product" data-slide-to="1" src="./public/images/2.jpg">
                             <img style="width:40px; height:40px;" data-target="#product" data-slide-to="2" src="./public/images/2.jpg"> -->
-                            <div data-target="#product" data-slide-to="0" class="active"><img src="/public/images/<%= data[0] %>/<%= data[10] %>.jpg"></div>
-                            <!-- <div data-target="#product" data-slide-to="1"><img src="/public/images/2.jpg"></div>
+                            <!-- <div data-target="#product" data-slide-to="0" class="active"><img src="/public/images/<%= data[0] %>/<%= data[10] %>.jpg"></div>
+                            <div data-target="#product" data-slide-to="1"><img src="/public/images/2.jpg"></div>
                             <div data-target="#product" data-slide-to="2"><img src="/public/images/3.jpg"></div> -->
                         </ul>
 
                         <!-- The slideshow -->
                         <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="/public/images/<%= data[0] %>/<%= data[10] %>.jpg">
+                            <div class="carousel-item active mb-5">
+                                <img src="/public/images/<%= data[0] %>/<%= data[10] %>.jpg" class="img-rounded">
                             </div>
                             <!-- <div class="carousel-item">
                                 <img src="/public/images/2.jpg">
@@ -60,24 +88,24 @@
                                 <img src="/public/images/3.jpg">
                             </div> -->
                         </div>
-
                         <!-- Left and right controls -->
-                        <a class="carousel-control-prev" href="#product" data-slide="prev">
+                        <!-- <a class="carousel-control-prev" href="#product" data-slide="prev">
                             <span class="carousel-control-prev-icon"></span>
                         </a>
                         <a class="carousel-control-next" href="#product" data-slide="next">
                             <span class="carousel-control-next-icon"></span>
-                        </a>
+                        </a> -->
                     </div>
+                </center>
                 </article>
             </div>
 
-            <aside class="col-sm-7">
+            <aside class="col-sm-12 col-md-12 col-lg-7 ">
                 <article class="card-body p-5">
                     <form  action="/to-cart" method="post" >
                         <input hidden name="p_id" value="<%= data[0] %>">
+                        <h5><small style="color:gray">Product ID : #<%= data[0] %></small></h5>
                         <h3 class="title mb-3"> <%= data[1] %></h3>
-
                         <p class="price-detail-wrap">
                             <span class="price h3 text-warning">
                                 <span class="currency">HK $</span><span class="num" name="p_price"><% if(data[5] != 0){ %><%= Math.round(data[3]*(1-data[5]/100)*10)/10%><% } else{ %><%= data[3] %><%}%></span>
@@ -86,6 +114,32 @@
                                 <input hidden name="p_price" value="<%= data[3] %>">
                             </span>
                         </p> <!-- price-detail-wrap .// -->
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <dl class="item-property">
+                                    <dt>Gender</dt>
+                                    <dd><p><%= data[8] %></p></dd>
+                                </dl>
+                            </div>
+                            <div class="col-sm-3">
+                                <dl class="item-property">
+                                    <dt>Categroy</dt>
+                                    <dd><p><%= data[13] %></p></dd>
+                                </dl>
+                            </div>
+                            <div class="col-sm-3">
+                                <dl class="item-property">
+                                    <dt>Style</dt>
+                                    <dd><p><%= data[14] %></p></dd>
+                                </dl>
+                            </div>
+                            <div class="col-sm-3">
+                                <dl class="item-property">
+                                    <dt>Brand</dt>
+                                    <dd><p><%= data[12] %></p></dd>
+                                </dl>
+                            </div>
+                        </div>
                         <dl class="item-property">
                             <dt>Description</dt>
                             <dd><p><%= data[2] %></p></dd>
@@ -105,7 +159,7 @@
 
                         <hr>
                         <div class="row">
-                            <div class="col-sm-5">
+                            <div class="col-sm-3">
                                 <dl class="param param-inline">
                                     <dt>Quantity:</dt>
                                     <dd>
@@ -113,11 +167,11 @@
                                     </dd>
                                 </dl>  <!-- item-property .// -->
                             </div> <!-- col.// -->
-                            <div class="col-sm-7">
+                            <div class="col-sm-9">
                                 <dl class="param param-inline">
                                     <dt>Size Available (CM): </dt>
                                     <dd>
-                                        <% for(var i=1; i<product.length; i++ ){ %>
+                                        <% for(var i=1; i<product.length; i++){ %>
                                             <a href="#" id="stock-tooltip" data-toggle="tooltip" title="<%= product[i][1] %> in stocks">
                                             <label class="form-check form-check-inline">
                                                   <input class="form-check-input" type="radio" name="p_size" value="<%= product[i][0] %>">
@@ -142,30 +196,32 @@
                             <button class="btn btn-primary" type="submit">Buy now</button>
                         <% } %>
                         <!-- <a href="#" class="btn btn-lg btn-primary text-uppercase"> Buy now </a> -->
-                <!-- <button class="btn btn-lg btn-outline-success text-uppercase" onclick="addToCart('<%= data[1] %>')" data-id="a<%= data[1] %>"> <i class="fas fa-shopping-cart"></i> Add to cart </button> -->
+                        <!-- <button class="btn btn-lg btn-outline-success text-uppercase" onclick="addToCart('<%= data[1] %>')" data-id="a<%= data[1] %>"> <i class="fas fa-shopping-cart"></i> Add to cart </button> -->
                     </form>
                 </article>
             </aside>
         </div> <!-- row.// -->
     </div> <!-- card.// -->
 </div> <!--container.//-->
-<div style="height:120px; width:100%;"></div>
-<div class="container">
-    <div style="width:100%; height:100%;">
+</main>
+
+
+
+<div class="container mt-5 mb-5">
+    <div>
         <center><img src="/public/shop_size_table.png" class="img-thumbnail"></center>
     </div>
-    <div style="height:480px; width:100%;"></div>
-    </div>
+</div>
     <div><center><h3 style="color:grey;">You may also interested in</h3></center></div>
     <hr>
     <div style="height:24px; width:100%;"></div>
 
     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner container">
-            <div class="carousel-item active">
+            <div class="carousel-item active mb-5">
                 <div class="row">
-                    <% for(var i=1; i<item.length-3; i++ ){ %>
-                    <div class="col-md-4">
+                    <% for(var i=1; i<item.length-4; i++ ){ %>
+                    <div class="col-md-6 col-lg-3 col-sm-6">
                         <div class="card mb-4 shadow-sm">
                             <a href="/product/<%= item[i][3] %>">
                                 <% if((typeof item[i][4] != null && item[i][4])) { %>
@@ -193,10 +249,10 @@
             </div>
 
             <!-- second slide -->
-            <div class="carousel-item">
+            <div class="carousel-item mb-5">
                 <div class="row">
-                    <% for(var i=4; i<item.length; i++ ){ %>
-                    <div class="col-md-4">
+                    <% for(var i=5; i<item.length; i++ ){ %>
+                    <div class="col-md-6 col-lg-3 col-sm-6">
                         <div class="card mb-4 shadow-sm">
                             <a href="/product/<%= item[i][3] %>">
                                 <% if((typeof item[i][4] != null && item[i][4])) { %>
@@ -210,8 +266,9 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
                                         <a href="/product/<%= item[i][3] %>"><button type="button" class="btn btn-sm btn-outline-primary">View</button></a>
-                                        <button type="submit" class="btn btn-sm btn-success"  onclick="addToCart('<%= item[i][3] %>')" data-id="a<%= item[i][3] %>">Add to chart</button>
-                                    </div>
+                                        <% if (username) { %>
+                                            <button type="submit" class="btn btn-sm btn-success"  onclick="addToCart('<%= item[i][3] %>')" data-id="a<%= item[i][3] %>">Add to chart</button>
+                                        <% } %>                                    </div>
                                     <small class="text-muted"><%= item[i][2]%></small>
                                 </div>
                             </div>
